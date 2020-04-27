@@ -27,14 +27,15 @@ PurchaseAction-#redxPurchaseAction:actionResponse = IllegalAction.\nRegistration
 autoactivation on
 end
 group #2f2e7b isPermitted #white [true]
-PurchaseAction->UserManagementSystem:getLoggedInUser()
-PurchaseAction<--UserManagementSystem:userDetails
 PurchaseAction->ShoppingCart:getItems()
 PurchaseAction<--ShoppingCart:items<Item, count>
+note over PurchaseAction:calculate sum to charge customer\nbased on selected items
 PurchaseAction->PaymentSystem:debit(sum)
 note over User,PaymentSystem:Tranzila system\ncharges the user
 PurchaseAction<--PaymentSystem:paymentId (or negative\nnumber for cancellation)
 group if paymentId >= 0
+PurchaseAction->UserManagementSystem:getLoggedInUser()
+PurchaseAction<--UserManagementSystem:userDetails
 PurchaseAction->OrdersSystem:purchase(userDetails, items)
 OrdersSystem->OrdersRepository:saveOrder
 OrdersSystem<--OrdersRepository:orderId

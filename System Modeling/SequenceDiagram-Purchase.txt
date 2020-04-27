@@ -1,6 +1,7 @@
 title Purchase
 
 actor User
+participant "**//Tranzila//**\nPaymentSystem" as PaymentSystem
 participant ActionManager
 participant PurchaseAction
 participant UserManagementSystem
@@ -26,12 +27,23 @@ PurchaseAction-#redxPurchaseAction:actionResponse = IllegalAction.\nRegistration
 autoactivation on
 end
 group #2f2e7b isPermitted #white [true]
+PurchaseAction->UserManagementSystem:getLoggedInUser()
+PurchaseAction<--UserManagementSystem:userDetails
 PurchaseAction->ShoppingCart:getItems()
 PurchaseAction<--ShoppingCart:items<Item, count>
+PurchaseAction->PaymentSystem:debit(sum)
+note over User,PaymentSystem:Tranzila system\ncharges the user
+PurchaseAction<--PaymentSystem:paymentId (or negative\nnumber for cancellation)
+group if paymentId >= 0
 PurchaseAction->OrdersSystem:purchase(userDetails, items)
 OrdersSystem->OrdersRepository:saveOrder
 OrdersSystem<--OrdersRepository:orderId
 PurchaseAction<--OrdersSystem:orderId
+autoactivation off
+PurchaseAction->ShoppingCart:clear
+note over PurchaseAction,ShoppingCart:Clear purchased items so we will not add them\nback to ItemsWarehouse when freeing resources
+autoactivation on
+end
 end
 ActionManager<--PurchaseAction:actionResponse\n  (success/fail)
 User<--ActionManager:actionResponse to \nshow order status

@@ -1,0 +1,32 @@
+title Alert Sequence Diagram
+actor Manager
+participant AlertConfig
+participant AlertSystem
+participant AlertConfig
+participant AlertSystemObserver
+participant ItemsWH
+participant AlertSystemObserver
+
+participant Alert
+
+
+
+activate AlertConfig
+Manager->AlertConfig: setStockLimit
+AlertConfig->AlertSystem:new
+deactivate AlertConfig
+activate AlertSystem
+
+AlertSystemObserver->ItemsWH:getItems()
+activate AlertSystemObserver
+activate ItemsWH
+AlertSystemObserver<--ItemsWH:items<item, count>
+deactivate ItemsWH
+AlertSystem<--AlertSystemObserver:notifyObserver()
+
+AlertSystemObserver-->AlertSystem:generateAlert(items)
+AlertSystem->Alert:new(alertId, message, date, severity)
+ AlertSystem
+activate Alert
+Alert-->Manager:Get alert of missing items
+deactivate Alert

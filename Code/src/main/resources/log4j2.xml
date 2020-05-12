@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    A default log4j2 configuration that will be used in case no one specified the log4j.configurationFile.
+    It will be in reloading strategy, where the file is being tested every 30 seconds for changes.
+-->
+<Configuration status="info" monitorInterval="30">
+    <Properties>
+        <Property name="logDir">C:\temp\TestApp</Property>
+        <Property name="mainLogPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%threadName] %logger{1} - %msg%n%xThrowable</Property>
+    </Properties>
+    <Appenders>
+        <!-- All TRACE, DEBUG and INFO to System.out -->
+        <Console name="ConsoleOut" target="SYSTEM_OUT">
+            <PatternLayout pattern="${mainLogPattern}"/>
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="ACCEPT"/>
+            </Filters>
+        </Console>
+        <!-- All WARN, ERROR and FATAL to System.err -->
+        <Console name="ConsoleErr" target="SYSTEM_ERR">
+            <PatternLayout pattern="${mainLogPattern}"/>
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </Console>
+        <RollingRandomAccessFile name="FileAppender" fileName="${logDir}\SPAApp.log" filePattern="${logDir}\SPAApp-%i.log" immediateFlush="false">
+            <PatternLayout pattern="${mainLogPattern}" charset="UTF-8"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5" fileIndex="min"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="FileLogger" level="info" additivity="false">
+            <AppenderRef ref="ConsoleOut"/>
+            <AppenderRef ref="ConsoleErr"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="ConsoleOut"/>
+            <AppenderRef ref="ConsoleErr"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>

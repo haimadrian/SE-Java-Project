@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group 'org.spa'
+version '0.9'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+idea {
+    module {
+        downloadSources = true
+    }
+}
+
+dependencies {
+    implementation 'org.apache.logging.log4j:log4j-core:2.13.2'
+    //testCompile 'junit:junit:4.12'
+}

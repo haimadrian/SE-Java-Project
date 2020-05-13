@@ -7,23 +7,22 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+import java.util.List;
+
 public class Jtable extends  JPanel {
 
     private boolean DEBUG = false;
 
     public Jtable() {
         super(new GridLayout(1, 0));
-        JButton button = new JButton();
-        Icon aboutIcon = new ImageIcon("C:\\Users\\liors\\Documents\\SE-Java-Project\\Code\\src\\main\\java\\ui\\image1.gif");
+        JButton button = new JButton("Add to cart");
+        Icon aboutIcon = new ImageIcon("C:\\Users\\idanp\\Software Engineering Java Project\\SE-Java-Project\\Code\\src\\main\\java\\ui\\image1.gif");
         ImageIcon copyIcon = new ImageIcon("");
 
-        String[] columnNames = {"Picture", "Description","Testing"};
-        Object[][] data =
-                {
-                        {aboutIcon, "About",aboutIcon},
-                        {aboutIcon, "Add",aboutIcon},
-                        {aboutIcon, "Copy",aboutIcon},
-                };
+        String[] columnNames = {"#", "Picture","Item Name","Description","Price",""};
+        Object[][] data = new Object[0][6];
+
         DefaultTableModel model = new DefaultTableModel(data, columnNames)
         {
             @Override
@@ -34,8 +33,14 @@ public class Jtable extends  JPanel {
                 return getValueAt(0, column).getClass();
             }
         };
+        Object[] object = {"1",aboutIcon, "AMD Radeon 5700XT PowerColor Red Devil", "The Best GPU", "500$", new JButton("Button1")};
+        Object[] object1 = {"2", aboutIcon, "AMD Radeon 5700XT PowerColor Red Devil", "LiorManyak", "0$", new JButton("Button2")};
+        model.addRow(object);
+        model.addRow(object1);
+
         JTable table = new JTable( model );
-        table.setRowHeight(250);
+        table.setRowHeight(150);
+
         //table.sizeColumnsToFit(4);
         table.setPreferredScrollableViewportSize(table.getPreferredSize());
         JScrollPane scrollPane = new JScrollPane( table );
@@ -47,7 +52,6 @@ public class Jtable extends  JPanel {
         JFrame frame = new JFrame("Table Icon");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new Jtable());
-
         frame.setLocationByPlatform( true );
         frame.pack();
         frame.setVisible( true );

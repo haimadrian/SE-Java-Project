@@ -38,7 +38,7 @@ public class SPAMain {
 
     public static void main(String[] args) {
         logger.info("Starting application");
-        JFrame mainForm = new JFrame("SPA Application");
+        JFrame mainForm = new JFrame("Alerts Dialog");
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainForm.setPreferredSize(new Dimension(1000, 800));
 

@@ -8,6 +8,8 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * @author hadrian
@@ -71,6 +73,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       table.getTableHeader().setBackground(Color.GRAY);
       table.getTableHeader().setForeground(Color.BLACK);
       table.getTableHeader().setReorderingAllowed(false);
+      table.getTableHeader().setResizingAllowed(false);
       TableColumnModel tableColumnModel = new DefaultTableColumnModel();
 
       for (Column column : columns) {
@@ -78,11 +81,10 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
          tableColumn.setIdentifier(Integer.valueOf(column.getColIndex()));
          tableColumn.setHeaderValue(column.getHeader());
          tableColumn.setCellRenderer(column.getCellRenderer());
-         int colWidth = (int)(column.getWidth() * (mainPanel.getWidth() - scrollPane.getVerticalScrollBar().getWidth() - 3));
+         int colWidth = (int)(column.getWidth() * (mainPanel.getWidth() - scrollPane.getVerticalScrollBar().getWidth()));
          tableColumn.setPreferredWidth(colWidth);
          tableColumn.setWidth(colWidth);
-         tableColumn.setMinWidth(colWidth);
-         tableColumn.setMinWidth(colWidth / 2);
+         tableColumn.setMinWidth(colWidth / 3);
 
          if (column.isEditable()) {
             tableColumn.setCellEditor(column.getCellEditor());
@@ -100,6 +102,19 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       if (this.tableConfig.isTooltipDisplayed()) {
          tableTooltipHandler = new TableTooltipHandler(table);
       }
+
+      // Make sure row is selected when clicking it so we can use the popup menu on selected row
+      table.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseReleased(MouseEvent e) {
+            int r = table.rowAtPoint(e.getPoint());
+            if (r >= 0 && r < table.getRowCount()) {
+               table.setRowSelectionInterval(r, r);
+            } else {
+               table.clearSelection();
+            }
+         }
+      });
    }
 
    private void createScrollPane() {
@@ -126,7 +141,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       }
 
       scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-      scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
       scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
       scrollPane.setMinimumSize(new Dimension(200, Integer.MAX_VALUE));
       scrollPane.setPreferredSize(new Dimension(20, Integer.MAX_VALUE));
@@ -178,7 +193,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       // Recalculate column width
       for (Column column : columns) {
          TableColumn tableColumn = table.getColumn(Integer.valueOf(column.getColIndex()));
-         int parentWidth = scrollPane.getParent().getWidth() - 2;
+         int parentWidth = scrollPane.getParent().getWidth();
          if (scrollPane.getVerticalScrollBar().isVisible()) {
             parentWidth -= scrollPane.getVerticalScrollBar().getWidth();
          }

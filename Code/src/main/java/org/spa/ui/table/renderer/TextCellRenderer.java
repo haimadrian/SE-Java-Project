@@ -1,5 +1,8 @@
 package org.spa.ui.table.renderer;
 
+import org.apache.commons.text.StringEscapeUtils;
+import org.spa.common.util.StringUtils;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
@@ -10,8 +13,6 @@ import java.awt.*;
  * @since 16-May-20
  */
 public class TextCellRenderer extends DefaultTableCellRenderer {
-   private static final int MAX_ROWS = 4;
-
    public TextCellRenderer() {
       setHorizontalAlignment(JLabel.LEFT);
       setVerticalAlignment(JLabel.TOP);
@@ -24,48 +25,32 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       int colWidth = table.getColumn(Integer.valueOf(column)).getWidth() - 150;
       String cellText = getCellText(value);
 
-      // Derived classes can return null when they handle it by themselves
-      if (cellText != null) {
-         int stringWidth = getFontMetrics(getFont()).stringWidth(cellText);
-         if (stringWidth > colWidth) {
-            int totalRows = (int) Math.floor((double) stringWidth / colWidth + 0.5);
-            int rowLength = cellText.length() / totalRows - 2;
-
-            StringBuilder html = new StringBuilder("<html><div style=\"width:").append(colWidth).append("px;\">").append(cellText);
-            /*int spaceIndex = cellText.indexOf(" ");
-            int fromIndex = 0;
-            int splitIndex = rowLength;
-
-            // Split the text to rows.
-            int rows = 0;
-            while (spaceIndex >= 0 && rows < MAX_ROWS) {
-               if (spaceIndex > splitIndex) {
-                  html.append(cellText.substring(fromIndex, spaceIndex).replace("<", "&lt;").replace(">", "&gt;"));
-                  html.append("<br/>");
-                  fromIndex = spaceIndex + 1;
-                  splitIndex += (rowLength - (spaceIndex - splitIndex));
-                  ++rows;
-               }
-               spaceIndex = cellText.indexOf(" ", spaceIndex + 1);
-            }
-
-            if (spaceIndex >= 0 && rows == MAX_ROWS) {
-               html.append("...<br/>");
-            } else if (fromIndex < cellText.length()) {
-               html.append(cellText.substring(fromIndex).replace("<", "&lt;").replace(">", "&gt;"));
-            }*/
-
-            html.append("</div></html>");
-            setText(html.toString());
-         } else {
-            setText(cellText);
-         }
-      }
+      // Use HTML hack so we can take the advantage of <div> for word wrapping a label text
+      // @formatter:off
+      String html = "<html><div style=\"width:" + colWidth + "px;" + getAdditionalDivStyle() + "\">" +
+            StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))) +
+            "</div></html>";
+      // @formatter:on
+      setText(html);
 
       return this;
    }
 
+   /**
+    * Override to return custom text format
+    * @param value Current cell's value
+    * @return The value you want to display
+    */
    protected String getCellText(Object value) {
       return String.valueOf(value);
    }
+
+   /**
+    * @return Additional properties for div style, to be used when making the label an HTML one
+    */
+   protected String getAdditionalDivStyle() {
+      return "";
+   }
+
+
 }

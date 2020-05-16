@@ -13,7 +13,7 @@ public class DateCellRenderer extends TextCellRenderer {
    private final SimpleDateFormat formatter;
 
    public DateCellRenderer() {
-      this(" HH:mm\ndd-MMM-yy");
+      this("HH:mm\ndd-MMM-yy");
    }
 
    public DateCellRenderer(String format) {
@@ -23,15 +23,17 @@ public class DateCellRenderer extends TextCellRenderer {
 
    @Override
    protected String getCellText(Object value) {
-      StringBuilder html = new StringBuilder("<html>");
       if (value instanceof Date) {
-         html.append(formatter.format((Date)value).replace("\n", "<br>").replace(" ", "&nbsp;&nbsp;&nbsp;&nbsp;")).append("</html>");
-         setText(html.toString());
-         return null;
+         return formatter.format((Date)value);
       } else if (value instanceof TemporalAccessor) {
          return formatter.format((TemporalAccessor)value);
       }
 
       return super.getCellText(value);
+   }
+
+   @Override
+   protected String getAdditionalDivStyle() {
+      return "text-align: center;vertical-align: middle;";
    }
 }

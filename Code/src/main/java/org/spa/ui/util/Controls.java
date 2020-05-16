@@ -17,6 +17,7 @@ import java.util.Map;
 import static org.spa.ui.util.Fonts.PLAIN_FONT;
 
 /**
+ * Some utilities to create controls, tweak the look and feel, center dialogs, etc.
  * @author hadrian
  * @since 12-May-20
  */

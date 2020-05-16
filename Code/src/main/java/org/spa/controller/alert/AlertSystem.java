@@ -112,7 +112,7 @@ public class AlertSystem {
     */
    private void raiseAlert(WarehouseItem item, Threshold matchingThreshold) {
       String key = item.getId();
-      String message = "Only " + item.getCount() + " left in stock for '" + item.getName() + "' (Item ID=" + item.getId() + ")";
+      String message = "<b>Only " + item.getCount() + " left</b> in stock for '" + item.getName() + "' <b>(Item ID=" + item.getId() + ")</b>";
       String severity = matchingThreshold.getSeverity().name();
       Date date = new Date(System.currentTimeMillis());
 

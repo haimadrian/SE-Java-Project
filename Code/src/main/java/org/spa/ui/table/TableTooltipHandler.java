@@ -1,5 +1,7 @@
 package org.spa.ui.table;
 
+import org.apache.commons.text.StringEscapeUtils;
+import org.spa.common.util.StringUtils;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 
@@ -16,7 +18,6 @@ import java.awt.event.MouseEvent;
 public class TableTooltipHandler extends MouseAdapter {
    private static final Logger logger = LoggerFactory.getLogger(TableTooltipHandler.class);
    private static final int MAX_TOOLTIP_WIDTH = 400;
-   private static final int MAX_TOOLTIP_ROWS = 20;
 
    private int row = -1;
    private int col = -1;
@@ -73,40 +74,12 @@ public class TableTooltipHandler extends MouseAdapter {
             setTooltipText("<null>");
          } else {
             String cellText = cellValue.toString();
-            int stringWidth = table.getFontMetrics(table.getFont()).stringWidth(cellText);
-            if (stringWidth > MAX_TOOLTIP_WIDTH) {
-               int totalRows = (int)Math.floor((double)stringWidth / MAX_TOOLTIP_WIDTH + 0.5);
-               int rowLength = cellText.length() / totalRows;
-
-               StringBuilder html = new StringBuilder("<html><font face='sansserif' >");
-               int spaceIndex = cellText.indexOf(" ");
-               int fromIndex = 0;
-               int splitIndex = rowLength;
-
-               // Split the text to rows.
-               int rows = 0;
-               while (spaceIndex >= 0 && rows < MAX_TOOLTIP_ROWS) {
-                  if (spaceIndex > splitIndex) {
-                     html.append(cellText.substring(fromIndex, spaceIndex).replace("<", "&lt;").replace(">", "&gt;"));
-                     html.append("<br>");
-                     fromIndex = spaceIndex + 1;
-                     splitIndex += rowLength;
-                     ++rows;
-                  }
-                  spaceIndex = cellText.indexOf(" ", spaceIndex + 1);
-               }
-
-               if (spaceIndex >= 0 && rows == MAX_TOOLTIP_ROWS) {
-                  html.append("...<br>");
-               } else if (fromIndex < cellText.length()) {
-                  html.append(cellText.substring(fromIndex).replace("<", "&lt;").replace(">", "&gt;"));
-               }
-
-               html.append("</font></html>");
-               setTooltipText(html.toString());
-            } else {
-               setTooltipText(cellText);
-            }
+            // @formatter:off
+            String html = "<html><font face=\"sans-serif\"><div style=\"width:" + MAX_TOOLTIP_WIDTH + "px;\">" +
+                  StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))) +
+                  "</div></font></html>";
+            // formatter:on
+            setTooltipText(html);
          }
       }
    }

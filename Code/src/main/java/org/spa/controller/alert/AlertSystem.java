@@ -110,6 +110,8 @@ public class AlertSystem {
     * @param item The item to alert about
     * @param matchingThreshold A threshold to use for the alert
     */
+   // TODO haim: AlertSystem should manage alerts in a map and the UI will ask for them when we call it to refresh itself.
+   //  This is so we can update existing alerts instead of showing them over and over
    private void raiseAlert(WarehouseItem item, Threshold matchingThreshold) {
       String key = item.getId();
       String message = "<b>Only " + item.getCount() + " left</b> in stock for '" + item.getName() + "' <b>(Item ID=" + item.getId() + ")</b>";

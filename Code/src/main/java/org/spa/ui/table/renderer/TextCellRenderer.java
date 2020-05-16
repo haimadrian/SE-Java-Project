@@ -22,13 +22,13 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-      int colWidth = table.getColumn(Integer.valueOf(column)).getWidth() - 150;
+      int colWidth = table.getColumn(Integer.valueOf(column)).getWidth();
       String cellText = getCellText(value);
 
       // Use HTML hack so we can take the advantage of <div> for word wrapping a label text
       // @formatter:off
-      String html = "<html><div style=\"width:" + colWidth + "px;" + getAdditionalDivStyle() + "\">" +
-            StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))) +
+      String html = "<html><div style=\"width:" + colWidth + ";" + getAdditionalDivStyle() + "\">" +
+            StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))).replace("\n", "<br/>") +
             "</div></html>";
       // @formatter:on
       setText(html);

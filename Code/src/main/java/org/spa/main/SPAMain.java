@@ -7,6 +7,7 @@ import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.ui.alert.AlertColumn;
 import org.spa.ui.alert.AlertViewInfo;
 import org.spa.ui.table.PopupAdapter;
+import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
 import org.spa.ui.util.Controls;
 
@@ -46,7 +47,7 @@ public class SPAMain {
 
         List<AlertColumn> alertCols = Arrays.asList(AlertColumn.Severity, AlertColumn.Message, AlertColumn.Date);
         List<AlertViewInfo> alerts = new ArrayList<>();
-        TableManager<AlertColumn, AlertViewInfo> tableManager = new TableManager<>(alertCols, alerts, null);
+        TableManager<AlertColumn, AlertViewInfo> tableManager = new TableManager<>(alertCols, alerts, TableConfig.create().withRowHeight(64).build());
         tableManager.setPopupAdapter(new PopupAdapter() {
             @Override
             protected List<JMenuItem> getMenuItemsForPopup() {

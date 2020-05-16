@@ -74,9 +74,13 @@ public class TableTooltipHandler extends MouseAdapter {
             setTooltipText("<null>");
          } else {
             String cellText = cellValue.toString();
+
+            int stringWidth = table.getFontMetrics(table.getFont()).stringWidth(cellText);
+            int width = Math.min(stringWidth, MAX_TOOLTIP_WIDTH);
+
             // @formatter:off
-            String html = "<html><font face=\"sans-serif\"><div style=\"width:" + MAX_TOOLTIP_WIDTH + "px;\">" +
-                  StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))) +
+            String html = "<html><font face=\"sans-serif\"><div style=\"width:" + width + ";\">" +
+                  StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))).replace("\n", "<br/>") +
                   "</div></font></html>";
             // formatter:on
             setTooltipText(html);

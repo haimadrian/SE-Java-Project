@@ -11,7 +11,9 @@ public class TableConfig {
    private boolean isTooltipDisplayed = true;
    private boolean isEditable = false;
    private boolean isBorderDisplayed = true;
-   private int rowHeight = 64;
+   private boolean isColumnReorderingAllowed = false;
+   private boolean isColumnResizingAllowed = false;
+   private int rowHeight = 20;
    private int selectionMode = ListSelectionModel.SINGLE_SELECTION;
 
    private TableConfig() {
@@ -35,6 +37,14 @@ public class TableConfig {
 
    public boolean isBorderDisplayed() {
       return isBorderDisplayed;
+   }
+
+   public boolean isColumnReorderingAllowed() {
+      return isColumnReorderingAllowed;
+   }
+
+   public boolean isColumnResizingAllowed() {
+      return isColumnResizingAllowed;
    }
 
    public int getRowHeight() {
@@ -71,6 +81,16 @@ public class TableConfig {
 
       public TableConfigBuilder withBorder(boolean isDisplayBorder) {
          tableConfig.isBorderDisplayed = isDisplayBorder;
+         return this;
+      }
+
+      public TableConfigBuilder withColumnReordering(boolean isColumnReorderingAllowed) {
+         tableConfig.isColumnReorderingAllowed = isColumnReorderingAllowed;
+         return this;
+      }
+
+      public TableConfigBuilder withColumnResizing(boolean isColumnResizingAllowed) {
+         tableConfig.isColumnResizingAllowed = isColumnResizingAllowed;
          return this;
       }
 

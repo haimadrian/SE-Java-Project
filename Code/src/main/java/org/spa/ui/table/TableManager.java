@@ -61,19 +61,19 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       table.setBackground(Color.DARK_GRAY);
       table.setForeground(Color.white);
       table.setFont(Fonts.PLAIN_FONT);
-      table.setRowHeight(this.tableConfig.getRowHeight());
+      table.setRowHeight(tableConfig.getRowHeight());
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       table.setColumnSelectionAllowed(false);
       table.setRowSelectionAllowed(true);
       //noinspection MagicConstant
-      table.setSelectionMode(this.tableConfig.getSelectionMode());
+      table.setSelectionMode(tableConfig.getSelectionMode());
       table.setCellSelectionEnabled(true);
       table.setMinimumSize(new Dimension(200, 100));
       table.getTableHeader().setFont(Fonts.BOLD_FONT);
       table.getTableHeader().setBackground(Color.GRAY);
       table.getTableHeader().setForeground(Color.BLACK);
-      table.getTableHeader().setReorderingAllowed(false);
-      table.getTableHeader().setResizingAllowed(false);
+      table.getTableHeader().setReorderingAllowed(tableConfig.isColumnReorderingAllowed());
+      table.getTableHeader().setResizingAllowed(tableConfig.isColumnResizingAllowed());
       TableColumnModel tableColumnModel = new DefaultTableColumnModel();
 
       for (Column column : columns) {
@@ -99,7 +99,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
 
       table.setModel(tableModel);
 
-      if (this.tableConfig.isTooltipDisplayed()) {
+      if (tableConfig.isTooltipDisplayed()) {
          tableTooltipHandler = new TableTooltipHandler(table);
       }
 
@@ -118,7 +118,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
    }
 
    private void createScrollPane() {
-      if (this.tableConfig.isBorderDisplayed()) {
+      if (tableConfig.isBorderDisplayed()) {
          scrollPane = new JScrollPane(table);
       } else {
          scrollPane = new JScrollPane(table) {

@@ -1,6 +1,5 @@
 package org.spa.ui.util;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.StringUtils;
 import org.spa.common.util.log.Logger;

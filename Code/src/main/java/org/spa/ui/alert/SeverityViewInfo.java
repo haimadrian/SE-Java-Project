@@ -15,13 +15,14 @@ public enum SeverityViewInfo {
    private final Icon icon;
 
    SeverityViewInfo() {
-      Icon icon1;
+      ImageIcon icon1;
       if ("DISABLED".equalsIgnoreCase(name())) {
          icon1 = null;
       } else {
          try {
             // Use our class to resolve the same package
             icon1 = new ImageIcon(ImageIO.read(SeverityViewInfo.class.getResourceAsStream(name() + ".gif")));
+            icon1.setDescription(name()); // So we will use this description in tooltips
          } catch (Exception e) {
             icon1 = null;
             LoggerFactory.getLogger(SeverityViewInfo.class).error("Could not find resource: " + name() + ".gif");

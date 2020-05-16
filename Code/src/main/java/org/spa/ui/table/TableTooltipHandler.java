@@ -73,7 +73,10 @@ public class TableTooltipHandler extends MouseAdapter {
          if (cellValue == null) {
             setTooltipText("<null>");
          } else {
-            String cellText = cellValue.toString();
+            String cellText = cellValueToString(cellValue);
+            if (cellText == null) {
+               cellText = cellValue.getClass().getSimpleName();
+            }
 
             int stringWidth = table.getFontMetrics(table.getFont()).stringWidth(cellText);
             int width = Math.min(stringWidth, MAX_TOOLTIP_WIDTH);
@@ -85,6 +88,18 @@ public class TableTooltipHandler extends MouseAdapter {
             // formatter:on
             setTooltipText(html);
          }
+      }
+   }
+
+   private String cellValueToString(Object cellValue) {
+      if (cellValue instanceof ImageIcon) {
+         return ((ImageIcon)cellValue).getDescription();
+      } else if (cellValue instanceof JButton) {
+         return ((JButton)cellValue).getText();
+      } else if (cellValue instanceof JCheckBox) {
+         return String.valueOf(((JCheckBox)cellValue).isSelected());
+      } else {
+         return String.valueOf(cellValue);
       }
    }
 

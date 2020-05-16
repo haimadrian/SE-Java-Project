@@ -13,9 +13,27 @@ import java.awt.*;
  * @since 16-May-20
  */
 public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
+   private final int margin;
+
+   public StretchedImageCellRenderer() {
+      this(0);
+   }
+
+   public StretchedImageCellRenderer(int margin) {
+      this.margin = margin;
+   }
+
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocused, int row, int column) {
+      if (value == null) {
+         return this;
+      }
+
       Image image = ((ImageIcon)value).getImage();
-      ImageViewer imageViewer = new ImageViewer(image);
+      if (image == null) {
+         return this;
+      }
+
+      ImageViewer imageViewer = new ImageViewer(image, margin);
 
       if (table.isRowSelected(row)) {
          imageViewer.setForeground(table.getSelectionForeground());

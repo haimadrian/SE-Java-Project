@@ -1,8 +1,7 @@
 package org.spa.ui.alert;
 
-import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.ui.util.ImagesCache;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 /**
@@ -19,14 +18,7 @@ public enum SeverityViewInfo {
       if ("DISABLED".equalsIgnoreCase(name())) {
          icon1 = null;
       } else {
-         try {
-            // Use our class to resolve the same package
-            icon1 = new ImageIcon(ImageIO.read(SeverityViewInfo.class.getResourceAsStream(name() + ".gif")));
-            icon1.setDescription(name()); // So we will use this description in tooltips
-         } catch (Exception e) {
-            icon1 = null;
-            LoggerFactory.getLogger(SeverityViewInfo.class).error("Could not find resource: " + name() + ".gif");
-         }
+         icon1 = ImagesCache.getInstance().getImage(name() + ".gif");
       }
 
       icon = icon1;

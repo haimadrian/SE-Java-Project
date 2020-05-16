@@ -1,8 +1,8 @@
-package org.spa.ui.alert;
+package org.spa.ui.item;
 
 import org.spa.ui.table.TableColumnIfc;
-import org.spa.ui.table.renderer.DateCellRenderer;
-import org.spa.ui.table.renderer.ImageCellRenderer;
+import org.spa.ui.table.renderer.CurrencyCellRenderer;
+import org.spa.ui.table.renderer.StretchedImageCellRenderer;
 import org.spa.ui.table.renderer.TextCellRenderer;
 
 import javax.swing.*;
@@ -12,21 +12,25 @@ import javax.swing.table.TableCellRenderer;
  * @author hadrian
  * @since 15-May-20
  */
-public enum AlertColumn implements TableColumnIfc {
-   Severity("Severity", 0.1, ImageIcon.class, new ImageCellRenderer()),
-   Message("Description", 0.7, String.class, new TextCellRenderer()),
-   Date("Time", 0.2, java.util.Date.class, new DateCellRenderer());
+public enum ItemColumn implements TableColumnIfc {
+   Image("Image", 0.15, ImageIcon.class, new StretchedImageCellRenderer(10), false),
+   Name("Name", 0.15, String.class, new TextCellRenderer(), true),
+   Description("Description", 0.65, String.class, new TextCellRenderer(), true),
+   Price("Price", 0.05, Double.class, new CurrencyCellRenderer(), true),
+   Count("Count", 0.05, Integer.class, new TextCellRenderer(), true);
 
    private final String header;
    private final double cellWidth;
    private final Class<?> columnClass;
    private final TableCellRenderer renderer;
+   private final boolean isEditable;
 
-   AlertColumn(String header, double cellWidth, Class<?> columnClass, TableCellRenderer renderer) {
+   ItemColumn(String header, double cellWidth, Class<?> columnClass, TableCellRenderer renderer, boolean isEditable) {
       this.header = header;
       this.cellWidth = cellWidth;
       this.columnClass = columnClass;
       this.renderer = renderer;
+      this.isEditable = isEditable;
    }
 
    @Override
@@ -51,7 +55,7 @@ public enum AlertColumn implements TableColumnIfc {
 
    @Override
    public boolean isEditable() {
-      return false;
+      return isEditable;
    }
 
    @Override

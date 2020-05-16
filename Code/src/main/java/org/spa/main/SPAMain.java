@@ -6,6 +6,8 @@ import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.ui.alert.AlertColumn;
 import org.spa.ui.alert.AlertViewInfo;
+import org.spa.ui.item.ItemColumn;
+import org.spa.ui.item.ItemViewInfo;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
@@ -41,10 +43,33 @@ public class SPAMain {
         logger.info("Starting application");
         JFrame mainForm = new JFrame("Alerts Dialog");
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainForm.setPreferredSize(new Dimension(1000, 800));
+        mainForm.setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width - 200, 800));
 
         SPAApplication.getInstance().start();
 
+        //TableManager<AlertColumn, AlertViewInfo> tableManager = createAlertsTable();
+        TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
+
+        mainForm.setContentPane(tableManager.getMainPanel());
+        mainForm.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                logger.info("Exiting application");
+                SPAApplication.getInstance().stop();
+                LogManager.shutdown();
+            }
+        });
+        mainForm.pack();
+        Controls.centerDialog(mainForm);
+        mainForm.setVisible(true);
+
+        logger.info("Registering alert listener");
+        //Login login = new Login();
+        //login.getMainFrame().setVisible(true);
+        //login.getMainFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private static TableManager<AlertColumn, AlertViewInfo> createAlertsTable() {
         List<AlertColumn> alertCols = Arrays.asList(AlertColumn.Severity, AlertColumn.Message, AlertColumn.Date);
         List<AlertViewInfo> alerts = new ArrayList<>();
         TableManager<AlertColumn, AlertViewInfo> tableManager = new TableManager<>(alertCols, alerts, TableConfig.create().withRowHeight(64).build());
@@ -65,21 +90,6 @@ public class SPAMain {
             }
         });
 
-        mainForm.setContentPane(tableManager.getMainPanel());
-        mainForm.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                logger.info("Exiting application");
-                SPAApplication.getInstance().stop();
-                LogManager.shutdown();
-            }
-        });
-        mainForm.pack();
-        Controls.centerDialog(mainForm);
-        mainForm.setVisible(true);
-
-        logger.info("Registering alert listener");
-
         SPAApplication.getInstance().getAlertSystem().registerAlertObserver((key, message, severity, date) -> {
             SwingUtilities.invokeLater(() -> {
                 try {
@@ -90,9 +100,42 @@ public class SPAMain {
                 }
             });
         });
-        //Login login = new Login();
-        //login.getMainFrame().setVisible(true);
-        //login.getMainFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        return tableManager;
+    }
+
+    private static TableManager<ItemColumn, ItemViewInfo> createItemsTable() {
+        List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price);
+        List<ItemViewInfo> items = new ArrayList<>();
+        TableConfig tableConfig = TableConfig.create().withRowHeight(135).withEditable(true).withBorder(false).build();
+        TableManager<ItemColumn, ItemViewInfo> tableManager = new TableManager<>(itemCols, items, tableConfig);
+        tableManager.setPopupAdapter(new PopupAdapter() {
+            @Override
+            protected List<JMenuItem> getMenuItemsForPopup() {
+                JMenuItem item = new JMenuItem("Add to cart");
+                item.setDisplayedMnemonicIndex(0);
+                item.addActionListener(e -> {
+                    ItemViewInfo selectedModel = tableManager.getSelectedModel();
+                    if (selectedModel != null) {
+                        logger.info("Adding item to cart. Item: " + selectedModel);
+                        tableManager.refresh();
+                    }
+                });
+                return Arrays.asList(item);
+            }
+        });
+
+        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> {
+            items.add(new ItemViewInfo(item.getId(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(),
+                item.getDiscountPercent(), item.getCount()));
+        });
+
+        try {
+            tableManager.refresh();
+        } catch (Throwable t) {
+            logger.error("Error has occurred while trying to refresh table.", t);
+        }
+
+        return tableManager;
     }
 
     /**

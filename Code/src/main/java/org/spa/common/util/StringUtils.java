@@ -10,6 +10,7 @@ import java.util.Map;
 public class StringUtils {
    private static final Map<String, String> htmlToWildcard = new HashMap<>();
    private static final Map<String, String> wildcardToHtml = new HashMap<>();
+   private static final String ILLEGAL_OS_FILE_NAME_CHARS_REGEX = "[\\\\/:*?\"<>|]";
 
    static {
       htmlToWildcard.put("<b>", "~BOLD");
@@ -55,5 +56,20 @@ public class StringUtils {
       }
 
       return modifiedText;
+   }
+
+   /**
+    * This utility method created to help making an illegal file name legal.
+    *
+    * @param fileName The file name that the user of this class supplied.
+    * @return The file name as a OS valid file name.
+    */
+   public static String toLegalFileName(String fileName) {
+      String legalFileName = fileName;
+      if (legalFileName != null) {
+         legalFileName = legalFileName.replaceAll(ILLEGAL_OS_FILE_NAME_CHARS_REGEX, "_");
+      }
+
+      return legalFileName;
    }
 }

@@ -58,6 +58,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
    }
 
    private void initTable() {
+      table.setDoubleBuffered(true);
       table.setBackground(Color.DARK_GRAY);
       table.setForeground(Color.white);
       table.setFont(Fonts.PLAIN_FONT);

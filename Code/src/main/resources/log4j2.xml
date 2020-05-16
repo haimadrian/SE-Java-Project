@@ -5,7 +5,7 @@
 -->
 <Configuration status="info" monitorInterval="30">
     <Properties>
-        <Property name="logDir">C:\temp\TestApp</Property>
+        <Property name="logDir">C:\temp\SPAApp\log</Property>
         <Property name="mainLogPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%threadName] %logger{1} - %msg%n%xThrowable</Property>
     </Properties>
     <Appenders>

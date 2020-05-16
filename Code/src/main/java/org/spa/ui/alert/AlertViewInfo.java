@@ -9,7 +9,6 @@ import java.util.Date;
  * @since 15-May-20
  */
 public class AlertViewInfo implements TableModelIfc {
-
    private final String message;
    private final long date;
    private final SeverityViewInfo severity;

@@ -53,6 +53,13 @@ public class SPAApplication {
    }
 
    /**
+    * @return Working directory used for storing and loading files from disk
+    */
+   public String getWorkingDirectory() {
+      return "C:\\temp\\SPAApp";
+   }
+
+   /**
     * @return A reference to {@link ItemsWarehouse}
     */
    public ItemsWarehouse getItemsWarehouse() {

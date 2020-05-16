@@ -29,8 +29,7 @@ public class ImageViewer extends JPanel {
     * @param margin The space to take from image's container boundaries
     */
    public ImageViewer(Image image, int margin) {
-      this.image = image;
-      this.margin = margin;
+      this(image, true, margin);
    }
 
    /**
@@ -52,7 +51,8 @@ public class ImageViewer extends JPanel {
       if (image != null) {
          if (isStretched()) {
             int doubleMargin = margin*2;
-            g.drawImage(image, x + margin, y + margin, getWidth() - doubleMargin, getHeight() - doubleMargin, this);
+            Image scaledImage = image.getScaledInstance(getWidth() - doubleMargin, getHeight() - doubleMargin, Image.SCALE_SMOOTH);
+            g.drawImage(scaledImage, x + margin, y + margin,this);
          } else {
             g.drawImage(image, x + margin, y + margin, this);
          }

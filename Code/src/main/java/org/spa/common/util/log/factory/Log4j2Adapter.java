@@ -1,8 +1,8 @@
-package org.spa.util.log.factory;
+package org.spa.common.util.log.factory;
 
 import org.apache.logging.log4j.LogManager;
-import org.spa.util.log.Level;
-import org.spa.util.log.Logger;
+import org.spa.common.util.log.Level;
+import org.spa.common.util.log.Logger;
 
 import java.util.function.Supplier;
 

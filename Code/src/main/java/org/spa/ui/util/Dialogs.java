@@ -2,8 +2,8 @@ package org.spa.ui.util;
 
 import org.spa.ui.CustomGridBagConstraints;
 import org.spa.ui.SPAExplorerIfc;
-import org.spa.util.log.Logger;
-import org.spa.util.log.factory.LoggerFactory;
+import org.spa.common.util.log.Logger;
+import org.spa.common.util.log.factory.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

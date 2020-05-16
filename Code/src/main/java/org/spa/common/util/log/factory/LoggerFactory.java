@@ -1,7 +1,7 @@
-package org.spa.util.log.factory;
+package org.spa.common.util.log.factory;
 
-import org.spa.util.log.ComponentLogHandler;
-import org.spa.util.log.Logger;
+import org.spa.common.util.log.ComponentLogHandler;
+import org.spa.common.util.log.Logger;
 
 /**
  * Used for constructing concrete log adapters according to the specified parameters.

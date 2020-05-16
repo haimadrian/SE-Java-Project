@@ -1,7 +1,7 @@
-package org.spa.util.log.factory;
+package org.spa.common.util.log.factory;
 
-import org.spa.util.log.Level;
-import org.spa.util.log.Logger;
+import org.spa.common.util.log.Level;
+import org.spa.common.util.log.Logger;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -5,8 +5,8 @@ package org.spa.ui;
  * @since 13-May-20
  */
 
-import org.spa.util.log.Logger;
-import org.spa.util.log.factory.LoggerFactory;
+import org.spa.common.util.log.Logger;
+import org.spa.common.util.log.factory.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;

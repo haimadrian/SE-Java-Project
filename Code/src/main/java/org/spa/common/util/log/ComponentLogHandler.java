@@ -1,4 +1,4 @@
-package org.spa.util.log;
+package org.spa.common.util.log;
 
 public interface ComponentLogHandler {
    void handleOut(CharSequence line);

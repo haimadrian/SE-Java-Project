@@ -7,7 +7,7 @@ import java.awt.*;
  * @since 12-May-20
  */
 public class Fonts {
-   public static final int DEFAULT_FONT_SIZE = 12;
+   public static final int DEFAULT_FONT_SIZE = 16;
    public static final String DEFAULT_FONT_FACE = "Dialog";
    public static final String DEFAULT_MONOSPACED_FONT_FACE = "Courier New";
 

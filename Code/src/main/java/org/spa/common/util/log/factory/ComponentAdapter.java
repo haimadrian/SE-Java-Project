@@ -1,6 +1,6 @@
-package org.spa.util.log.factory;
+package org.spa.common.util.log.factory;
 
-import org.spa.util.log.ComponentLogHandler;
+import org.spa.common.util.log.ComponentLogHandler;
 
 import java.util.function.Consumer;
 

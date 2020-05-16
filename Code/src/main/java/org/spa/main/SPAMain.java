@@ -1,11 +1,24 @@
 package org.spa.main;
 
-import org.spa.util.log.Logger;
-import org.spa.util.log.factory.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.spa.common.SPAApplication;
+import org.spa.common.util.log.Logger;
+import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.ui.alert.AlertColumn;
+import org.spa.ui.alert.AlertViewInfo;
+import org.spa.ui.table.PopupAdapter;
+import org.spa.ui.table.TableManager;
+import org.spa.ui.util.Controls;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author hadrian
@@ -20,22 +33,62 @@ public class SPAMain {
 
     static {
         redirectStreams();
+        Controls.tweakPLAF();
     }
 
     public static void main(String[] args) {
         logger.info("Starting application");
-        /*JFrame mainForm = new JFrame("*Manyak.txt");
-        mainForm.setContentPane(new SPAAppForm().getRootPanel());
+        JFrame mainForm = new JFrame("SPA Application");
+        mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainForm.setPreferredSize(new Dimension(1000, 800));
+
+        SPAApplication.getInstance().start();
+
+        List<AlertColumn> alertCols = Arrays.asList(AlertColumn.Severity, AlertColumn.Message, AlertColumn.Date);
+        List<AlertViewInfo> alerts = new ArrayList<>();
+        TableManager<AlertColumn, AlertViewInfo> tableManager = new TableManager<>(alertCols, alerts, null);
+        tableManager.setPopupAdapter(new PopupAdapter() {
+            @Override
+            protected List<JMenuItem> getMenuItemsForPopup() {
+                JMenuItem item = new JMenuItem("Acknowledge");
+                item.setDisplayedMnemonicIndex(0);
+                item.addActionListener(e -> {
+                    AlertViewInfo selectedModel = tableManager.getSelectedModel();
+                    if (selectedModel != null) {
+                        logger.info("Alert has been acknowledged. Alert: " + selectedModel);
+                        alerts.remove(selectedModel);
+                        tableManager.refresh();
+                    }
+                });
+                return Arrays.asList(item);
+            }
+        });
+
+        mainForm.setContentPane(tableManager.getMainPanel());
         mainForm.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 logger.info("Exiting application");
+                SPAApplication.getInstance().stop();
                 LogManager.shutdown();
             }
         });
-        mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainForm.pack();
-        mainForm.setVisible(true);*/
+        Controls.centerDialog(mainForm);
+        mainForm.setVisible(true);
+
+        logger.info("Registering alert listener");
+
+        SPAApplication.getInstance().getAlertSystem().registerAlertObserver((key, message, severity, date) -> {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    alerts.add(new AlertViewInfo(message, date.getTime(), severity));
+                    tableManager.refresh();
+                } catch (Throwable t) {
+                    logger.error("Error has occurred while trying to add alert to table. severity=" + severity, t);
+                }
+            });
+        });
         //Login login = new Login();
         //login.getMainFrame().setVisible(true);
         //login.getMainFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -1,6 +1,6 @@
-package org.spa.util.log;
+package org.spa.common.util.log;
 
-import org.spa.util.log.factory.LoggerFactory;
+import org.spa.common.util.log.factory.LoggerFactory;
 
 import java.util.function.Supplier;
 

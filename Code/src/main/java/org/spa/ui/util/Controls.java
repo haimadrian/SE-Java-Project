@@ -1,8 +1,9 @@
 package org.spa.ui.util;
 
+import com.sun.deploy.panel.JHighDPITable;
 import org.spa.ui.LabeledField;
-import org.spa.util.log.Logger;
-import org.spa.util.log.factory.LoggerFactory;
+import org.spa.common.util.log.Logger;
+import org.spa.common.util.log.factory.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -25,6 +26,7 @@ public class Controls {
    public static final Dimension DIM_10 = new Dimension(10, 10);
 
    public static final Border RED_LINE_BORDER = BorderFactory.createLineBorder(Color.RED, 5);
+   public static final int SEPARATOR_THICKNESS = 2;
 
    private static final Logger logger = LoggerFactory.getLogger(Controls.class);
 
@@ -164,8 +166,8 @@ public class Controls {
     */
    public static JComponent createHorizontalSeparator() {
       JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
-      sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
-      sep.setMinimumSize(new Dimension(0, 2));
+      sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, SEPARATOR_THICKNESS));
+      sep.setMinimumSize(new Dimension(0, SEPARATOR_THICKNESS));
       return sep;
    }
 
@@ -174,9 +176,17 @@ public class Controls {
     */
    public static JComponent createVerticalSeparator() {
       JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
-      sep.setMaximumSize(new Dimension(2, Integer.MAX_VALUE));
-      sep.setMinimumSize(new Dimension(2, 0));
+      sep.setMaximumSize(new Dimension(SEPARATOR_THICKNESS, Integer.MAX_VALUE));
+      sep.setMinimumSize(new Dimension(SEPARATOR_THICKNESS, 0));
       return sep;
+   }
+
+   public static JTable createTable() {
+      JTable table = new JHighDPITable();
+
+
+
+      return table;
    }
 
    /**

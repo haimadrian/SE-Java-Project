@@ -41,14 +41,18 @@ public class SPAMain {
 
     public static void main(String[] args) {
         logger.info("Starting application");
-        JFrame mainForm = new JFrame("Alerts Dialog");
+        JFrame mainForm = new JFrame("Example Dialog for simulating ShoppingCart table or Alerts");
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainForm.setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width - 200, 800));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
 
         SPAApplication.getInstance().start();
 
-        //TableManager<AlertColumn, AlertViewInfo> tableManager = createAlertsTable();
-        TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
+        // Test for alerts:
+        TableManager<AlertColumn, AlertViewInfo> tableManager = createAlertsTable();
+
+        // Test for shopping cart table:
+        //TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
 
         mainForm.setContentPane(tableManager.getMainPanel());
         mainForm.addWindowListener(new WindowAdapter() {

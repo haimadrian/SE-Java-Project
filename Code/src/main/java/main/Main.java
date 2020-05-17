@@ -1,6 +1,7 @@
 package main;
 
 import ui.Login;
+import ui.LoginView;
 
 import javax.swing.*;
 

@@ -18,7 +18,7 @@ public class CurrencyCellRenderer extends TextCellRenderer {
          text += "$";
       }
 
-      return text;
+      return "<b>" + text + "</b>";
    }
 
    @Override

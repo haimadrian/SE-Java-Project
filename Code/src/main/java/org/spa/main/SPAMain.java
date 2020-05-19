@@ -49,10 +49,10 @@ public class SPAMain {
         SPAApplication.getInstance().start();
 
         // Test for alerts:
-        TableManager<AlertColumn, AlertViewInfo> tableManager = createAlertsTable();
+        //TableManager<AlertColumn, AlertViewInfo> tableManager = createAlertsTable();
 
         // Test for shopping cart table:
-        //TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
+        TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
 
         mainForm.setContentPane(tableManager.getMainPanel());
         mainForm.addWindowListener(new WindowAdapter() {
@@ -67,7 +67,6 @@ public class SPAMain {
         Controls.centerDialog(mainForm);
         mainForm.setVisible(true);
 
-        logger.info("Registering alert listener");
         //Login login = new Login();
         //login.getMainFrame().setVisible(true);
         //login.getMainFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,6 +93,7 @@ public class SPAMain {
             }
         });
 
+        logger.info("Registering alert listener");
         SPAApplication.getInstance().getAlertSystem().registerAlertObserver((key, message, severity, date) -> {
             SwingUtilities.invokeLater(() -> {
                 try {
@@ -110,7 +110,7 @@ public class SPAMain {
     private static TableManager<ItemColumn, ItemViewInfo> createItemsTable() {
         List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price);
         List<ItemViewInfo> items = new ArrayList<>();
-        TableConfig tableConfig = TableConfig.create().withRowHeight(135).withEditable(true).withBorder(false).build();
+        TableConfig tableConfig = TableConfig.create().withLinesInRow(8).withEditable(true).withBorder(false).build();
         TableManager<ItemColumn, ItemViewInfo> tableManager = new TableManager<>(itemCols, items, tableConfig);
         tableManager.setPopupAdapter(new PopupAdapter() {
             @Override

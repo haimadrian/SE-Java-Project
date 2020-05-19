@@ -1,6 +1,7 @@
 package org.spa.ui;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -42,6 +43,7 @@ public class ImageViewer extends JPanel {
       this.image = image;
       this.isStretched = isStretched;
       this.margin = margin;
+      setOpaque(false);
    }
 
    @Override
@@ -57,6 +59,7 @@ public class ImageViewer extends JPanel {
             g.drawImage(image, x + margin, y + margin, this);
          }
       }
+      //getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
    }
 
    public Image getImage() {

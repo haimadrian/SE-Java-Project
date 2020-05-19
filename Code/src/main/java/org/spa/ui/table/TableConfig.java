@@ -8,13 +8,14 @@ import javax.swing.*;
  * @since 12-May-20
  */
 public class TableConfig {
-   private boolean isTooltipDisplayed = true;
+   private boolean isTooltipAllowed = true;
    private boolean isEditable = false;
    private boolean isBorderDisplayed = true;
    private boolean isColumnReorderingAllowed = false;
    private boolean isColumnResizingAllowed = false;
    private int rowHeight = 20;
-   private int selectionMode = ListSelectionModel.SINGLE_SELECTION;
+   private int selectionMode = ListSelectionModel.SINGLE_SELECTION; // Single line selection in table
+   private double linesInRow = 0; // Overrides rowHeight by calculating the height based on amount of lines in a row.
 
    private TableConfig() {
    }
@@ -27,8 +28,8 @@ public class TableConfig {
       return new TableConfigBuilder().build();
    }
 
-   public boolean isTooltipDisplayed() {
-      return isTooltipDisplayed;
+   public boolean isTooltipAllowed() {
+      return isTooltipAllowed;
    }
 
    public boolean isEditable() {
@@ -55,6 +56,10 @@ public class TableConfig {
       return selectionMode;
    }
 
+   public double getLinesInRow() {
+      return linesInRow;
+   }
+
    /**
     * A builder utility to ease custom creations of {@link TableConfig}
     */
@@ -70,7 +75,7 @@ public class TableConfig {
       }
 
       public TableConfigBuilder withPopup(boolean isPopupDisplayed) {
-         tableConfig.isTooltipDisplayed = isPopupDisplayed;
+         tableConfig.isTooltipAllowed = isPopupDisplayed;
          return this;
       }
 
@@ -101,6 +106,11 @@ public class TableConfig {
 
       public TableConfigBuilder withSelectionMode(int selectionMode) {
          tableConfig.selectionMode = selectionMode;
+         return this;
+      }
+
+      public TableConfigBuilder withLinesInRow(double linesInRow) {
+         tableConfig.linesInRow = linesInRow;
          return this;
       }
    }

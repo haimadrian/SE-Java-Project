@@ -4,6 +4,7 @@ import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.item.ItemsWarehouse;
+import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
 
 /**
@@ -18,7 +19,7 @@ public class SPAApplication {
    private final static SPAApplication instance = new SPAApplication();
 
    private final ItemsWarehouse itemsWarehouse;
-   private final ItemRepository itemRepository;
+   private final Repository<Item> itemRepository;
    private final AlertSystem alertSystem;
 
    // Disallow creation of this class from outside
@@ -69,7 +70,7 @@ public class SPAApplication {
    /**
     * @return A reference to {@link ItemRepository}
     */
-   public ItemRepository getItemRepository() {
+   public Repository<Item> getItemRepository() {
       return itemRepository;
    }
 

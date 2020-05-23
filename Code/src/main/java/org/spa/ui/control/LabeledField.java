@@ -1,4 +1,4 @@
-package org.spa.ui;
+package org.spa.ui.control;
 
 import org.spa.ui.util.Controls;
 

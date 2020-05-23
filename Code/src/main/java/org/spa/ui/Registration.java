@@ -1,13 +1,14 @@
-package ui;
+package org.spa.ui;
 
-import controller.UserManagementService;
-import model.Customer;
-import model.Manager;
-import model.SystemAdmin;
+import org.spa.model.user.Customer;
+import org.spa.model.user.Manager;
+import org.spa.model.user.SystemAdmin;
 import org.spa.common.SPAApplication;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 class Registration
         extends JFrame
@@ -258,6 +259,10 @@ class Registration
         setVisible(true);
     }
 
+    private static int comboBoxValueToInt(JComboBox<?> combo) {
+        return Integer.parseInt(String.valueOf(combo.getSelectedItem()));
+    }
+
     // method actionPerformed()
     // to get the action performed
     // by the user and act accordingly
@@ -272,15 +277,15 @@ class Registration
                         SPAApplication.getInstance().getUserManagementService().createUser(sa);
                         break;
                     case "Manager":
-                        Manager manager = new Manager(new String(tpassword.getPassword()), tmno.getText(), (String) date.getSelectedItem()
-                                + "/" + (String) month.getSelectedItem()
-                                + "/" + (String) year.getSelectedItem(), "1/1/2020", (String) tquestion.getSelectedItem(), (String)tanswer.getText(), 0, 0);
+                        Manager manager = new Manager(new String(tpassword.getPassword()), tmno.getText(),
+                              new Date(comboBoxValueToInt(year), comboBoxValueToInt(month), comboBoxValueToInt(date)),
+                              new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String)tanswer.getText(), 0, 0);
                         SPAApplication.getInstance().getUserManagementService().createUser(manager);
                         break;
                     case "Customer":
-                        Customer customer = new Customer(new String(tpassword.getPassword()), tmno.getText(), (String) date.getSelectedItem()
-                                + "/" + (String) month.getSelectedItem()
-                                + "/" + (String) year.getSelectedItem(), "1/1/2020", (String) tquestion.getSelectedItem(), (String)tanswer.getText());
+                        Customer customer = new Customer(new String(tpassword.getPassword()), tmno.getText(),
+                              new Date(comboBoxValueToInt(year), comboBoxValueToInt(month), comboBoxValueToInt(date)),
+                              new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String)tanswer.getText());
                         SPAApplication.getInstance().getUserManagementService().createUser(customer);
                         break;
                 }

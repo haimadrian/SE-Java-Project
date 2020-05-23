@@ -2,7 +2,7 @@ package org.spa.ui.util;
 
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
-import org.spa.ui.LabeledField;
+import org.spa.ui.control.LabeledField;
 
 import javax.swing.*;
 import javax.swing.border.Border;

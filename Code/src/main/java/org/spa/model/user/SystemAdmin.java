@@ -1,6 +1,10 @@
-package model;
+package org.spa.model.user;
 
-public class SystemAdmin extends AbstractUser implements User{
+import org.spa.common.User;
+
+import java.util.Date;
+
+public class SystemAdmin extends AbstractUser implements User {
 
     private String key;
 
@@ -23,12 +27,12 @@ public class SystemAdmin extends AbstractUser implements User{
     }
 
     @Override
-    public String getBirthDay() {
-        return "";
+    public Date getBirthDay() {
+        return new Date(System.currentTimeMillis());
     }
 
     @Override
-    public String getRegistrationDate() {
-        return "";
+    public Date getRegistrationDate() {
+        return new Date(System.currentTimeMillis());
     }
 }

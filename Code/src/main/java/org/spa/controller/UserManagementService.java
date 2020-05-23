@@ -1,18 +1,11 @@
-package controller;
-import model.Customer;
-import model.Manager;
-import model.SystemAdmin;
-import model.User;
-import org.spa.common.SPAApplication;
+package org.spa.controller;
+import org.spa.model.user.Customer;
+import org.spa.model.user.SystemAdmin;
+import org.spa.common.User;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
-import org.spa.controller.item.ItemsWarehouse;
-import org.spa.controller.item.WarehouseItem;
-import org.spa.model.Item;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class UserManagementService {

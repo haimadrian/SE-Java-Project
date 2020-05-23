@@ -1,7 +1,6 @@
 package org.spa.common;
 
-import model.User;
-import model.dal.UserRepository;
+import org.spa.model.dal.UserRepository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.alert.AlertSystem;
@@ -9,9 +8,7 @@ import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
-import controller.UserManagementService;
-
-import java.util.List;
+import org.spa.controller.UserManagementService;
 
 /**
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>

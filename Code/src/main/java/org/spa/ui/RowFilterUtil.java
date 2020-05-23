@@ -1,4 +1,4 @@
-package ui;
+package org.spa.ui;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

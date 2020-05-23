@@ -1,4 +1,4 @@
-package ui;
+package org.spa.ui;
 
 import org.spa.controller.item.WarehouseItem;
 

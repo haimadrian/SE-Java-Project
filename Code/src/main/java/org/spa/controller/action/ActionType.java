@@ -4,7 +4,7 @@ import org.spa.controller.action.impl.ClearCartAction;
 import org.spa.controller.action.impl.RemoveFromCartAction;
 
 /**
- * @author Haim Adrian
+ * @author Haim Adrian, Lior Shor, Idan Pollak
  * @since 23-May-20
  */
 public enum ActionType {

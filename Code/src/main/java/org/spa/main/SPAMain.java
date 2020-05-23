@@ -45,6 +45,7 @@ public class SPAMain {
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
+        SwingUtilities.invokeLater(() -> mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 250)));
 
         SPAApplication.getInstance().start();
 
@@ -60,13 +61,13 @@ public class SPAMain {
         actionsPanel.setLayout(new BoxLayout(actionsPanel, BoxLayout.X_AXIS));
         actionsPanel.add(Box.createHorizontalGlue());
         actionsPanel.add(view.getNavigatingComponent());
+        actionsPanel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
         JPanel content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
 
         content.add(actionsPanel);
         content.add(Box.createRigidArea(new Dimension(0,5)));
         content.add(view.getMainContainer());
-        content.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         mainForm.setContentPane(content);
         mainForm.addWindowListener(new WindowAdapter() {

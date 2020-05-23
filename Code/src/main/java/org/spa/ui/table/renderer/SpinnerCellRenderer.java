@@ -1,7 +1,6 @@
 package org.spa.ui.table.renderer;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
@@ -10,17 +9,9 @@ import java.awt.*;
  * @since 22-May-20
  */
 public class SpinnerCellRenderer extends DefaultTableCellRenderer {
-   private final Border originalBorder;
-   private final Border focusBorder;
-
    public SpinnerCellRenderer() {
       setHorizontalAlignment(JLabel.CENTER);
       setVerticalAlignment(JLabel.TOP);
-
-      originalBorder = getBorder();
-
-      // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
    }
 
    @Override
@@ -34,27 +25,16 @@ public class SpinnerCellRenderer extends DefaultTableCellRenderer {
       }
 
       JSpinner countSpinner = new JSpinner();
-      countSpinner.setOpaque(true);
+      // Set transparency if it is an odd row cause Nimbus L&F uses a different background color
+      // for such rows. In addition, check if it is selected or focused cause it got a different background
+      countSpinner.setOpaque(row % 2 == 1 || isSelected || isFocused);
       JTextField editor = ((JSpinner.DefaultEditor)countSpinner.getEditor()).getTextField();
       editor.setHorizontalAlignment(JTextField.CENTER);
       countSpinner.setValue(Integer.valueOf(count));
 
       if (isSelected) {
-         editor.setForeground(table.getSelectionForeground());
-         editor.setBackground(table.getSelectionBackground());
          countSpinner.setForeground(table.getSelectionForeground());
          countSpinner.setBackground(table.getSelectionBackground());
-      } else {
-         editor.setForeground(table.getForeground());
-         editor.setBackground(table.getBackground());
-         countSpinner.setForeground(table.getForeground());
-         countSpinner.setBackground(table.getBackground());
-      }
-
-      if (isFocused) {
-         countSpinner.setBorder(focusBorder);
-      } else {
-         countSpinner.setBorder(originalBorder);
       }
 
       return countSpinner;

@@ -6,7 +6,6 @@ import org.spa.controller.cart.ShoppingCartException;
 import org.spa.ui.util.Dialogs;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 /**
@@ -16,23 +15,15 @@ import java.awt.*;
 public class CountCellEditor extends DefaultCellEditor {
    private JSpinner spinner;
    private JTextField editor;
-   private final Border focusBorder;
-   private Color selectionForeground;
    private Color selectionBackground;
 
    public CountCellEditor() {
       super(new JTextField());
-
-      // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
       setClickCountToStart(1);
    }
 
    public CountCellEditor(javax.swing.text.Document doc) {
       super(new JTextField(doc, "", 0));
-
-      // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
       setClickCountToStart(1);
    }
 
@@ -40,7 +31,6 @@ public class CountCellEditor extends DefaultCellEditor {
    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
       int count = Integer.parseInt(value.toString());
 
-      selectionForeground = table.getSelectionForeground();
       selectionBackground = table.getSelectionBackground();
 
       spinner = new JSpinner();
@@ -51,7 +41,6 @@ public class CountCellEditor extends DefaultCellEditor {
       editor.setEditable(false);
       editor.addActionListener(actionEvent -> stopCellEditing());
 
-      spinner.setValue(Integer.valueOf(count));
       spinner.setValue(Integer.valueOf(count));
       spinner.addChangeListener(e -> {
          ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();
@@ -79,12 +68,7 @@ public class CountCellEditor extends DefaultCellEditor {
          });
       });
 
-      editor.setBorder(focusBorder);
-      spinner.setBorder(focusBorder);
-      spinner.setForeground(selectionForeground);
       spinner.setBackground(selectionBackground);
-      editor.setForeground(selectionForeground);
-      editor.setBackground(selectionBackground);
 
       return spinner;
    }

@@ -17,10 +17,10 @@ import javax.swing.table.TableCellRenderer;
  */
 public enum ItemColumn implements TableColumnIfc {
    Image("Image", 0.15, ImageIcon.class, new StretchedImageCellRenderer(10), null, false),
-   Name("Name", 0.15, String.class, new TextCellRenderer(), null, true),
-   Description("Description", 0.60, String.class, new TextCellRenderer(), null, true),
+   Name("Name", 0.15, String.class, new TextCellRenderer(), null, false),
+   Description("Description", 0.60, String.class, new TextCellRenderer(), null, false),
    Count("Count", 0.04, Integer.class, new SpinnerCellRenderer(), new CountCellEditor(), true),
-   Price("Price", 0.06, Double.class, new TextCellRenderer(), null, true);
+   Price("Price", 0.06, Double.class, new TextCellRenderer(), null, false);
 
    private final String header;
    private final double cellWidth;

@@ -61,9 +61,6 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
       super.getTableCellEditorComponent(table, value, isSelected, row, column);
 
-      scrollPane.getViewport().setBackground(table.getBackground());
-      scrollPane.getViewport().setForeground(table.getForeground());
-
       textArea.setText(String.valueOf(value));
 
       if (isSelected) {

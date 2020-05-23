@@ -64,9 +64,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
    }
 
    private void initTable() {
-      table.setDoubleBuffered(true);
-      table.setBackground(Color.DARK_GRAY);
-      table.setForeground(Color.white);
+      //table.setDoubleBuffered(true);
       table.setFont(Fonts.PLAIN_FONT);
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       table.setColumnSelectionAllowed(false);
@@ -76,8 +74,6 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       table.setCellSelectionEnabled(true);
       table.setMinimumSize(new Dimension(200, 100));
       table.getTableHeader().setFont(Fonts.PANEL_HEADING_FONT);
-      table.getTableHeader().setBackground(Color.GRAY);
-      table.getTableHeader().setForeground(Color.BLACK);
       table.getTableHeader().setReorderingAllowed(tableConfig.isColumnReorderingAllowed());
       table.getTableHeader().setResizingAllowed(tableConfig.isColumnResizingAllowed());
 
@@ -167,7 +163,6 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
       scrollPane.setMinimumSize(new Dimension(200, Integer.MAX_VALUE));
       scrollPane.setPreferredSize(new Dimension(20, Integer.MAX_VALUE));
-      scrollPane.getViewport().setBackground(Color.DARK_GRAY);
       scrollPane.getViewport().addChangeListener(e -> onResize());
    }
 

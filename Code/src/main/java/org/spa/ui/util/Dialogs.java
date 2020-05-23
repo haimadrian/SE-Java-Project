@@ -405,7 +405,6 @@ public class Dialogs {
       errorMsg.setEditable(false);
       errorMsg.setToolTipText(errorMsg.getText());
       errorMsg.setFont(Fonts.BOLD_FONT);
-      //errorMsg.setBackground(SystemColor.control);
       errorMsg.setMinimumSize(new java.awt.Dimension(450, 30));
       errorMsg.setPreferredSize(new java.awt.Dimension(450, 30));
       errorMsg.setLineWrap(true);

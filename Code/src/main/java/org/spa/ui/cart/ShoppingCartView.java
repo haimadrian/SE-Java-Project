@@ -27,6 +27,7 @@ import java.util.List;
 
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
+import static org.spa.ui.util.Controls.createButton;
 
 /**
  * The main view of the shopping cart system<br/>
@@ -44,6 +45,8 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
    private JPanel workArea;
    private JLabel title;
+   private JButton continueButton;
+   private JButton clearCartButton;
 
    /**
     * The table where we display items at
@@ -65,8 +68,6 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       shoppingCartButton = new ButtonWithBadge(ImagesCache.getInstance().getImage("shopping-cart-icon.png"));
       shoppingCartButton.setSize(70, 70);
       shoppingCartButton.setCountForBadge(shoppingCart.count());
-      shoppingCartButton.setBackground(Color.DARK_GRAY);
-      shoppingCartButton.setForeground(Color.WHITE);
 
       initUI();
    }
@@ -74,12 +75,38 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    private void initUI() {
       title = Controls.createTitle("Shopping Cart");
       createItemsTable();
+      JPanel buttons = createWorkAreaButtons();
 
       workArea = new JPanel();
       workArea.setLayout(new BoxLayout(workArea, BoxLayout.PAGE_AXIS));
       workArea.add(title);
       workArea.add(Box.createRigidArea(new Dimension(0,10)));
       workArea.add(tableManager.getMainPanel());
+      workArea.add(Box.createRigidArea(new Dimension(0,5)));
+      workArea.add(buttons);
+   }
+
+   private JPanel createWorkAreaButtons() {
+      continueButton = createButton(" Place Order ", e ->
+         Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed"),
+            true);
+
+      clearCartButton = createButton(" Clear Cart ", e -> {
+               if (Dialogs.showQuestionDialog(getParentDialog(), "This action will remove all items from cart.\nContinue?.", "Clear Cart")) {
+                  shoppingCart.clear(true);
+               }
+            },
+            false);
+
+      JPanel buttonsPanel = new JPanel();
+      buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+      buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+      buttonsPanel.add(Box.createHorizontalGlue());
+      buttonsPanel.add(clearCartButton);
+      buttonsPanel.add(Box.createRigidArea(new Dimension(10,0)));
+      buttonsPanel.add(continueButton);
+
+      return buttonsPanel;
    }
 
    private void createItemsTable() {
@@ -100,7 +127,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                   if (selection != null) {
                      new ItemInfoDialog(warehouseItemToItemViewInfo(selection)).init().setVisible(true);
                   } else {
-                     Dialogs.showInfoDialog(null, "No selection. Nothing to show.\nPlease select a row first.", "No selection");
+                     Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to show.\nPlease select a row first.", "No selection");
                   }
                });
             });
@@ -111,12 +138,12 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                WarehouseItem selection = shoppingCart.getSelectionModel().getSelection();
                SwingUtilities.invokeLater(() -> {
                   if (selection != null) {
-                     if (Dialogs.showQuestionDialog(null, "Are you sure you want to remove item from cart?", "Confirmation")) {
+                     if (Dialogs.showQuestionDialog(getParentDialog(), "Are you sure you want to remove item from cart?", "Confirmation")) {
                         logger.info("Removing item from cart. Item: " + selection);
                         shoppingCart.remove(selection.getId());
                      }
                   } else {
-                     Dialogs.showInfoDialog(null, "No selection. Nothing to show.\nPlease select a row first.", "No selection");
+                     Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to show.\nPlease select a row first.", "No selection");
                   }
                });
             });
@@ -143,11 +170,13 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    @Override
    public void show() {
       workArea.setVisible(true);
+      SPAApplication.getInstance().getSelectionModel().setSelection(this);
    }
 
    @Override
    public void close() {
       workArea.setVisible(false);
+      SPAApplication.getInstance().getSelectionModel().setSelection(null);
    }
 
    @Override

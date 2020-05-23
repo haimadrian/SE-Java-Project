@@ -35,8 +35,6 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       super.getTableCellRendererComponent(table, value, isSelected, isFocused, row, column);
 
       textArea.setText(String.valueOf(value));
-      textArea.setBackground(table.getBackground());
-      textArea.setForeground(table.getForeground());
 
       if (isSelected) {
          textArea.setForeground(table.getSelectionForeground());

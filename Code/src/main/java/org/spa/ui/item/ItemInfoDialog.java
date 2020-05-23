@@ -1,5 +1,6 @@
 package org.spa.ui.item;
 
+import org.spa.ui.CustomGridBagConstraints;
 import org.spa.ui.ImageViewer;
 import org.spa.ui.util.Controls;
 import org.spa.ui.util.Fonts;
@@ -25,7 +26,13 @@ public class ItemInfoDialog extends JDialog {
    public ItemInfoDialog init() {
       setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-      setPreferredSize(new Dimension((int)(screenSize.width / 1.5), screenSize.height / 2));
+      setPreferredSize(new Dimension((int)(screenSize.width / 1.5), (int)(screenSize.height / 2)));
+
+      // These fucking Swing panels insist on not working as expected.. Hence I do this voodoo in order to repaint he window with
+      // a different height after it has been displayed. Somehow it works and the "Price" row is displayed. Otherwise the price is
+      // not displayed and the dialog must be resized by user
+      SwingUtilities.invokeLater(() -> setPreferredSize(new Dimension((int)(screenSize.width / 1.5), (int)(screenSize.height / 1.8))));
+
       setTitle("Item Info");
 
       // Lay out the label and text panes from top to bottom.
@@ -35,12 +42,12 @@ public class ItemInfoDialog extends JDialog {
 
       // Lay out the members from left to right.
       JPanel namePanel = createMemberPanelWithLabel("Name:", item.getName());
-      JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, screenSize.height / 2 - 50);
+      JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, 100);
       JPanel pricePanel = createMemberPanelWithoutTextArea("Price: " + item.getPrice() + "$");
 
       fields.add(namePanel);
       fields.add(Box.createRigidArea(new Dimension(0, 25)));
-      descPanel.setSize(250, 400);
+      descPanel.setSize(250, 100);
       fields.add(descPanel);
       fields.add(Box.createRigidArea(new Dimension(0, 25)));
       fields.add(pricePanel);
@@ -48,7 +55,7 @@ public class ItemInfoDialog extends JDialog {
       JLabel label = createTitle("Item Info");
       ImageViewer imageViewer = new ImageViewer(item.getImage().getImage(), true, 0);
 
-      imageViewer.setSize(screenSize.width - 200, 300);
+      imageViewer.setSize(300, 300);
       imageViewer.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
 
       // Lay out the label and scroll pane from top to bottom.
@@ -66,7 +73,7 @@ public class ItemInfoDialog extends JDialog {
       splitPane.setLeftComponent(detailsPanel);
       splitPane.setRightComponent(imageViewer);
       splitPane.setDividerSize(15);
-      splitPane.setDividerLocation(0.5);
+      splitPane.setDividerLocation((int)(getPreferredSize().width / 1.8));
       splitPane.setOpaque(true);
       splitPane.setContinuousLayout(true);
       splitPane.addMouseListener(new MouseAdapter() {
@@ -83,7 +90,21 @@ public class ItemInfoDialog extends JDialog {
          }
       });
 
-      setContentPane(splitPane);
+      JButton buttonPanel = createButton(" Close ", e -> SwingUtilities.invokeLater(() -> {
+         this.setVisible(false);
+         this.dispose();
+      }), true);
+      this.getRootPane().setDefaultButton(buttonPanel);
+
+      // Lay out the label and scroll pane from top to bottom.
+      JPanel contentPane = new JPanel();
+      contentPane.setLayout(new GridBagLayout());
+      CustomGridBagConstraints constraints = new CustomGridBagConstraints();
+      contentPane.add(splitPane, constraints.constrainFillBoth().nextY());
+      //constraints.addXYFiller(contentPane, 1);
+      contentPane.add(buttonPanel, constraints.constrainLabel().nextY());
+
+      setContentPane(contentPane);
 
       pack();
       Controls.centerDialog(this);
@@ -109,7 +130,7 @@ public class ItemInfoDialog extends JDialog {
       JPanel inner = new JPanel();
       inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
       JLabel label = createLabel(name, Fonts.PANEL_HEADING_FONT);
-      label.setSize(40, 30);
+      label.setSize(40, 20);
       label.setVerticalAlignment(SwingConstants.TOP);
 
       inner.add(label);

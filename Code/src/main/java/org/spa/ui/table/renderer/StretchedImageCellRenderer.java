@@ -27,7 +27,7 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
       originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      focusBorder = (Border)UIManager.get("Table.focusCellHighlightBorder");
    }
 
    @Override
@@ -42,13 +42,13 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
       }
 
       ImageViewer imageViewer = new ImageViewer(image, margin);
+      // Set transparency if it is an odd row cause Nimbus L&F uses a different background color
+      // for such rows. In addition, check if it is selected or focused cause it got a different background
+      imageViewer.setOpaque(row % 2 == 1 || isSelected || isFocused);
 
       if (isSelected) {
          imageViewer.setForeground(table.getSelectionForeground());
          imageViewer.setBackground(table.getSelectionBackground());
-      } else {
-         imageViewer.setForeground(table.getForeground());
-         imageViewer.setBackground(table.getBackground());
       }
 
       if (isFocused) {

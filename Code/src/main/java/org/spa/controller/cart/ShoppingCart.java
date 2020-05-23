@@ -74,16 +74,8 @@ public class ShoppingCart {
          if (revertWarehouseCount) {
             logger.info("Reverting cart back to warehouse.");
 
-            items.forEach(item -> {
-               ItemsWarehouse warehouse = SPAApplication.getInstance().getItemsWarehouse();
-               WarehouseItem warehouseItem = warehouse.getItem(item.getId());
-               if (warehouseItem != null) {
-                  // Add the count back
-                  SPAApplication.getInstance().getItemsWarehouse().updateAmountIfPresent(item.getId(), warehouseItem.getCount() + item.getCount());
-               } else {
-                  logger.warn("Tried to add count back to warehouse, but no such item in warehouse.. WTF? Item: " + item);
-               }
-            });
+            // This also notifies observer so it will update itself. We work on a copy because we should not modify a collection while iterating it
+            new ArrayList<>(items).forEach(item -> remove(item.getId()));
          }
 
          items.clear();

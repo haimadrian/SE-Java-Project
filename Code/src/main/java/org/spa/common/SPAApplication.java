@@ -1,5 +1,7 @@
 package org.spa.common;
 
+import model.User;
+import model.dal.UserRepository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.alert.AlertSystem;
@@ -7,6 +9,9 @@ import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
+import controller.UserManagementService;
+
+import java.util.List;
 
 /**
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
@@ -22,15 +27,19 @@ public class SPAApplication {
    private final ItemsWarehouse itemsWarehouse;
    private final AlertSystem alertSystem;
    private final ShoppingCart shoppingCart;
+   private final UserManagementService userManagementService;
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
 
+   private final Repository<User> userRepository;
    // Disallow creation of this class from outside
    private SPAApplication() {
       itemsWarehouse = new ItemsWarehouse();
       alertSystem = new AlertSystem();
       shoppingCart = new ShoppingCart();
+      userManagementService = new UserManagementService();
       selectionModel = new SelectionModelManager<>();
-   }
+
+      userRepository = new UserRepository();   }
 
    /**
     * @return The single instance of this class
@@ -46,6 +55,7 @@ public class SPAApplication {
       logger.info("Starting services");
       itemsWarehouse.start();
       alertSystem.start();
+//      UserManagementService.start();
    }
 
    /**
@@ -89,10 +99,17 @@ public class SPAApplication {
       return shoppingCart;
    }
 
+   public UserManagementService getUserManagementService() {
+      return userManagementService;
+   }
+
+   public Repository<User> getUserRepository() {
+      return userRepository;
+   }
+
    /**
     * @return A reference to the global {@link SelectionModelManager}
     */
    public SelectionModelManager<SPAExplorerIfc<?>> getSelectionModel() {
       return selectionModel;
-   }
-}
+   }}

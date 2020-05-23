@@ -4,12 +4,14 @@ import org.spa.ui.table.TableModelIfc;
 import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
+import java.text.DecimalFormat;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class ItemViewInfo implements TableModelIfc {
+   private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
    private final String id;
    private String name;
    private String description;
@@ -84,6 +86,18 @@ public class ItemViewInfo implements TableModelIfc {
       return ImagesCache.getInstance().getImage(getName() + ".jpg");
    }
 
+   /**
+    * Price can be displayed in two different tables. One is the warehouse table where we display the price of each
+    * item, and another is at the shopping cart, where we calculate the price based on count. Hence we use this method, to
+    * be able to separate between two item view infos, such that one can derive from another and modify the format.
+    * @return The price, formatted for JTable as text
+    */
+   protected String getPriceFormattedForTable() {
+      String text = "" + decimalFormat.format(getPrice() * getCount()) + "$" + System.lineSeparator() +
+            Double.valueOf(getPrice()).toString() + "$ each";
+      return text;
+   }
+
    @Override
    public Object getAttributeValue(String attributeName) {
       switch (ItemColumn.valueOf(attributeName)) {
@@ -97,7 +111,7 @@ public class ItemViewInfo implements TableModelIfc {
             return getDescription();
          }
          case Price: {
-            return Double.valueOf(getPrice());
+            return getPriceFormattedForTable();
          }
          case Count: {
             return Integer.valueOf(getCount());

@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Caching images mapped to their path, to ease images loading and avoid of duplicating images
  * in the application.
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class ImagesCache {

@@ -3,7 +3,7 @@ package org.spa.ui.table.renderer;
 import javax.swing.*;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class CurrencyCellRenderer extends TextCellRenderer {

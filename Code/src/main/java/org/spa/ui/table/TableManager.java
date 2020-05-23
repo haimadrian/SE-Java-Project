@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public class TableManager<Column extends TableColumnIfc, Model extends TableModelIfc> {
@@ -21,6 +21,11 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
    private final JTable table;
    private JScrollPane scrollPane;
    private TableModel tableModel;
+
+   /**
+    * To propagate row selections to the user of this class
+    */
+   private FocusedTableRowChangedListener<Model> listener;
 
    private final java.util.List<Column> columns;
    private java.util.List<Model> tableModelList;
@@ -59,9 +64,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
    }
 
    private void initTable() {
-      table.setDoubleBuffered(true);
-      table.setBackground(Color.DARK_GRAY);
-      table.setForeground(Color.white);
+      //table.setDoubleBuffered(true);
       table.setFont(Fonts.PLAIN_FONT);
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       table.setColumnSelectionAllowed(false);
@@ -70,9 +73,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       table.setSelectionMode(tableConfig.getSelectionMode());
       table.setCellSelectionEnabled(true);
       table.setMinimumSize(new Dimension(200, 100));
-      table.getTableHeader().setFont(Fonts.BOLD_FONT);
-      table.getTableHeader().setBackground(Color.GRAY);
-      table.getTableHeader().setForeground(Color.BLACK);
+      table.getTableHeader().setFont(Fonts.PANEL_HEADING_FONT);
       table.getTableHeader().setReorderingAllowed(tableConfig.isColumnReorderingAllowed());
       table.getTableHeader().setResizingAllowed(tableConfig.isColumnResizingAllowed());
 
@@ -124,6 +125,11 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
                table.clearSelection();
             }
 
+            // Notify listener so it can update its references
+            if (listener != null) {
+               listener.onFocusedRowChanged(r, getSelectedModel());
+            }
+
             super.mouseReleased(e);
          }
       });
@@ -157,7 +163,6 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
       scrollPane.setMinimumSize(new Dimension(200, Integer.MAX_VALUE));
       scrollPane.setPreferredSize(new Dimension(20, Integer.MAX_VALUE));
-      scrollPane.getViewport().setBackground(Color.DARK_GRAY);
       scrollPane.getViewport().addChangeListener(e -> onResize());
    }
 
@@ -169,6 +174,14 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
          popupAdapter.setComponent(table);
          table.addMouseListener(popupAdapter);
       }
+   }
+
+   /**
+    * Use this method to get notified upon row selection changes
+    * @param listener The listener to get notified
+    */
+   public void setFocusedRowChangedListener(FocusedTableRowChangedListener<Model> listener) {
+      this.listener = listener;
    }
 
    /**

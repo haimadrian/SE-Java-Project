@@ -1,7 +1,7 @@
 package org.spa.model;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 15-May-20
  */
 public enum Severity {

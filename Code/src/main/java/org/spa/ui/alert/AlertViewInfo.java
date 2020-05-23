@@ -5,7 +5,7 @@ import org.spa.ui.table.TableModelIfc;
 import java.util.Date;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 15-May-20
  */
 public class AlertViewInfo implements TableModelIfc {

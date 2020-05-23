@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * A cell renderer to use for stretching images over the entire cell content
  *
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
@@ -27,9 +27,10 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
       originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      focusBorder = (Border)UIManager.get("Table.focusCellHighlightBorder");
    }
 
+   @Override
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocused, int row, int column) {
       if (value == null) {
          return this;
@@ -41,13 +42,13 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
       }
 
       ImageViewer imageViewer = new ImageViewer(image, margin);
+      // Set transparency if it is an odd row cause Nimbus L&F uses a different background color
+      // for such rows. In addition, check if it is selected or focused cause it got a different background
+      imageViewer.setOpaque(row % 2 == 1 || isSelected || isFocused);
 
       if (isSelected) {
          imageViewer.setForeground(table.getSelectionForeground());
          imageViewer.setBackground(table.getSelectionBackground());
-      } else {
-         imageViewer.setForeground(getForeground());
-         imageViewer.setBackground(getBackground());
       }
 
       if (isFocused) {

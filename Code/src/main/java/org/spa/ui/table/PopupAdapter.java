@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 /**
  * A class used to manage popup triggering over a component.<br/>
  * This adapter listens for a specified component mouse actions to detect when there is a popup triggering.
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public abstract class PopupAdapter extends MouseAdapter {

@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * An internal adapter to wrap access to an underlying logger implementation.<br/>
  * We use Log4j2.
  *
- * @author hadrian
+ * @author Haim Adrian
  * @since 10-May-20
  */
 class Log4j2Adapter implements Logger {

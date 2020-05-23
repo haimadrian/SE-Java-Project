@@ -1,7 +1,7 @@
 package org.spa.ui;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 13-May-20
  */
 
@@ -18,7 +18,7 @@ import java.util.StringTokenizer;
  * other components, incrementing the line and column numbers , etc. All the methods in this class return this
  * so that the method calls can be chained together.
  *
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public class CustomGridBagConstraints extends GridBagConstraints {

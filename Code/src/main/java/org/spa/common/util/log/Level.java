@@ -1,7 +1,7 @@
 package org.spa.common.util.log;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 10-May-20
  */
 public enum Level {

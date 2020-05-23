@@ -4,7 +4,7 @@ import org.spa.common.util.log.Logger;
 
 /**
  * Represents the type of loggers we can create at {@link LoggerFactory}
- * @author hadrian
+ * @author Haim Adrian
  * @since 10-May-20
  * @see Logger
  */

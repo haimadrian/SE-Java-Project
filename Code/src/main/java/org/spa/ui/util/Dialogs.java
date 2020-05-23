@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 /**
  * Contain some helper methods to show different time of message dialogs.
  *
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public class Dialogs {
@@ -147,7 +147,7 @@ public class Dialogs {
     *
     * @param workArea The SPAExplorerIfc
     */
-   protected static void initWaitingDialog(final SPAExplorerIfc workArea) {
+   protected static void initWaitingDialog(final SPAExplorerIfc<?> workArea) {
       waitingDialog = new JDialog((JFrame) workArea, "Please Wait", true);
       JProgressBar waitBar = new JProgressBar();
       waitBar.setIndeterminate(true);
@@ -211,7 +211,7 @@ public class Dialogs {
     * notified.
     * @return A please wait... modal dialog
     */
-   protected static Dialog getWaitingDialog(final SPAExplorerIfc workArea, final String pMessage, final CancelListener listener) {
+   protected static Dialog getWaitingDialog(final SPAExplorerIfc<?> workArea, final String pMessage, final CancelListener listener) {
       String message = pMessage;
       if (waitingDialog == null) {
          initWaitingDialog(workArea);
@@ -243,7 +243,7 @@ public class Dialogs {
     *
     * @param workArea the SPAExplorerIfc
     */
-   public static void showWaitingDialog(SPAExplorerIfc workArea) {
+   public static void showWaitingDialog(SPAExplorerIfc<?> workArea) {
       showWaitingDialog(workArea, DEFAULT_WAITINGDIALOG_MESSAGE);
    }
 
@@ -253,7 +253,7 @@ public class Dialogs {
     * @param workArea the SPAExplorerIfc
     * @param message the message to be displayed in the dialog
     */
-   public static void showWaitingDialog(SPAExplorerIfc workArea, String message) {
+   public static void showWaitingDialog(SPAExplorerIfc<?> workArea, String message) {
       showWaitingDialog(workArea, message, null);
    }
 
@@ -264,7 +264,7 @@ public class Dialogs {
     * @param message the message to be displayed in the dialog
     * @param listener CancelListener to get notified
     */
-   public static void showWaitingDialog(SPAExplorerIfc workArea, String message, CancelListener listener) {
+   public static void showWaitingDialog(SPAExplorerIfc<?> workArea, String message, CancelListener listener) {
       logger.info("showWaitingDialog() - start");
 
       synchronized (waitingDialogLock) {
@@ -281,12 +281,12 @@ public class Dialogs {
     * @return The main dialog for creating error frames on top of, this will either be the waiting dialog, of
     * the main frame, or potentially another modal form.
     */
-   public static Window getMainDialog(SPAExplorerIfc workArea) {
+   public static Window getMainDialog(SPAExplorerIfc<?> workArea) {
       if (waitingDialog != null && waitingDialog.isVisible()) {
          return waitingDialog;
       }
 
-      return workArea.getDialogParent();
+      return workArea.getParentDialog();
    }
 
    /**
@@ -323,7 +323,7 @@ public class Dialogs {
     * @param workArea The SPAExplorerIfc to show the waiting dialog on
     * @param message to show in the dialog
     */
-   public static void executeWithWaitingDialog(final Runnable runnable, SPAExplorerIfc workArea, String message) {
+   public static void executeWithWaitingDialog(final Runnable runnable, SPAExplorerIfc<?> workArea, String message) {
       executeWithWaitingDialog(runnable, workArea, message, null);
    }
 
@@ -335,13 +335,13 @@ public class Dialogs {
     * @param message to show in the dialog
     * @param listener to notify when everything is done
     */
-   public static void executeWithWaitingDialog(final Runnable runnable, SPAExplorerIfc workArea, String message, CancelListener listener) {
+   public static void executeWithWaitingDialog(final Runnable runnable, SPAExplorerIfc<?> workArea, String message, CancelListener listener) {
       synchronized (waitingDialogLock) {
          logger.info("executeWithWaitingDialog(): waitingDialogPending = true");
          waitingDialogPending = true;
       }
 
-      workArea.getDialogParent().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      workArea.getParentDialog().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
       new Thread(() -> {
          try {
             // ensure show dialog was executed before hide dialog
@@ -355,7 +355,7 @@ public class Dialogs {
       }, message).start();
 
       showWaitingDialog(workArea, message, listener);
-      workArea.getDialogParent().setCursor(Cursor.getDefaultCursor());
+      workArea.getParentDialog().setCursor(Cursor.getDefaultCursor());
    }
 
    /**
@@ -388,8 +388,11 @@ public class Dialogs {
          detailedErrorJTextArea.setLineWrap(true);
          detailedErrorJTextArea.setWrapStyleWord(true);
          detailedErrorJTextArea.setEditable(false);
-         detailedErrorJTextArea.setFont(Fonts.MONOSPACED_FONT);
+         detailedErrorJTextArea.setToolTipText(detailedErrorJTextArea.getText());
+         detailedErrorJTextArea.setFont(Fonts.PLAIN_FONT);
          detailedErrorJTextArea.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+         detailedErrorJTextArea.setMinimumSize(new java.awt.Dimension(450, 44));
+         detailedErrorJTextArea.setPreferredSize(new java.awt.Dimension(450, 44));
          detailedErrorJScrollPane = new JScrollPane(detailedErrorJTextArea);
          detailedErrorJScrollPane.setMinimumSize(new java.awt.Dimension(450, 30));
          detailedErrorJScrollPane.setPreferredSize(new java.awt.Dimension(450, Integer.MAX_VALUE));
@@ -402,16 +405,15 @@ public class Dialogs {
       errorMsg.setEditable(false);
       errorMsg.setToolTipText(errorMsg.getText());
       errorMsg.setFont(Fonts.BOLD_FONT);
-      errorMsg.setBackground(SystemColor.control);
-      errorMsg.setMinimumSize(new java.awt.Dimension(450, 22));
-      errorMsg.setPreferredSize(new java.awt.Dimension(450, 22));
+      errorMsg.setMinimumSize(new java.awt.Dimension(450, 30));
+      errorMsg.setPreferredSize(new java.awt.Dimension(450, 30));
       errorMsg.setLineWrap(true);
       errorMsg.setWrapStyleWord(true);
       errorMsg.setFocusable(false);
       errorMsg.setRequestFocusEnabled(false);
 
       JPanel buttonPanel = new JPanel();
-      JButton okButton = new JButton("OK");
+      JButton okButton = new JButton(" OK ");
       okButton.addActionListener(e -> {
          dialog.setVisible(false);
          dialog.dispose();
@@ -430,10 +432,10 @@ public class Dialogs {
 
       contentPane.add(errorMsg, constraints.constrainFillBoth().setWeight(40));
       if (detailedErrorJScrollPane == null) {
-         dialog.setMinimumSize(new Dimension(600, 300));
+         dialog.setMinimumSize(new Dimension(600, 150));
       } else {
          contentPane.add(detailedErrorJScrollPane, constraints.constrainFillBoth().nextY().setInsets("L=10,R=10"));
-         dialog.setMinimumSize(new Dimension(800, 500));
+         dialog.setMinimumSize(new Dimension(800, 200));
       }
       constraints.addXYFiller(contentPane, 1);
       contentPane.add(buttonPanel, constraints.constrainLabel().nextY());

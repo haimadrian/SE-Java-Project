@@ -1,22 +1,29 @@
 package org.spa.controller.item;
 
-import org.spa.common.SPAApplication;
+import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.model.Item;
+import org.spa.model.dal.ItemRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class ItemsWarehouse {
    private static final Logger logger = LoggerFactory.getLogger(ItemsWarehouse.class);
    private final Map<String, WarehouseItem> idToItem;
+   private final Repository<Item> itemRepository;
 
    public ItemsWarehouse() {
       idToItem = new HashMap<>(1000); // Yeah sure...
+      itemRepository = new ItemRepository();
    }
 
    /**
@@ -24,7 +31,15 @@ public class ItemsWarehouse {
     */
    public void start() {
       // Load data into memory
-      SPAApplication.getInstance().getItemRepository().selectAll().forEach(item -> idToItem.put(item.getId(), itemToWarehouseItem(item)));
+      itemRepository.selectAll().forEach(item -> idToItem.put(item.getId(), itemToWarehouseItem(item)));
+   }
+
+   /**
+    * Call this method when exiting the application, to save the in memory data to disk
+    */
+   public void stop() {
+      // Save data to disk
+      itemRepository.saveAll(idToItem.values().stream().map(ItemsWarehouse::warehouseItemToItem).collect(Collectors.toList()));
    }
 
    /**
@@ -77,8 +92,12 @@ public class ItemsWarehouse {
       WarehouseItem item = idToItem.get(id);
       if (item != null) {
          int oldCount = item.getCount();
-         item.setCount(amount);
-         logger.info("Item count updated: " + item + ", old count was " + oldCount);
+         if (oldCount == amount) {
+            logger.debug(() -> "Tried to update amount of an item with the same value. oldCount=" + oldCount + ", newCount=" + amount);
+         } else {
+            item.setCount(amount);
+            logger.info("Item count updated: " + item + ", old count was " + oldCount);
+         }
       } else {
          logger.warn("Tried to update amount for item that does not exist in the warehouse.. id=" + id);
       }
@@ -89,10 +108,15 @@ public class ItemsWarehouse {
     * @return The item with the specified ID, or <code>null</code> if there is no such item in warehouse
     */
    public WarehouseItem getItem(String id) {
-      return idToItem.get(id);
+      // Return a copy of our item so no one can modify it outside the warehouse.
+      return new WarehouseItem(idToItem.get(id));
    }
 
    private static WarehouseItem itemToWarehouseItem(Item item) {
       return new WarehouseItem(item.getId(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
+   }
+
+   private static Item warehouseItemToItem(WarehouseItem item) {
+      return new Item(item.getId(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
 }

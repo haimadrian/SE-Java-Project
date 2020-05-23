@@ -10,7 +10,7 @@ import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.ui.ButtonWithBadge;
+import org.spa.ui.control.ButtonWithBadge;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.item.ItemColumn;
 import org.spa.ui.item.ItemInfoDialog;

@@ -1,6 +1,6 @@
 package org.spa.ui.util;
 
-import org.spa.ui.CustomGridBagConstraints;
+import org.spa.ui.control.CustomGridBagConstraints;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;

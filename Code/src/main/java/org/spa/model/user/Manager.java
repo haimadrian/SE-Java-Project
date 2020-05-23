@@ -1,10 +1,12 @@
-package model;
+package org.spa.model.user;
+
+import java.util.Date;
 
 public class Manager extends Customer{
     private double salary;
     private double positionPercentage;
 
-    public Manager(String password, String phoneNumber, String birthDate, String registrationDate, String secretQuestion, String secretAnswer, double salary, double positionPercentage) {
+    public Manager(String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer, double salary, double positionPercentage) {
         super(password, phoneNumber, birthDate, registrationDate, secretQuestion, secretAnswer);
         this.salary = salary;
         this.positionPercentage = positionPercentage;

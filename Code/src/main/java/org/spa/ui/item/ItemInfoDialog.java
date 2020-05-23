@@ -1,7 +1,7 @@
 package org.spa.ui.item;
 
-import org.spa.ui.CustomGridBagConstraints;
-import org.spa.ui.ImageViewer;
+import org.spa.ui.control.CustomGridBagConstraints;
+import org.spa.ui.control.ImageViewer;
 import org.spa.ui.util.Controls;
 import org.spa.ui.util.Fonts;
 

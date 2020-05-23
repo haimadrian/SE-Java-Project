@@ -1,5 +1,5 @@
-package ui;
-import model.User;
+package org.spa.ui;
+import org.spa.common.User;
 import org.spa.common.SPAApplication;
 
 import javax.swing.JButton;
@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

@@ -1,6 +1,6 @@
 package org.spa.controller.action;
 
-import controller.UserManagementService;
+import org.spa.controller.UserManagementService;
 import org.spa.common.SPAApplication;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;

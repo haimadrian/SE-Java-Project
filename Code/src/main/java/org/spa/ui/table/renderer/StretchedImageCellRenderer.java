@@ -1,6 +1,6 @@
 package org.spa.ui.table.renderer;
 
-import org.spa.ui.ImageViewer;
+import org.spa.ui.control.ImageViewer;
 
 import javax.swing.*;
 import javax.swing.border.Border;

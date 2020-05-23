@@ -1,4 +1,4 @@
-package org.spa.ui;
+package org.spa.ui.control;
 
 /**
  * @author Haim Adrian

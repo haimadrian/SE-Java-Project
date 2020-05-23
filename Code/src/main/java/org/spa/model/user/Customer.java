@@ -1,15 +1,19 @@
-package model;
+package org.spa.model.user;
 
-public class Customer extends AbstractUser implements User{
+import org.spa.common.User;
+
+import java.util.Date;
+
+public class Customer extends AbstractUser implements User {
 
     private String password;
     private String phoneNumber;
-    private String birthDate;
-    private String registrationDate;
+    private Date birthDate;
+    private Date registrationDate;
     private String secretQuestion;
     private String secretAnswer;
 
-    public Customer(String password, String phoneNumber, String birthDate, String registrationDate, String secretQuestion, String secretAnswer) {
+    public Customer(String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer) {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
@@ -53,12 +57,12 @@ public class Customer extends AbstractUser implements User{
     }
 
     @Override
-    public String getBirthDay() {
+    public Date getBirthDay() {
         return birthDate;
     }
 
     @Override
-    public String getRegistrationDate() {
+    public Date getRegistrationDate() {
         return registrationDate;
     }
 }

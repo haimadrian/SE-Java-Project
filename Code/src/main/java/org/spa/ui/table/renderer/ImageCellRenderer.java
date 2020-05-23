@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class ImageCellRenderer extends DefaultTableCellRenderer {

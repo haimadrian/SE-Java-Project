@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * A component that contains a text and some other component next to it.
  * Useful for when there is a need to a text box for example with a label at its left.
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public class LabeledField extends JPanel {

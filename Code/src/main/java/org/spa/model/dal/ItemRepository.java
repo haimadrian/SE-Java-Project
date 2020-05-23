@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class ItemRepository implements Repository<Item> {
@@ -114,5 +114,11 @@ public class ItemRepository implements Repository<Item> {
    @Override
    public Item add(Item item) {
       return null;
+   }
+
+   @Override
+   public List<Item> saveAll(List<Item> items) {
+      // TODO: implement save
+      return items;
    }
 }

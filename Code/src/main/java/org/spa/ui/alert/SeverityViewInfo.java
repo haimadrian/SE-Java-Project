@@ -5,7 +5,7 @@ import org.spa.ui.util.ImagesCache;
 import javax.swing.*;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 15-May-20
  */
 public enum SeverityViewInfo {

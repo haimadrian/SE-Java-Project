@@ -6,7 +6,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class DateCellRenderer extends TextCellRenderer {

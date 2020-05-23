@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  * }
  * </code></pre>
  *
- * @author hadrian
+ * @author Haim Adrian
  * @since 10-May-20
  * @see LoggerFactory
  */

@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 /**
  * This is used to display tooltips with cell data when mouse is above certain cell. Very useful when cell
  * contents exceeds cell boundaries.
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public class TableTooltipHandler extends MouseAdapter {
@@ -98,6 +98,8 @@ public class TableTooltipHandler extends MouseAdapter {
          return ((JButton)cellValue).getText();
       } else if (cellValue instanceof JCheckBox) {
          return String.valueOf(((JCheckBox)cellValue).isSelected());
+      } else if (cellValue instanceof JSpinner) {
+         return String.valueOf(((JSpinner)cellValue).getValue());
       } else {
          return String.valueOf(cellValue);
       }

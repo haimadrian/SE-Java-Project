@@ -5,7 +5,7 @@ import org.spa.common.util.log.Logger;
 
 /**
  * Used for constructing concrete log adapters according to the specified parameters.
- * @author hadrian
+ * @author Haim Adrian
  * @since 10-May-20
  * @see Logger
  * @see #getLogger(LogType, Object...)

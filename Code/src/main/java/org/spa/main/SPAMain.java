@@ -4,10 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.cart.ShoppingCartException;
 import org.spa.ui.alert.AlertColumn;
 import org.spa.ui.alert.AlertViewInfo;
-import org.spa.ui.item.ItemColumn;
-import org.spa.ui.item.ItemViewInfo;
+import org.spa.ui.cart.ShoppingCartView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 04-May-20
  */
 public class SPAMain {
@@ -52,9 +52,23 @@ public class SPAMain {
         //TableManager<AlertColumn, AlertViewInfo> tableManager = createAlertsTable();
 
         // Test for shopping cart table:
-        TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
+        //TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
 
-        mainForm.setContentPane(tableManager.getMainPanel());
+        ShoppingCartView view = new ShoppingCartView(mainForm);
+
+        JPanel actionsPanel = new JPanel();
+        actionsPanel.setLayout(new BoxLayout(actionsPanel, BoxLayout.X_AXIS));
+        actionsPanel.add(Box.createHorizontalGlue());
+        actionsPanel.add(view.getNavigatingComponent());
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
+
+        content.add(actionsPanel);
+        content.add(Box.createRigidArea(new Dimension(0,5)));
+        content.add(view.getMainContainer());
+        content.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+
+        mainForm.setContentPane(content);
         mainForm.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -66,6 +80,14 @@ public class SPAMain {
         mainForm.pack();
         Controls.centerDialog(mainForm);
         mainForm.setVisible(true);
+
+        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> {
+            try {
+                SPAApplication.getInstance().getShoppingCart().add(item.getId(), 1);
+            } catch (ShoppingCartException e) {
+                logger.error("Failed to add to cart. Item: " + item, e);
+            }
+        });
 
         //Login login = new Login();
         //login.getMainFrame().setVisible(true);
@@ -94,51 +116,14 @@ public class SPAMain {
         });
 
         logger.info("Registering alert listener");
-        SPAApplication.getInstance().getAlertSystem().registerAlertObserver((key, message, severity, date) -> {
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    alerts.add(new AlertViewInfo(message, date.getTime(), severity));
-                    tableManager.refresh();
-                } catch (Throwable t) {
-                    logger.error("Error has occurred while trying to add alert to table. severity=" + severity, t);
-                }
-            });
-        });
-        return tableManager;
-    }
-
-    private static TableManager<ItemColumn, ItemViewInfo> createItemsTable() {
-        List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price);
-        List<ItemViewInfo> items = new ArrayList<>();
-        TableConfig tableConfig = TableConfig.create().withLinesInRow(8).withEditable(true).withBorder(false).build();
-        TableManager<ItemColumn, ItemViewInfo> tableManager = new TableManager<>(itemCols, items, tableConfig);
-        tableManager.setPopupAdapter(new PopupAdapter() {
-            @Override
-            protected List<JMenuItem> getMenuItemsForPopup() {
-                JMenuItem item = new JMenuItem("Add to cart");
-                item.setDisplayedMnemonicIndex(0);
-                item.addActionListener(e -> {
-                    ItemViewInfo selectedModel = tableManager.getSelectedModel();
-                    if (selectedModel != null) {
-                        logger.info("Adding item to cart. Item: " + selectedModel);
-                        tableManager.refresh();
-                    }
-                });
-                return Arrays.asList(item);
+        SPAApplication.getInstance().getAlertSystem().registerAlertObserver((key, message, severity, date) -> SwingUtilities.invokeLater(() -> {
+            try {
+                alerts.add(new AlertViewInfo(message, date.getTime(), severity));
+                tableManager.refresh();
+            } catch (Throwable t) {
+                logger.error("Error has occurred while trying to add alert to table. severity=" + severity, t);
             }
-        });
-
-        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> {
-            items.add(new ItemViewInfo(item.getId(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(),
-                item.getDiscountPercent(), item.getCount()));
-        });
-
-        try {
-            tableManager.refresh();
-        } catch (Throwable t) {
-            logger.error("Error has occurred while trying to refresh table.", t);
-        }
-
+        }));
         return tableManager;
     }
 

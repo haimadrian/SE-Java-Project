@@ -8,7 +8,7 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  * An interface that declares all methods that needed by a {@link TableManager} to operate. See the methods
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public interface TableColumnIfc {

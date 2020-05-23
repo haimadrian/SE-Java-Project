@@ -3,7 +3,7 @@ package org.spa.controller.alert;
 import org.spa.model.Severity;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class Threshold {

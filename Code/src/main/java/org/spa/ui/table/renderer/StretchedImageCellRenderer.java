@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * A cell renderer to use for stretching images over the entire cell content
  *
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
@@ -30,6 +30,7 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
       focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
    }
 
+   @Override
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocused, int row, int column) {
       if (value == null) {
          return this;
@@ -46,8 +47,8 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
          imageViewer.setForeground(table.getSelectionForeground());
          imageViewer.setBackground(table.getSelectionBackground());
       } else {
-         imageViewer.setForeground(getForeground());
-         imageViewer.setBackground(getBackground());
+         imageViewer.setForeground(table.getForeground());
+         imageViewer.setBackground(table.getBackground());
       }
 
       if (isFocused) {

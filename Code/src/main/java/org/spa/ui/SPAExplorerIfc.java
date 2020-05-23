@@ -1,95 +1,65 @@
 package org.spa.ui;
 
+import org.spa.controller.selection.SelectionModelManager;
+
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * An interface that represents a main work area in the application.
  * Use it to work among the different levels of the application, instead of passing a reference to JFrame.
- * @author hadrian
+ * @param <T> The components that this dialog works with. for example {@link org.spa.controller.item.WarehouseItem}
+ * @author Haim Adrian
  * @since 13-May-20
  */
-public interface SPAExplorerIfc {
+public interface SPAExplorerIfc<T> {
    /**
-    * Listener which gets called when an editor dialog is closed
+    * Displays this explorer
     */
-   interface ClosureListener {
-      /**
-       * The editor panel defined by main has been closed
-       *
-       * @param main The dialog that was just closed
-       */
-      void dialogClosed(JPanel main);
-   }
+   void show();
 
    /**
-    * Panels which implement ClosureVetoable will get queried before being switched away from
+    * Closes this explorer
     */
-   interface ClosureVetoable {
-      /**
-       * @return Whether the current panel can be closed
-       */
-      boolean canClose();
-   }
+   void close();
 
    /**
-    * Displays an editing dialog in the main work area
-    *
-    * @param main The component to show in the dialog
-    * @param icn An icon to show in dialog corner
-    * @param title The dialog's title
-    */
-   void displayDialog(JPanel main, Icon icn, String title);
-
-   /**
-    * Adds a listener to be notified when the current dialog closes
-    *
-    * @param list The listener to add
-    */
-   void addClosureListener(ClosureListener list);
-
-   /**
-    * Removes a listener to be notified when the current dialog closes
-    *
-    * @param list The listener to remove
-    */
-   void removeClosureListener(ClosureListener list);
-
-   /**
-    * Sets the title of the work area to a new value
-    *
+    * Sets the title of this explorer
     * @param newTitle The new title value
     */
    void updateTitle(String newTitle);
 
    /**
-    * Closes the current active dialog in the work area
+    * @return The selection model of this explorer, to get selected item
     */
-   void closeDialog();
-
-   /**
-    * @return A JPanel - the current dialog in the work area
-    */
-   JPanel getCurrent();
+   SelectionModelManager<T> getSelectionModel();
 
    /**
     * Displays some text in the status bar
-    *
     * @param text The text
     */
-   void displayStatus(String text);
+   void updateStatus(String text);
 
    /**
-    * @return parent for popup dialogs
+    * In order to allow explorer managers to customize their stuff, we expose an optional component that an explorer
+    * can return when it wants that component to be used for navigating to it. (to the explorer)<br/>
+    * For example, the shopping cart can expose a customized button that by clicking it, it replaces the view to
+    * the shopping cart view, and the button can be customized by the shopping cart explorer. For example, displaying how
+    * many items in cart.
+    * @return An optional navigating component that a container can set under it in order to navigate to this explorer.
     */
-   JFrame getDialogParent();
+   JComponent getNavigatingComponent();
 
    /**
-    * Save the visible state of the tree ( ie. expansion/collapse of nodes ) for restoration later
+    * Returns the main container component of this explorer<br/>
+    * This method is used so we can get an explorer work area and present it under main explorer
+    * @return Main work area of an explorer. Usually a panel
     */
-   void saveTreeState();
+   Container getMainContainer();
 
    /**
-    * Restore the visible state of the tree from the last time save was called
+    * Retrieve the window containing this explorer, in order to be able to customize it
+    * @return The dialog containing this explorer
     */
-   void restoreTreeState();
+   Window getParentDialog();
 }

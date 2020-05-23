@@ -1,9 +1,8 @@
 package org.spa.ui.util;
 
-import com.sun.deploy.panel.JHighDPITable;
-import org.spa.ui.LabeledField;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.ui.LabeledField;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -18,7 +17,7 @@ import static org.spa.ui.util.Fonts.PLAIN_FONT;
 
 /**
  * Some utilities to create controls, tweak the look and feel, center dialogs, etc.
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public class Controls {
@@ -38,7 +37,7 @@ public class Controls {
    /**
     * Makes a BoxLayout panel of the specified orientation containing the supplied components.
     *
-    * @param layoutType Type of BoxLayout
+    * @param layoutType Type of BoxLayout. the axis to lay out components along. Can be one of: BoxLayout.X_AXIS, BoxLayout.Y_AXIS, BoxLayout.LINE_AXIS or BoxLayout.PAGE_AXIS
     * @param comps Component[] to add
     * @param separateComponents A small space will be added between components if this is <code>true</code>.
     * @return A panel containing all of the components.
@@ -157,15 +156,108 @@ public class Controls {
     *           <code>TRAILING</code>.
     */
    public static JLabel createLabel(String text, Icon icon, int horizontalAlignment) {
+      return createLabel(text, icon, horizontalAlignment, PLAIN_FONT);
+   }
+
+   /**
+    * Creates a <code>JLabel</code> instance with the specified
+    * text, image, and horizontal alignment.
+    * The label is centered vertically in its display area.
+    * The text is on the trailing edge of the image.
+    *
+    * @param text  The text to be displayed by the label.
+    * @param icon  The image to be displayed by the label.
+    * @param horizontalAlignment  One of the following constants
+    *           defined in <code>SwingConstants</code>:
+    *           <code>LEFT</code>,
+    *           <code>CENTER</code>,
+    *           <code>RIGHT</code>,
+    *           <code>LEADING</code> or
+    *           <code>TRAILING</code>.
+    * @param font The font to set to the label. See {@link Fonts}
+    */
+   public static JLabel createLabel(String text, Icon icon, int horizontalAlignment, Font font) {
       JLabel label = new JLabel(text, icon, horizontalAlignment);
-      //label.setFont();
+      label.setFont(font);
       return label;
+   }
+
+   public static JLabel createLabel(String text, Font font) {
+      return createLabel(text, null, SwingConstants.LEADING, font);
+   }
+
+   /**
+    * Creates a <code>JLabel</code> instance with the specified text.
+    * The label is aligned against the leading edge of its display area,
+    * and centered vertically.
+    *
+    * @param text  The text to be displayed by the label.
+    */
+   public static JLabel createTitle(String text) {
+      return createTitle(text, null, SwingConstants.LEADING);
+   }
+
+   /**
+    * Creates a <code>JLabel</code> instance with the specified text.
+    * The label is aligned against the leading edge of its display area,
+    * and centered vertically.
+    * The text is on the trailing edge of the image.
+    *
+    * @param text  The text to be displayed by the label.
+    * @param icon  The image to be displayed by the label.
+    */
+   public static JLabel createTitle(String text, Icon icon) {
+      return createTitle(text, icon, SwingConstants.LEFT);
+   }
+
+   /**
+    * Creates a <code>JLabel</code> instance with the specified
+    * text, image, and horizontal alignment.
+    * The label is centered vertically in its display area.
+    * The text is on the trailing edge of the image.
+    *
+    * @param text  The text to be displayed by the label.
+    * @param icon  The image to be displayed by the label.
+    * @param horizontalAlignment  One of the following constants
+    *           defined in <code>SwingConstants</code>:
+    *           <code>LEFT</code>,
+    *           <code>CENTER</code>,
+    *           <code>RIGHT</code>,
+    *           <code>LEADING</code> or
+    *           <code>TRAILING</code>.
+    */
+   public static JLabel createTitle(String text, Icon icon, int horizontalAlignment) {
+      JLabel label = new JLabel(text, icon, horizontalAlignment);
+      label.setFont(Fonts.HEADING_FONT);
+      return label;
+   }
+
+   public static JTextArea createTextArea(String text, int width, int height) {
+      JTextArea textArea = new JTextArea(text);
+      textArea.setLineWrap(true);
+      textArea.setWrapStyleWord(true);
+      textArea.setEditable(false);
+      textArea.setFont(Fonts.PLAIN_FONT);
+      textArea.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+      textArea.setMinimumSize(new java.awt.Dimension(width, height));
+      textArea.setPreferredSize(new java.awt.Dimension(width, height));
+      return textArea;
+   }
+
+   public static JScrollPane withScrollPane(Component comp) {
+      JScrollPane scroll = new JScrollPane(comp);
+      scroll.setMinimumSize(new java.awt.Dimension(comp.getWidth(), 0));
+      scroll.setPreferredSize(new java.awt.Dimension(comp.getWidth(), Integer.MAX_VALUE));
+      scroll.getViewport().setBackground(Color.DARK_GRAY);
+      scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+      scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      return scroll;
    }
 
    /**
     * @return A nice-looking and resizable horizontal separator, preferably for use in box layouts
     */
-   public static JComponent createHorizontalSeparator() {
+   public static JSeparator createHorizontalSeparator() {
       JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
       sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, SEPARATOR_THICKNESS));
       sep.setMinimumSize(new Dimension(0, SEPARATOR_THICKNESS));
@@ -175,19 +267,11 @@ public class Controls {
    /**
     * @return A nice-looking and resizable vertical separator, preferably for use in box layouts
     */
-   public static JComponent createVerticalSeparator() {
+   public static JSeparator createVerticalSeparator() {
       JSeparator sep = new JSeparator(SwingConstants.VERTICAL);
       sep.setMaximumSize(new Dimension(SEPARATOR_THICKNESS, Integer.MAX_VALUE));
-      sep.setMinimumSize(new Dimension(SEPARATOR_THICKNESS, 0));
+      sep.setMinimumSize(new Dimension(SEPARATOR_THICKNESS, 5));
       return sep;
-   }
-
-   public static JTable createTable() {
-      JTable table = new JHighDPITable();
-
-
-
-      return table;
    }
 
    /**
@@ -407,6 +491,7 @@ public class Controls {
       UIManager.put("MenuItem.font", PLAIN_FONT);
       UIManager.put("TabbedPane.font", PLAIN_FONT);
       UIManager.put("Button.showMnemonics", Boolean.TRUE);
+      UIManager.put("Spinner.arrowButtonSize", new Dimension(130, 0));
 
       if ((className != null) && (className.endsWith("WindowsLookAndFeel"))) {
          UIManager.put("MenuBar.background", SystemColor.control);

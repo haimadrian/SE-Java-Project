@@ -3,7 +3,7 @@ package org.spa.model;
 import java.util.Objects;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class Item {

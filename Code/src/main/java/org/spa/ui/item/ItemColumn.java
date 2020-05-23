@@ -1,35 +1,40 @@
 package org.spa.ui.item;
 
 import org.spa.ui.table.TableColumnIfc;
-import org.spa.ui.table.renderer.CurrencyCellRenderer;
+import org.spa.ui.table.editor.CountCellEditor;
+import org.spa.ui.table.editor.TextCellEditor;
+import org.spa.ui.table.renderer.SpinnerCellRenderer;
 import org.spa.ui.table.renderer.StretchedImageCellRenderer;
 import org.spa.ui.table.renderer.TextCellRenderer;
 
 import javax.swing.*;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 15-May-20
  */
 public enum ItemColumn implements TableColumnIfc {
-   Image("Image", 0.15, ImageIcon.class, new StretchedImageCellRenderer(10), false),
-   Name("Name", 0.15, String.class, new TextCellRenderer(), true),
-   Description("Description", 0.65, String.class, new TextCellRenderer(), true),
-   Price("Price", 0.05, Double.class, new CurrencyCellRenderer(), true),
-   Count("Count", 0.05, Integer.class, new TextCellRenderer(), true);
+   Image("Image", 0.15, ImageIcon.class, new StretchedImageCellRenderer(10), null, false),
+   Name("Name", 0.15, String.class, new TextCellRenderer(), null, true),
+   Description("Description", 0.60, String.class, new TextCellRenderer(), null, true),
+   Count("Count", 0.04, Integer.class, new SpinnerCellRenderer(), new CountCellEditor(), true),
+   Price("Price", 0.06, Double.class, new TextCellRenderer(), null, true);
 
    private final String header;
    private final double cellWidth;
    private final Class<?> columnClass;
    private final TableCellRenderer renderer;
+   private final TableCellEditor editor;
    private final boolean isEditable;
 
-   ItemColumn(String header, double cellWidth, Class<?> columnClass, TableCellRenderer renderer, boolean isEditable) {
+   ItemColumn(String header, double cellWidth, Class<?> columnClass, TableCellRenderer renderer, TableCellEditor editor, boolean isEditable) {
       this.header = header;
       this.cellWidth = cellWidth;
       this.columnClass = columnClass;
       this.renderer = renderer;
+      this.editor = editor == null ? new TextCellEditor() : editor;
       this.isEditable = isEditable;
    }
 
@@ -71,5 +76,10 @@ public enum ItemColumn implements TableColumnIfc {
    @Override
    public TableCellRenderer getCellRenderer() {
       return renderer;
+   }
+
+   @Override
+   public TableCellEditor getCellEditor() {
+      return editor;
    }
 }

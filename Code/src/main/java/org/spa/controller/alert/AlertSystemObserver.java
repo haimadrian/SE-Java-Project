@@ -1,13 +1,11 @@
-package org.spa.common;
-
-import org.spa.controller.alert.AlertSystem;
+package org.spa.controller.alert;
 
 import java.util.Date;
 
 /**
  * Whoever wants to listen to the {@link AlertSystem} should implement this interface and register itself as
  * observer of the alert system class.
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public interface AlertSystemObserver {

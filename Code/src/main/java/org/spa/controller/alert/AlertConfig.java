@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class AlertConfig {

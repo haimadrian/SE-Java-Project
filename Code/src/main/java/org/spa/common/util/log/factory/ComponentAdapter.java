@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 /**
  * Used to propagate log messages to any other component. e.g. a UI component.<br/>
  * This is done using the Observer pattern. We accept a {@link ComponentLogHandler} which listens to log messages through this adapter.
- * @author hadrian
+ * @author Haim Adrian
  * @since 10-May-20
  */
 class ComponentAdapter extends ConsoleAdapter {

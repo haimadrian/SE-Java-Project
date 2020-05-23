@@ -1,7 +1,7 @@
 package org.spa.ui.table;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public interface TableModelIfc {

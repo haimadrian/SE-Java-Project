@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 
 /**
- * @author hadrian
+ * @author Haim Adrian
  * @since 15-May-20
  */
 public enum AlertColumn implements TableColumnIfc {

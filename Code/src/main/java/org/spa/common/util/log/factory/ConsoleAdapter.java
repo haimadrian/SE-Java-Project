@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 /**
  * Used for logging messages to console. (out and err)
- * @author hadrian
+ * @author Haim Adrian
  * @since 10-May-20
  */
 class ConsoleAdapter implements Logger {

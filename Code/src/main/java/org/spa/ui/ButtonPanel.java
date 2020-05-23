@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * A horizontal button panel where the buttons are centered and separated by <code>gapSize</code> pixels
- * @author hadrian
+ * @author Haim Adrian
  * @since 12-May-20
  */
 public class ButtonPanel extends JPanel {

@@ -1,12 +1,13 @@
 package org.spa.ui;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 /**
  * An image viewer which can be used when there is a need to stretch an image over its container's content
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class ImageViewer extends JPanel {
@@ -15,6 +16,7 @@ public class ImageViewer extends JPanel {
    private boolean isStretched;
    private int x = 0;
    private int y = 0;
+   private Image scaledImage;
 
    /**
     * Constructs an {@link ImageViewer} with margin=0
@@ -43,7 +45,15 @@ public class ImageViewer extends JPanel {
       this.image = image;
       this.isStretched = isStretched;
       this.margin = margin;
-      setOpaque(false);
+      setOpaque(true);
+
+      addComponentListener(new ComponentAdapter() {
+         @Override
+         public void componentResized(ComponentEvent e) {
+            // rescale image on every size event
+            scaledImage = scaleImageIfNeeded();
+         }
+      });
    }
 
    @Override
@@ -52,14 +62,28 @@ public class ImageViewer extends JPanel {
 
       if (image != null) {
          if (isStretched()) {
-            int doubleMargin = margin*2;
-            Image scaledImage = image.getScaledInstance(getWidth() - doubleMargin, getHeight() - doubleMargin, Image.SCALE_SMOOTH);
+            if (scaledImage == null) {
+               scaledImage = scaleImageIfNeeded();
+            }
+
             g.drawImage(scaledImage, x + margin, y + margin,this);
          } else {
             g.drawImage(image, x + margin, y + margin, this);
          }
       }
-      //getBorder().paintBorder(this, g, 0, 0, getWidth(), getHeight());
+   }
+
+   /**
+    * To avoid of scaling an image on every onPaint event, we cache it and scale it only in case there was a resize event.
+    * @return The scaled image or <code>null</code> in case the image was not configured as stretched.
+    */
+   private Image scaleImageIfNeeded() {
+      if (isStretched) {
+         int doubleMargin = margin*2;
+         return image.getScaledInstance(getWidth() - doubleMargin, getHeight() - doubleMargin, Image.SCALE_SMOOTH);
+      } else {
+         return null;
+      }
    }
 
    public Image getImage() {

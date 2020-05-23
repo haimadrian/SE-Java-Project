@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * To share item data between different layers in the project, we create this class which has the same fields as the DAL one,
  * but here we also keep the count of each item, without knowing how the DAL keeps this information
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class WarehouseItem {
@@ -35,6 +35,20 @@ public class WarehouseItem {
       this.profitPercent = profitPercent;
       this.discountPercent = discountPercent;
       this.count = count;
+   }
+
+   /**
+    * Constructs a copy of a {@link WarehouseItem}
+    * @param another The item to copy data from
+    */
+   public WarehouseItem(WarehouseItem another) {
+      this.id = another.getId();
+      this.name = another.getName();
+      this.description = another.getDescription();
+      this.price = another.getPrice();
+      this.profitPercent = another.getProfitPercent();
+      this.discountPercent = another.getDiscountPercent();
+      this.count = another.getCount();
    }
 
    public String getId() {
@@ -81,8 +95,7 @@ public class WarehouseItem {
       return count;
    }
 
-   // Protected so only items warehouse can update
-   void setCount(int count) {
+   public void setCount(int count) {
       this.count = count;
    }
 

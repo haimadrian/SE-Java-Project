@@ -1,6 +1,5 @@
 package org.spa.controller.alert;
 
-import org.spa.common.AlertSystemObserver;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
@@ -15,7 +14,7 @@ import java.util.concurrent.*;
 /**
  * This class responsible for scheduling a task that runs every 5 minutes and checks if there
  * is any item which is out of stock or about to be out of stock
- * @author hadrian
+ * @author Haim Adrian
  * @since 16-May-20
  */
 public class AlertSystem {

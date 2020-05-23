@@ -34,6 +34,11 @@ public class UserRepository implements Repository<User> {
 
     @Override
     public User add(User item) {
-        return null;
+        return item;
+    }
+
+    @Override
+    public List<User> saveAll(List<User> items) {
+        return items;
     }
 }

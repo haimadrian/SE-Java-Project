@@ -1,4 +1,6 @@
 package ui;
+import model.User;
+import org.spa.common.SPAApplication;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -60,7 +62,11 @@ public class LoginView {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //your actions
+                User loggedInUser = SPAApplication.getInstance().getUserManagementService().login(userText.getText(),new String(passwordText.getPassword()));
+                if(loggedInUser != null)
+                {
+                    // Enter HomePage
+                }
             }
         });
 

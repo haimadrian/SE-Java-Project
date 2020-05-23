@@ -1,5 +1,10 @@
 package ui;
 
+import controller.UserManagementService;
+import model.Customer;
+import model.Manager;
+import model.SystemAdmin;
+import org.spa.common.SPAApplication;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -260,29 +265,50 @@ class Registration
     {
         if (e.getSource() == sub) {
             if (term.isSelected()) {
-                String data1;
-                String data
-                        = "Name : "
-                        + tname.getText() + "\n"
-                        + "Mobile : "
-                        + tmno.getText() + "\n";
-                if (male.isSelected())
-                    data1 = "Gender : Male"
-                            + "\n";
-                else
-                    data1 = "Gender : Female"
-                            + "\n";
-                String data2
-                        = "DOB : "
-                        + (String)date.getSelectedItem()
-                        + "/" + (String)month.getSelectedItem()
-                        + "/" + (String)year.getSelectedItem()
-                        + "\n";
+              String data = (String)tusertype.getSelectedItem();
+                switch(data) {
+                    case "System Admin":
+                        SystemAdmin sa = new SystemAdmin("1234");
+                        SPAApplication.getInstance().getUserManagementService().createUser(sa);
+                        break;
+                    case "Manager":
+                        Manager manager = new Manager(new String(tpassword.getPassword()), tmno.getText(), (String) date.getSelectedItem()
+                                + "/" + (String) month.getSelectedItem()
+                                + "/" + (String) year.getSelectedItem(), "1/1/2020", (String) tquestion.getSelectedItem(), (String)tanswer.getText(), 0, 0);
+                        SPAApplication.getInstance().getUserManagementService().createUser(manager);
+                        break;
+                    case "Customer":
+                        Customer customer = new Customer(new String(tpassword.getPassword()), tmno.getText(), (String) date.getSelectedItem()
+                                + "/" + (String) month.getSelectedItem()
+                                + "/" + (String) year.getSelectedItem(), "1/1/2020", (String) tquestion.getSelectedItem(), (String)tanswer.getText());
+                        SPAApplication.getInstance().getUserManagementService().createUser(customer);
+                        break;
+                }
 
-                String data3 = "Address : " + tanswer.getText();
-                tout.setText(data + data1 + data2 + data3);
-                tout.setEditable(false);
-                res.setText("Registration Successfully..");
+                        // code block
+//                String data1;
+//                String data
+//                        = "Name : "
+//                        + tname.getText() + "\n"
+//                        + "Mobile : "
+//                        + tmno.getText() + "\n";
+//                if (male.isSelected())
+//                    data1 = "Gender : Male"
+//                            + "\n";
+//                else
+//                    data1 = "Gender : Female"
+//                            + "\n";
+//                String data2
+//                        = "DOB : "
+//                        + (String)date.getSelectedItem()
+//                        + "/" + (String)month.getSelectedItem()
+//                        + "/" + (String)year.getSelectedItem()
+//                        + "\n";
+//
+//                String data3 = "Address : " + tanswer.getText();
+//                tout.setText(data + data1 + data2 + data3);
+//                tout.setEditable(false);
+//                res.setText("Registration Successfully..");
             }
             else {
                 tout.setText("");

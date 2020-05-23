@@ -1,11 +1,16 @@
 package org.spa.common;
 
+import model.User;
+import model.dal.UserRepository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
+import controller.UserManagementService;
+
+import java.util.List;
 
 /**
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
@@ -21,12 +26,16 @@ public class SPAApplication {
    private final ItemsWarehouse itemsWarehouse;
    private final Repository<Item> itemRepository;
    private final AlertSystem alertSystem;
+   private final UserManagementService userManagementService;
+   private final Repository<User> userRepository;
 
    // Disallow creation of this class from outside
    private SPAApplication() {
       itemsWarehouse = new ItemsWarehouse();
       itemRepository = new ItemRepository();
       alertSystem = new AlertSystem();
+      userManagementService = new UserManagementService();
+      userRepository = new UserRepository();
    }
 
    /**
@@ -43,6 +52,7 @@ public class SPAApplication {
       logger.info("Starting services");
       itemsWarehouse.start();
       alertSystem.start();
+//      UserManagementService.start();
    }
 
    /**
@@ -79,5 +89,13 @@ public class SPAApplication {
     */
    public AlertSystem getAlertSystem() {
       return alertSystem;
+   }
+
+   public UserManagementService getUserManagementService() {
+      return userManagementService;
+   }
+
+   public Repository<User> getUserRepository() {
+      return userRepository;
    }
 }

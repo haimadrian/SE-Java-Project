@@ -3,6 +3,9 @@ package org.spa.ui.cart;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.action.ActionException;
+import org.spa.controller.action.ActionManager;
+import org.spa.controller.action.ActionType;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartObserver;
 import org.spa.controller.item.WarehouseItem;
@@ -21,8 +24,7 @@ import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
@@ -93,7 +95,11 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
       clearCartButton = createButton(" Clear Cart ", e -> {
                if (Dialogs.showQuestionDialog(getParentDialog(), "This action will remove all items from cart.\nContinue?.", "Clear Cart")) {
-                  shoppingCart.clear(true);
+                  try {
+                     ActionManager.executeAction(ActionType.ClearCart);
+                  } catch (ActionException actionException) {
+                     SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
+                  }
                }
             },
             false);
@@ -140,10 +146,16 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                   if (selection != null) {
                      if (Dialogs.showQuestionDialog(getParentDialog(), "Are you sure you want to remove item from cart?", "Confirmation")) {
                         logger.info("Removing item from cart. Item: " + selection);
-                        shoppingCart.remove(selection.getId());
+                        try {
+                           Map<String, Object> params = new HashMap<>();
+                           params.put("itemId", selection.getId());
+                           ActionManager.executeAction(ActionType.RemoveFromCart, params);
+                        } catch (ActionException actionException) {
+                           SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
+                        }
                      }
                   } else {
-                     Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to show.\nPlease select a row first.", "No selection");
+                     Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
                   }
                });
             });

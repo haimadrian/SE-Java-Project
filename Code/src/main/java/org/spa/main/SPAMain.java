@@ -5,9 +5,9 @@ import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.cart.ShoppingCartException;
+import org.spa.ui.HomePage;
 import org.spa.ui.alert.AlertColumn;
 import org.spa.ui.alert.AlertViewInfo;
-import org.spa.ui.cart.ShoppingCartView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
@@ -41,7 +41,7 @@ public class SPAMain {
 
     public static void main(String[] args) {
         logger.info("Starting application");
-        JFrame mainForm = new JFrame("Example Dialog for simulating ShoppingCart table or Alerts");
+        JFrame mainForm = new JFrame("SPA Store");
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
@@ -49,27 +49,9 @@ public class SPAMain {
 
         SPAApplication.getInstance().start();
 
-        // Test for alerts:
-        //TableManager<AlertColumn, AlertViewInfo> tableManager = createAlertsTable();
+        HomePage homePage = new HomePage(mainForm);
 
-        // Test for shopping cart table:
-        //TableManager<ItemColumn, ItemViewInfo> tableManager = createItemsTable();
-
-        ShoppingCartView view = new ShoppingCartView(mainForm);
-
-        JPanel actionsPanel = new JPanel();
-        actionsPanel.setLayout(new BoxLayout(actionsPanel, BoxLayout.X_AXIS));
-        actionsPanel.add(Box.createHorizontalGlue());
-        actionsPanel.add(view.getNavigatingComponent());
-        actionsPanel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
-        JPanel content = new JPanel();
-        content.setLayout(new BoxLayout(content, BoxLayout.PAGE_AXIS));
-
-        content.add(actionsPanel);
-        content.add(Box.createRigidArea(new Dimension(0,5)));
-        content.add(view.getMainContainer());
-
-        mainForm.setContentPane(content);
+        mainForm.setContentPane(homePage);
         mainForm.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -89,10 +71,6 @@ public class SPAMain {
                 logger.error("Failed to add to cart. Item: " + item, e);
             }
         });
-
-        //Login login = new Login();
-        //login.getMainFrame().setVisible(true);
-        //login.getMainFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private static TableManager<AlertColumn, AlertViewInfo> createAlertsTable() {

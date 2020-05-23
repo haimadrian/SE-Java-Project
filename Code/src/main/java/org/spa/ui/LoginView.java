@@ -13,10 +13,10 @@ import java.awt.event.ActionListener;
 
 public class LoginView {
 
-    public static void main(String[] args) {
+    public static void showLoginView() {
         JFrame frame = new JFrame("Login");
         frame.setSize(350, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         JPanel panel = new JPanel();
         frame.add(panel);

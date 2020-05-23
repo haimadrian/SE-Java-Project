@@ -82,7 +82,7 @@ class Registration
     {
         setTitle("Registration Form");
         setBounds(300, 90, 600, 600);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
 
         c = getContentPane();

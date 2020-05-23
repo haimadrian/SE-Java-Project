@@ -60,11 +60,13 @@ public class TableTooltipHandler extends MouseAdapter {
 
    @Override
    public void mouseExited(MouseEvent e) {
-      // hide tooltip
-      table.setToolTipText("");
+      SwingUtilities.invokeLater(() -> {
+         // hide tooltip
+         table.setToolTipText("");
 
-      // reset coordinates
-      row = col = -1;
+         // reset coordinates
+         row = col = -1;
+      });
    }
 
    private void updateToolTip() {

@@ -1,14 +1,16 @@
 package org.spa.ui;
 
+import org.spa.common.User;
 import org.spa.model.user.Customer;
-import org.spa.model.user.Manager;
+import org.spa.model.user.Admin;
 import org.spa.model.user.SystemAdmin;
 import org.spa.common.SPAApplication;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.time.LocalDateTime;
 import java.util.Date;
+
+import static javax.swing.JOptionPane.showMessageDialog;
 
 class Registration
         extends JFrame
@@ -30,7 +32,7 @@ class Registration
     private JLabel question;
     private JComboBox tquestion;
     private JLabel dob;
-    private JComboBox date;
+    private JComboBox day;
     private JComboBox month;
     private JComboBox year;
     private JLabel answer;
@@ -40,35 +42,38 @@ class Registration
     private JCheckBox term;
     private JButton sub;
     private JButton reset;
-    private JTextArea tout;
     private JLabel res;
-    private JTextArea resadd;
 
-    private String dates[]
-            = { "1", "2", "3", "4", "5",
+    private String days[]
+            = {"1", "2", "3", "4", "5",
             "6", "7", "8", "9", "10",
             "11", "12", "13", "14", "15",
             "16", "17", "18", "19", "20",
             "21", "22", "23", "24", "25",
             "26", "27", "28", "29", "30",
-            "31" };
+            "31"};
+
     private String months[]
-            = { "Jan", "feb", "Mar", "Apr",
-            "May", "Jun", "July", "Aug",
-            "Sup", "Oct", "Nov", "Dec" };
+            = {"01", "02", "03", "04",
+            "05", "06", "07", "08",
+            "09", "10", "11", "12"};
+
     private String years[]
-            = { "1995", "1996", "1997", "1998",
-            "1999", "2000", "2001", "2002",
-            "2003", "2004", "2005", "2006",
-            "2007", "2008", "2009", "2010",
-            "2011", "2012", "2013", "2014",
-            "2015", "2016", "2017", "2018",
-            "2019" };
+            = {"1966", "1967", "1968", "1969",
+            "1970", "1971", "1972", "1973",
+            "1974", "1975", "1976", "1977",
+            "1978", "1979", "1980", "1981",
+            "1982", "1983", "1984", "1985",
+            "1986", "1987", "1988", "1989",
+            "1990", "1991", "1992", "1993",
+            "1994", "1995", "1996", "1997",
+            "1998", "1999", "2000", "2001",
+            "2002", "2003", "2004", "2005"};
 
     private String questions[]
             = {"What is your favourite color ?",
             "What is your Mom's old last name ?",
-            "What is the name of your best friend ?" ,
+            "What is the name of your best friend ?",
             "What is your preffered hobbie ?"};
 
     private String userTypes[]
@@ -78,20 +83,19 @@ class Registration
 
     // constructor, to initialize the components
     // with default values.
-    public Registration()
-    {
-        setTitle("Registration Form");
-        setBounds(300, 90, 600, 600);
+    public Registration() {
+        setTitle("Registration");
+        setBounds(600, 200, 600, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
 
         c = getContentPane();
         c.setLayout(null);
 
-        title = new JLabel("Registration Form");
+        title = new JLabel("Registration");
         title.setFont(new Font("Arial", Font.PLAIN, 30));
         title.setSize(300, 30);
-        title.setLocation(170, 30);
+        title.setLocation(220, 25);
         c.add(title);
 
         name = new JLabel("Username");
@@ -102,7 +106,7 @@ class Registration
 
         tname = new JTextField();
         tname.setFont(new Font("Arial", Font.PLAIN, 15));
-        tname.setSize(190, 20);
+        tname.setSize(190, 25);
         tname.setLocation(220, 100);
         c.add(tname);
 
@@ -114,7 +118,7 @@ class Registration
 
         tpassword = new JPasswordField();
         tpassword.setFont(new Font("Arial", Font.PLAIN, 15));
-        tpassword.setSize(190, 20);
+        tpassword.setSize(190, 25);
         tpassword.setLocation(220, 150);
         c.add(tpassword);
 
@@ -124,9 +128,22 @@ class Registration
         mno.setLocation(120, 200);
         c.add(mno);
 
-        tmno = new JTextField();
+        tmno = new JTextField() {
+            public void processKeyEvent(KeyEvent ev) {
+                char c = ev.getKeyChar();
+                try {
+                    // Ignore all non-printable characters. Just check the printable ones.
+                    if (c > 31 && c < 127) {
+                        Integer.parseInt(c + "");
+                    }
+                    super.processKeyEvent(ev);
+                } catch (NumberFormatException nfe) {
+                    // Do nothing. Character inputted is not a number, so ignore it.
+                }
+            }
+        };
         tmno.setFont(new Font("Arial", Font.PLAIN, 15));
-        tmno.setSize(150, 20);
+        tmno.setSize(150, 25);
         tmno.setLocation(220, 200);
         c.add(tmno);
 
@@ -154,28 +171,28 @@ class Registration
         gengp.add(male);
         gengp.add(female);
 
-        dob = new JLabel("DOB");
+        dob = new JLabel("Date Of Birth");
         dob.setFont(new Font("Arial", Font.PLAIN, 20));
-        dob.setSize(100, 20);
+        dob.setSize(130, 20);
         dob.setLocation(120, 300);
         c.add(dob);
 
-        date = new JComboBox(dates);
-        date.setFont(new Font("Arial", Font.PLAIN, 15));
-        date.setSize(50, 20);
-        date.setLocation(220, 300);
-        c.add(date);
+        day = new JComboBox(days);
+        day.setFont(new Font("Arial", Font.PLAIN, 15));
+        day.setSize(50, 25);
+        day.setLocation(250, 300);
+        c.add(day);
 
         month = new JComboBox(months);
         month.setFont(new Font("Arial", Font.PLAIN, 15));
-        month.setSize(60, 20);
-        month.setLocation(270, 300);
+        month.setSize(60, 25);
+        month.setLocation(305, 300);
         c.add(month);
 
         year = new JComboBox(years);
         year.setFont(new Font("Arial", Font.PLAIN, 15));
-        year.setSize(60, 20);
-        year.setLocation(340, 300);
+        year.setSize(70, 25);
+        year.setLocation(370, 300);
         c.add(year);
 
         question = new JLabel("Question");
@@ -186,7 +203,7 @@ class Registration
 
         tquestion = new JComboBox(questions);
         tquestion.setFont(new Font("Arial", Font.PLAIN, 15));
-        tquestion.setSize(250, 20);
+        tquestion.setSize(250, 25);
         tquestion.setLocation(220, 350);
         c.add(tquestion);
 
@@ -203,18 +220,19 @@ class Registration
         tanswer.setLineWrap(true);
         c.add(tanswer);
 
-        usertype = new JLabel("User Type");
-        usertype.setFont(new Font("Arial", Font.PLAIN, 20));
-        usertype.setSize(100, 20);
-        usertype.setLocation(120, 475);
-        c.add(usertype);
+        if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType().equals("SystemAdmin")) {
+            usertype = new JLabel("User Type");
+            usertype.setFont(new Font("Arial", Font.PLAIN, 20));
+            usertype.setSize(100, 20);
+            usertype.setLocation(120, 475);
+            c.add(usertype);
 
-        tusertype = new JComboBox(userTypes);
-        tusertype.setFont(new Font("Arial", Font.PLAIN, 15));
-        tusertype.setSize(250, 20);
-        tusertype.setLocation(220, 475);
-        c.add(tusertype);
-
+            tusertype = new JComboBox(userTypes);
+            tusertype.setFont(new Font("Arial", Font.PLAIN, 15));
+            tusertype.setSize(250, 20);
+            tusertype.setLocation(220, 475);
+            c.add(tusertype);
+        }
         term = new JCheckBox("Accept Terms And Conditions.");
         term.setFont(new Font("Arial", Font.PLAIN, 15));
         term.setSize(250, 20);
@@ -235,26 +253,11 @@ class Registration
         reset.addActionListener(this);
         c.add(reset);
 
-//        tout = new JTextArea();
-//        tout.setFont(new Font("Arial", Font.PLAIN, 15));
-//        tout.setSize(300, 400);
-//        tout.setLocation(500, 100);
-//        tout.setLineWrap(true);
-//        tout.setEditable(false);
-//        c.add(tout);
-
-//        res = new JLabel("");
-//        res.setFont(new Font("Arial", Font.PLAIN, 20));
-//        res.setSize(500, 25);
-//        res.setLocation(100, 500);
-//        c.add(res);
-//
-//        resadd = new JTextArea();
-//        resadd.setFont(new Font("Arial", Font.PLAIN, 15));
-//        resadd.setSize(200, 75);
-//        resadd.setLocation(580, 175);
-//        resadd.setLineWrap(true);
-//        c.add(resadd);
+        res = new JLabel("");
+        res.setFont(new Font("Arial", Font.PLAIN, 20));
+        res.setSize(500, 25);
+        res.setLocation(120, 65);
+        c.add(res);
 
         setVisible(true);
     }
@@ -266,75 +269,66 @@ class Registration
     // method actionPerformed()
     // to get the action performed
     // by the user and act accordingly
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
+
         if (e.getSource() == sub) {
             if (term.isSelected()) {
-              String data = (String)tusertype.getSelectedItem();
-                switch(data) {
-                    case "System Admin":
-                        SystemAdmin sa = new SystemAdmin("1234");
-                        SPAApplication.getInstance().getUserManagementService().createUser(sa);
-                        break;
-                    case "Manager":
-                        Manager manager = new Manager(new String(tpassword.getPassword()), tmno.getText(),
-                              new Date(comboBoxValueToInt(year), comboBoxValueToInt(month), comboBoxValueToInt(date)),
-                              new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String)tanswer.getText(), 0, 0);
-                        SPAApplication.getInstance().getUserManagementService().createUser(manager);
-                        break;
-                    case "Customer":
-                        Customer customer = new Customer(new String(tpassword.getPassword()), tmno.getText(),
-                              new Date(comboBoxValueToInt(year), comboBoxValueToInt(month), comboBoxValueToInt(date)),
-                              new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String)tanswer.getText());
-                        SPAApplication.getInstance().getUserManagementService().createUser(customer);
-                        break;
+                if (tname.getText().equals("") || tpassword.getPassword().length == 0
+                        || tanswer.getText().equals("") || tmno.getText().equals("")) {
+                    res.setText("Please fill the empty fields");
                 }
-
-                        // code block
-//                String data1;
-//                String data
-//                        = "Name : "
-//                        + tname.getText() + "\n"
-//                        + "Mobile : "
-//                        + tmno.getText() + "\n";
-//                if (male.isSelected())
-//                    data1 = "Gender : Male"
-//                            + "\n";
-//                else
-//                    data1 = "Gender : Female"
-//                            + "\n";
-//                String data2
-//                        = "DOB : "
-//                        + (String)date.getSelectedItem()
-//                        + "/" + (String)month.getSelectedItem()
-//                        + "/" + (String)year.getSelectedItem()
-//                        + "\n";
-//
-//                String data3 = "Address : " + tanswer.getText();
-//                tout.setText(data + data1 + data2 + data3);
-//                tout.setEditable(false);
-//                res.setText("Registration Successfully..");
+                else if(SPAApplication.getInstance().getUserManagementService().isExist(tname.getText()))
+                {
+                    res.setText("Username Already Exist");
+                }
+                else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType().equals("Guest")) {
+                    Customer customer = new Customer(tname.getText(), new String(tpassword.getPassword()), tmno.getText(),
+                            new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
+                            new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String) tanswer.getText());
+                    SPAApplication.getInstance().getUserManagementService().createUser(customer);
+                    showMessageDialog(null, "Registration Completed Successfully");
+                    dispose();
+                } else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType().equals("SystemAdmin")) {
+                    String data = (String) tusertype.getSelectedItem();
+                    switch (data) {
+                        case "System Admin":
+                            SystemAdmin sa = new SystemAdmin(tname.getText(), new String(tpassword.getPassword()));
+                            SPAApplication.getInstance().getUserManagementService().createUser(sa);
+                            break;
+                        case "Manager":
+                            Admin admin = new Admin(tname.getText(), new String(tpassword.getPassword()), tmno.getText(),
+                                    new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
+                                    new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String) tanswer.getText(), 0, 0);
+                            SPAApplication.getInstance().getUserManagementService().createUser(admin);
+                            break;
+                        case "Customer":
+                            Customer customer = new Customer(tname.getText(), new String(tpassword.getPassword()), tmno.getText(),
+                                    new Date(comboBoxValueToInt(year), comboBoxValueToInt(month), comboBoxValueToInt(day)),
+                                    new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String) tanswer.getText());
+                            SPAApplication.getInstance().getUserManagementService().createUser(customer);
+                            break;
+                    }
+                    showMessageDialog(null, "Registration Completed Successfully");
+                    dispose();
+                }
+            } else {
+                res.setText("Please accept the terms");
             }
-            else {
-                tout.setText("");
-                resadd.setText("");
-                res.setText("Please accept the"
-                        + " terms & conditions..");
-            }
-        }
 
-        else if (e.getSource() == reset) {
+        } else if (e.getSource() == reset) {
             String def = "";
             tname.setText(def);
             tanswer.setText(def);
             tpassword.setText(def);
             tmno.setText(def);
+            res.setText(def);
             term.setSelected(false);
-            date.setSelectedIndex(0);
+            day.setSelectedIndex(0);
             month.setSelectedIndex(0);
             year.setSelectedIndex(0);
             tquestion.setSelectedIndex(0);
             tusertype.setSelectedIndex(0);
         }
     }
+
 }

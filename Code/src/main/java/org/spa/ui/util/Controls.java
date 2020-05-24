@@ -232,25 +232,23 @@ public class Controls {
       return label;
    }
 
-   public static JTextArea createTextArea(String text, int width, int height) {
+   public static JTextArea createTextArea(String text, boolean isEditable) {
       JTextArea textArea = new JTextArea(text);
       textArea.setLineWrap(true);
       textArea.setWrapStyleWord(true);
-      textArea.setEditable(false);
+      textArea.setEditable(isEditable);
       textArea.setFont(Fonts.PLAIN_FONT);
-      textArea.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-      textArea.setMinimumSize(new java.awt.Dimension(width, height));
-      textArea.setPreferredSize(new java.awt.Dimension(width, height));
-      textArea.setAutoscrolls(true);
       return textArea;
    }
 
-   public static JScrollPane withScrollPane(Component comp) {
+   public static JScrollPane withScrollPane(Component comp, int width, int height) {
       JScrollPane scroll = new JScrollPane(comp);
-      scroll.setMinimumSize(new java.awt.Dimension(comp.getWidth(), 10));
-      scroll.setPreferredSize(new java.awt.Dimension(comp.getWidth(), Integer.MAX_VALUE));
+      scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+      scroll.setMinimumSize(new Dimension(width / 5, height == Integer.MAX_VALUE ? height : height / 3));
+      scroll.setPreferredSize(new Dimension(width, height));
       scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
       scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      //scroll.getViewport().add(comp);
       return scroll;
    }
 
@@ -447,6 +445,58 @@ public class Controls {
       for (Component component : parent.getComponents()) {
          if (component instanceof Container) {
             setEnabledRecursively((Container) component, enable);
+         }
+      }
+   }
+
+   public static void setFontToComponents(Container comp, Font font) {
+      comp.setFont(font);
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            setFontToComponents((Container)child, font);
+         } else if (child instanceof JComponent) {
+            setFontToComponents((JComponent)child, font);
+         }
+      }
+   }
+
+   public static void setFontToComponents(JComponent comp, Font font) {
+      comp.setFont(font);
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            setFontToComponents((Container)child, font);
+         } else if (child instanceof JComponent) {
+            setFontToComponents((JComponent)child, font);
+         }
+      }
+   }
+
+   public static void doubleComponentWidth(Container comp, Class<?> typeToSearch) {
+      if (typeToSearch.isAssignableFrom(comp.getClass())) {
+         setComponentSize((JComponent) comp, comp.getPreferredSize().width * 2, comp.getPreferredSize().height);
+         ((JComponent)comp).setFont(Fonts.BOLD_FONT);
+      }
+
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            doubleComponentWidth((Container)child, typeToSearch);
+         } else if (child instanceof JComponent) {
+            doubleComponentWidth((JComponent)child, typeToSearch);
+         }
+      }
+   }
+
+   public static void doubleComponentWidth(JComponent comp, Class<?> typeToSearch) {
+      if (typeToSearch.isAssignableFrom(comp.getClass())) {
+         setComponentSize((JComponent) comp, comp.getPreferredSize().width * 2, comp.getPreferredSize().height);
+         ((JComponent)comp).setFont(Fonts.BOLD_FONT);
+      }
+
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            doubleComponentWidth((Container)child, typeToSearch);
+         } else if (child instanceof JComponent) {
+            doubleComponentWidth((JComponent)child, typeToSearch);
          }
       }
    }

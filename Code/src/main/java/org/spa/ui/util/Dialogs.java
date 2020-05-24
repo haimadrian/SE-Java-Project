@@ -18,6 +18,8 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiFunction;
 
+import static org.spa.ui.util.Controls.setFontToComponents;
+
 /**
  * Contain some helper methods to show different time of message dialogs.
  *
@@ -647,6 +649,9 @@ public class Dialogs {
             return 80;
          }
       };
+      // Set font to all of the components in the option pane because we calculate font based on
+      // screen resolution and we need the option pane to calculate the correct size of text inside it.
+      setFontToComponents(opt, Fonts.PLAIN_FONT);
       JDialog dlg = opt.createDialog(parent, title);
       Controls.centerDialog(dlg);
       dlg.setResizable(false);
@@ -674,6 +679,9 @@ public class Dialogs {
       pane.setWantsInput(true);
       pane.setInitialValue(initial);
       pane.setInitialSelectionValue(initial);
+      // Set font to all of the components in the option pane because we calculate font based on
+      // screen resolution and we need the option pane to calculate the correct size of text inside it.
+      setFontToComponents(pane, Fonts.PLAIN_FONT);
       JDialog dlg = pane.createDialog(parent, title);
       dlg.setResizable(false);
       dlg.setVisible(true);
@@ -715,6 +723,9 @@ public class Dialogs {
       ((JTextField) message[1]).setSelectionEnd(initial[0].length());
 
       JOptionPane pane = new JOptionPane(message, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+      // Set font to all of the components in the option pane because we calculate font based on
+      // screen resolution and we need the option pane to calculate the correct size of text inside it.
+      setFontToComponents(pane, Fonts.PLAIN_FONT);
       JDialog dlg = pane.createDialog(parent, title);
       dlg.setResizable(false);
       dlg.setVisible(true);

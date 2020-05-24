@@ -20,6 +20,7 @@ import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
 import org.spa.ui.util.Controls;
 import org.spa.ui.util.Dialogs;
+import org.spa.ui.util.Fonts;
 import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
@@ -118,7 +119,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    private void createItemsTable() {
       List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Count, ItemColumn.Price);
       tableModelList = new ArrayList<>();
-      TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(false).build();
+      TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(true).build();
 
       tableManager = new TableManager<>(itemCols, tableModelList, tableConfig);
       tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> shoppingCart.getSelectionModel().setSelection(itemViewInfoToWarehouseItem(selectedModel)));
@@ -127,6 +128,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
          protected List<JMenuItem> getMenuItemsForPopup() {
             JMenuItem item = new JMenuItem("View More...");
             item.setDisplayedMnemonicIndex(0);
+            item.setFont(Fonts.PLAIN_FONT);
             item.addActionListener(e -> {
                WarehouseItem selection = shoppingCart.getSelectionModel().getSelection();
                SwingUtilities.invokeLater(() -> {
@@ -140,6 +142,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
             JMenuItem item2 = new JMenuItem("Remove from cart");
             item2.setDisplayedMnemonicIndex(1);
+            item2.setFont(Fonts.PLAIN_FONT);
             item2.addActionListener(e -> {
                WarehouseItem selection = shoppingCart.getSelectionModel().getSelection();
                SwingUtilities.invokeLater(() -> {

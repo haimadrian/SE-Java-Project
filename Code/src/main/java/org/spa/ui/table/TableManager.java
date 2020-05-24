@@ -58,7 +58,8 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       mainPanel.addComponentListener(new ComponentAdapter() {
          @Override
          public void componentResized(ComponentEvent e) {
-            onResize();
+            // Run it later because we need the up to date vertical scroll width in case it is visible
+            SwingUtilities.invokeLater(() -> onResize());
          }
       });
    }
@@ -159,11 +160,11 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       }
 
       scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-      scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+      scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
       scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
       scrollPane.setMinimumSize(new Dimension(200, Integer.MAX_VALUE));
       scrollPane.setPreferredSize(new Dimension(20, Integer.MAX_VALUE));
-      scrollPane.getViewport().addChangeListener(e -> onResize());
+      //scrollPane.getViewport().addChangeListener(e -> onResize());
    }
 
    /**

@@ -79,14 +79,15 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         tableConfiguration(table);
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
-        //add(shoppingCart.getMainContainer());
+        shoppingCart.getMainContainer().setPreferredSize(new Dimension((int)(mainForm.getPreferredSize().width / 1.5), (int)(mainForm.getPreferredSize().height / 1.5)));
+        add(shoppingCart.getMainContainer());
         add(shoppingCart.getNavigatingComponent());
         add(login);
         add(categoryTree);
         add(searchBar);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, shoppingCart.getMainContainer(), categoryTree);
 //        frameComponent(frame);
 
         //frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - frame.getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - frame.getHeight()/2); // Put frame in the middle

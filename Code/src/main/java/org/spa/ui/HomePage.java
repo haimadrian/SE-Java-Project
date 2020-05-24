@@ -3,6 +3,7 @@ package org.spa.ui;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.cart.ShoppingCartView;
+import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
@@ -23,10 +25,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
     private DefaultTableModel model;
     private JFrame mainForm;
     private ShoppingCartView shoppingCart;
-
-
+    private JLabel lblUsername;
+    private ImageIcon  spaLogo;
     public HomePage(JFrame parent) {
         mainForm = parent;
+        spaLogo = new ImageIcon("homepagestuff.SPALOGO.png","The best electronic store money can buy");
+        ImageIcon icon = new ImageIcon("homepagestuff.SPALOGO.png");
+
         shoppingCart = new ShoppingCartView(mainForm);
         login = new JButton("Login");
         login.addActionListener(new ActionListener() {
@@ -54,6 +59,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
 
 //        tableModel = createTableModel();
         table = new JTable( model );
+        spaLogo = new ImageIcon("C:\\Users\\lshorr\\Documents\\SE-Java-Project\\Code\\src\\main\\resources\\org\\spa\\ui\\homepagestuff\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
+        lblUsername = new JLabel("Hello guest.");
         searchBar = new JTextField("Search for product..."); /*RowFilterUtil.createRowFilter(table);*/
         searchBar.addMouseListener(new MouseAdapter() {
             @Override
@@ -75,7 +82,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         tableConfiguration(table);
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
@@ -84,9 +90,12 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         add(login);
         add(categoryTree);
         add(searchBar);
+        add(lblUsername);
+        JLabel imageContainer = new JLabel(spaLogo);
+        add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername);
 //        frameComponent(frame);
 
         //frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - frame.getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - frame.getHeight()/2); // Put frame in the middle
@@ -206,17 +215,21 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
 
 
     }
-    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar,Component table,Component categoryTree)    {
+    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar,Component table,Component categoryTree,Component imageContainer,Component lblUsername)    {
         layout.putConstraint(SpringLayout.NORTH,login,40,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,login,255,SpringLayout.EAST,searchBar);
-        layout.putConstraint(SpringLayout.WEST,cart,275,SpringLayout.WEST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH,cart,40,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.NORTH,searchBar,40,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,searchBar,450,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,table,170,SpringLayout.WEST, categoryTree);
-        layout.putConstraint(SpringLayout.NORTH,table,100,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.NORTH, categoryTree,100,SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, categoryTree,100,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST,login,460,SpringLayout.EAST,searchBar);
+        layout.putConstraint(SpringLayout.NORTH,cart,80,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,cart,360,SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH,searchBar,80,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,searchBar,500,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.NORTH,table,200,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,table,300,SpringLayout.WEST, categoryTree);
+        layout.putConstraint(SpringLayout.NORTH, categoryTree,200,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, categoryTree,60,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, imageContainer,40,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, imageContainer,60,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, lblUsername,45,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, lblUsername,950,SpringLayout.NORTH, login);
     }
 
     public void readFromFile(DefaultTableModel model,File data) throws FileNotFoundException {

@@ -141,7 +141,7 @@ public class Dialogs {
    protected static volatile boolean waitingDialogShown = false;
    protected static JPanel waitingCancel;
    protected static CancelListener cancelNotifier = null;
-   private static volatile boolean errorDialogShown = false;
+   private static volatile boolean dialogShown = false;
    private static Component mainComponent;
 
    /**
@@ -369,7 +369,7 @@ public class Dialogs {
     * @param title The title of the dialog
     */
    public static void showErrorDialog(Component parent, String text, String detailedErrorText, String title) {
-      if (errorDialogShown) {
+      if (dialogShown) {
          return;
       }
 
@@ -428,7 +428,7 @@ public class Dialogs {
       dialog.addWindowListener(new WindowAdapter() {
          @Override
          public void windowClosed(WindowEvent windowEvent) {
-            errorDialogShown = false;
+            dialogShown = false;
          }
       });
 
@@ -445,7 +445,7 @@ public class Dialogs {
       dialog.setResizable(true);
       Controls.centerDialog(dialog);
       okButton.requestFocus();
-      errorDialogShown = true;
+      dialogShown = true;
       dialog.setVisible(true);
    }
 
@@ -643,6 +643,11 @@ public class Dialogs {
    }
 
    private static boolean doShowDialog(Component parent, String title, String text, int messageType, int optionType, int acceptOption) {
+      if (dialogShown) {
+         return false;
+      }
+
+      dialogShown = true;
       JOptionPane opt = new JOptionPane(text, messageType, optionType) {
          @Override
          public int getMaxCharactersPerLineCount() {
@@ -657,6 +662,7 @@ public class Dialogs {
       dlg.setResizable(false);
       dlg.setVisible(true);
       dlg.dispose();
+      dialogShown = false;
 
       if (opt.getValue() == null || !(opt.getValue() instanceof Integer) || ((Integer)opt.getValue()).intValue() != acceptOption) {
          return false;

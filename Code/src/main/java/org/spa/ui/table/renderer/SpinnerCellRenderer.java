@@ -35,7 +35,7 @@ public class SpinnerCellRenderer extends DefaultTableCellRenderer {
       editor.setHorizontalAlignment(JTextField.CENTER);
       editor.setFont(Fonts.PLAIN_FONT);
       spinner.setValue(Integer.valueOf(count));
-      Controls.doubleComponentWidth(spinner, JButton.class);
+      Controls.increaseComponentWidth(spinner, JButton.class, 1.5);
 
       if (isSelected) {
          spinner.setForeground(table.getSelectionForeground());

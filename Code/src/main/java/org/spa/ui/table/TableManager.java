@@ -58,22 +58,21 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       mainPanel.addComponentListener(new ComponentAdapter() {
          @Override
          public void componentResized(ComponentEvent e) {
-            // Run it later because we need the up to date vertical scroll width in case it is visible
-            SwingUtilities.invokeLater(() -> onResize());
+            onResize();
          }
       });
    }
 
    private void initTable() {
-      //table.setDoubleBuffered(true);
       table.setFont(Fonts.PLAIN_FONT);
-      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       table.setColumnSelectionAllowed(false);
       table.setRowSelectionAllowed(true);
       //noinspection MagicConstant
       table.setSelectionMode(tableConfig.getSelectionMode());
       table.setCellSelectionEnabled(true);
       table.setMinimumSize(new Dimension(200, 100));
+      table.setPreferredScrollableViewportSize(table.getPreferredSize());
       table.getTableHeader().setFont(Fonts.PANEL_HEADING_FONT);
       table.getTableHeader().setReorderingAllowed(tableConfig.isColumnReorderingAllowed());
       table.getTableHeader().setResizingAllowed(tableConfig.isColumnResizingAllowed());
@@ -238,6 +237,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
          if (scrollPane.getVerticalScrollBar().isVisible()) {
             parentWidth -= scrollPane.getVerticalScrollBar().getWidth();
          }
+
          int colWidth = (int)(column.getWidth() * parentWidth);
          tableColumn.setPreferredWidth(colWidth);
          tableColumn.setWidth(colWidth);

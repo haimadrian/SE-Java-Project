@@ -44,7 +44,7 @@ public class CountCellEditor extends DefaultCellEditor {
       editor.setFont(Fonts.PLAIN_FONT);
       editor.addActionListener(actionEvent -> stopCellEditing());
 
-      Controls.doubleComponentWidth(spinner, JButton.class);
+      Controls.increaseComponentWidth(spinner, JButton.class, 1.5);
       spinner.setValue(Integer.valueOf(count));
       spinner.addChangeListener(e -> {
          ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();

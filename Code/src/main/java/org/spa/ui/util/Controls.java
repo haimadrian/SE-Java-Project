@@ -471,32 +471,32 @@ public class Controls {
       }
    }
 
-   public static void doubleComponentWidth(Container comp, Class<?> typeToSearch) {
+   public static void increaseComponentWidth(Container comp, Class<?> typeToSearch, double proportion) {
       if (typeToSearch.isAssignableFrom(comp.getClass())) {
-         setComponentSize((JComponent) comp, comp.getPreferredSize().width * 2, comp.getPreferredSize().height);
+         setComponentSize((JComponent) comp, (int)(comp.getPreferredSize().width * proportion), comp.getPreferredSize().height);
          ((JComponent)comp).setFont(Fonts.BOLD_FONT);
       }
 
       for (Component child : comp.getComponents()) {
          if (child instanceof Container) {
-            doubleComponentWidth((Container)child, typeToSearch);
+            increaseComponentWidth((Container)child, typeToSearch, proportion);
          } else if (child instanceof JComponent) {
-            doubleComponentWidth((JComponent)child, typeToSearch);
+            increaseComponentWidth((JComponent)child, typeToSearch, proportion);
          }
       }
    }
 
-   public static void doubleComponentWidth(JComponent comp, Class<?> typeToSearch) {
+   public static void increaseComponentWidth(JComponent comp, Class<?> typeToSearch, double proportion) {
       if (typeToSearch.isAssignableFrom(comp.getClass())) {
-         setComponentSize((JComponent) comp, comp.getPreferredSize().width * 2, comp.getPreferredSize().height);
+         setComponentSize((JComponent) comp, (int)(comp.getPreferredSize().width * proportion), comp.getPreferredSize().height);
          ((JComponent)comp).setFont(Fonts.BOLD_FONT);
       }
 
       for (Component child : comp.getComponents()) {
          if (child instanceof Container) {
-            doubleComponentWidth((Container)child, typeToSearch);
+            increaseComponentWidth((Container)child, typeToSearch, proportion);
          } else if (child instanceof JComponent) {
-            doubleComponentWidth((JComponent)child, typeToSearch);
+            increaseComponentWidth((JComponent)child, typeToSearch, proportion);
          }
       }
    }

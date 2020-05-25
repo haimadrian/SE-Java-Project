@@ -1,9 +1,11 @@
 package org.spa.ui;
 
+import org.spa.common.util.log.Logger;
+import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
+import org.spa.main.SPAMain;
 import org.spa.ui.cart.ShoppingCartView;
-import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -11,14 +13,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
 
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
+    private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     private JTable table;
-    private TableModel tableModel;
     private JButton login;
     private JTree categoryTree;
     private JTextField searchBar;
@@ -27,11 +28,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
     private ShoppingCartView shoppingCart;
     private JLabel lblUsername;
     private ImageIcon  spaLogo;
-    public HomePage(JFrame parent) {
+    private JPanel textpanel;
+    public HomePage(JFrame parent) throws FileNotFoundException {
+        final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
         mainForm = parent;
-        spaLogo = new ImageIcon("homepagestuff.SPALOGO.png","The best electronic store money can buy");
-        ImageIcon icon = new ImageIcon("homepagestuff.SPALOGO.png");
-
+        File  read = new File(path+"\\data.txt");
+        spaLogo = new ImageIcon(path+"\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
+        categoryTree = new JTree();
         shoppingCart = new ShoppingCartView(mainForm);
         login = new JButton("Login");
         login.addActionListener(new ActionListener() {
@@ -40,8 +43,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
                 LoginView.showLoginView();
             }
         });
-
-        categoryTree = new JTree();
         String[] columnNames = {"Picture", "Item name","Description","Price","Cart","Delete"};
         WarehouseItem[][] data = new WarehouseItem[0][6];
         model = new DefaultTableModel(data, columnNames)
@@ -56,59 +57,63 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
                 super.addRow(rowData);
             }
         };
-
-//        tableModel = createTableModel();
         table = new JTable( model );
-        spaLogo = new ImageIcon("C:\\Users\\lshorr\\Documents\\SE-Java-Project\\Code\\src\\main\\resources\\org\\spa\\ui\\homepagestuff\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
+
         lblUsername = new JLabel("Hello guest.");
-        searchBar = new JTextField("Search for product..."); /*RowFilterUtil.createRowFilter(table);*/
+        searchBar = new JTextField("Search for product...",40); /*RowFilterUtil.createRowFilter(table);*/
         searchBar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 searchBar.setText("");
+
             }
         });
 
-/*        searchBar.addKeyListener(new KeyAdapter() {
+        searchBar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                super.keyReleased(e);
-            }
-        });*/
 
-        File myObj = new File("C:\\Users\\liors\\Documents\\SE-Java-Project\\Code\\src\\main\\java\\ui\\data.txt");
+                super.keyTyped(e);
+                DefaultTableModel table1 = (DefaultTableModel)table.getModel();
+                String searchString = "(?i).*" + searchBar.getText() + ".*";
+                TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+                table.setRowSorter(tr);
+                tr.setRowFilter(RowFilter.regexFilter(searchString));
+                logger.info(searchString);
+            }
+        });
         try {
-            readFromFile(model,myObj);
+            readFromFile(model,read,path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         tableConfiguration(table);
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane, BorderLayout.CENTER);
-        //add(shoppingCart.getMainContainer());
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(shoppingCart.getNavigatingComponent());
         add(login);
         add(categoryTree);
         add(searchBar);
         add(lblUsername);
+        scrollPane.setPreferredSize(new Dimension(725, 400));
         JLabel imageContainer = new JLabel(spaLogo);
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
         ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername);
-//        frameComponent(frame);
+        add(scrollPane);
 
-        //frame.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - frame.getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - frame.getHeight()/2); // Put frame in the middle
 
     }
-    private void search (KeyEvent evt)
-    {
-        DefaultTableModel table1 = (DefaultTableModel)table.getModel();
-        String searchString =searchBar.getText().toLowerCase();
-        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
-        table.setRowSorter(tr);
-        tr.setRowFilter(RowFilter.regexFilter(searchString));
-    }
+/*    private void search (KeyEvent evt)*/
+/*    {*/
+/*        logger.info("search has been activted");*/
+/*        DefaultTableModel table1 = (DefaultTableModel)table.getModel();*/
+/*        String searchString =searchBar.getText().toLowerCase();*/
+/*        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);*/
+/*        table.setRowSorter(tr);*/
+/*        tr.setRowFilter(RowFilter.regexFilter(searchString));*/
+/*    }*/
     private static TableModel createTableModel() {
         Vector<String> columns = new Vector<>(Arrays.asList("Picture", "Item name","Description","Price","Cart","Delete"));
         Vector<Vector<Object>> rows = new Vector<>();
@@ -123,12 +128,11 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         };
         return model;
     }
-
     public void tableConfiguration(JTable table){
         table.setRowHeight(80);
         table.setRowMargin(50);
         //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        table.setPreferredSize(new Dimension(725, 400));
+
         table.getTableHeader().setReorderingAllowed(false);
         //For user - we hide the delete button
 /*        if(isAdmin()) {
@@ -217,10 +221,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
     }
     public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar,Component table,Component categoryTree,Component imageContainer,Component lblUsername)    {
         layout.putConstraint(SpringLayout.NORTH,login,40,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,login,460,SpringLayout.EAST,searchBar);
+        layout.putConstraint(SpringLayout.WEST,login,200,SpringLayout.EAST,searchBar);
         layout.putConstraint(SpringLayout.NORTH,cart,80,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,cart,360,SpringLayout.WEST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH,searchBar,80,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.NORTH,searchBar,135,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,searchBar,500,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.NORTH,table,200,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,table,300,SpringLayout.WEST, categoryTree);
@@ -229,28 +233,44 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         layout.putConstraint(SpringLayout.NORTH, imageContainer,40,SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, imageContainer,60,SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.NORTH, lblUsername,45,SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, lblUsername,950,SpringLayout.NORTH, login);
+        layout.putConstraint(SpringLayout.WEST, lblUsername,915,SpringLayout.NORTH, searchBar);
     }
 
-    public void readFromFile(DefaultTableModel model,File data) throws FileNotFoundException {
+    public void readFromFile(DefaultTableModel model,File data,String path) throws FileNotFoundException {
 
-        String url;
+        String imgName;
         String title;
         String description;
         String price;
         String cart="Add to cart";
         Scanner myReader = new Scanner(data);
         while (myReader.hasNextLine()) {
-            url = myReader.nextLine();
+            imgName = myReader.nextLine();
             title = myReader.nextLine();
             description = myReader.nextLine();
             price = myReader.nextLine();
-            Icon icon = new ImageIcon(url);
+            Icon icon = new ImageIcon(path+"\\"+imgName);
             Object[] object = {icon, title, description, price, cart, "Delete"};
             model.addRow(object);
         }
         myReader.close();
     }
+/*    public void searchTableContents(String searchString) {
+        DefaultTableModel currtableModel = (DefaultTableModel) table.getModel();
+        //To empty the table before search
+        currtableModel.setRowCount(0);
+        //To search for contents from original table content
+        for (Object rows : originalTableModel) {
+            Vector rowVector = (Vector) rows;
+            for (Object column : rowVector) {
+                if (column.toString().contains(searchString)) {
+                    //content found so adding to table
+                    currtableModel.addRow(rowVector);
+                    break;
+                }
+            }
 
-
+        }
+    }*/
 }
+

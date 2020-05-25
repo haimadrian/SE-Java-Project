@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class SPAMain {
         Controls.tweakPLAF();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         logger.info("Starting application");
         JFrame mainForm = new JFrame("SPA Store");
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

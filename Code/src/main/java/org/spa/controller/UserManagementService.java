@@ -70,7 +70,10 @@ public class UserManagementService {
       }
       return null;
    }
-
+   public void logout(){
+      loggedInUser = new Guest();
+      notifyUserLogin();
+   }
    public User getLoggedInUser() {
       return loggedInUser;
    }

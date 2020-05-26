@@ -23,7 +23,7 @@ public class UserRepository implements Repository<User> {
         dummy.add(new SystemAdmin("idan","1234"));
         dummy.add(new Customer("haim123","1234","054310257", new Date(),new Date(),
                 "What is your favourite color ?", "red"));
-        dummy.add(new Admin("Lior123", "4526","0523107",new Date(),new Date(),
+        dummy.add(new Admin("Lior123", "1","0523107",new Date(),new Date(),
                 "What is your favourite color ?", "blue", 5005, 100));
         dummy.add(new Customer("Java123","1212","002500",new Date(),new Date(),
                 "What is your favourite color ?", "dark-chocolate"));

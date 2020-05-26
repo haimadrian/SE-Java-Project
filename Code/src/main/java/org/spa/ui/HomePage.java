@@ -7,7 +7,7 @@ import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.main.SPAMain;
 import org.spa.ui.cart.ShoppingCartView;
-
+import org.spa.ui.LoginView;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
@@ -43,7 +43,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginView.showLoginView();
+                LoginView lv= new LoginView();
+                lv.LoginView();
             }
 
         });

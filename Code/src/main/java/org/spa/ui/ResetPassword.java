@@ -59,9 +59,14 @@ public class ResetPassword {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (new String(newPasswordText.getPassword()).equals(new String(reEnterPasswordText.getPassword()))) {
+                String newPass = new String(newPasswordText.getPassword());
+                String reEnterPass = new String(reEnterPasswordText.getPassword());
+
+                if (newPass.length() == 0 || reEnterPass.length() == 0)
+                    res.setText("Fill the empty fields!");
+                else if (newPass.equals(reEnterPass)) {
                     showMessageDialog(null, "Password changed successfully!");
-                    SPAApplication.getInstance().getUserManagementService().updateUser(currentUser, new String(newPasswordText.getPassword()));
+                    SPAApplication.getInstance().getUserManagementService().updateUser(currentUser, newPass);
                     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
                 } else {
                     res.setText("Password do not match!");

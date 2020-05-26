@@ -57,14 +57,15 @@ public class ItemsWarehouse {
     * Add a new item to the items warehouse. This will override any amount of this item in case it is already existing in the warehouse.
     * @param id
     * @param name
+    * @param category
     * @param description
     * @param price
     * @param profitPercent
     * @param discountPercent
     * @param amount
     */
-   public void addItem(String id, String name, String description, double price, double profitPercent, double discountPercent, int amount) {
-      WarehouseItem item = new WarehouseItem(id, name, description, price, profitPercent, discountPercent, amount);
+   public void addItem(String id,String category, String name, String description, double price, double profitPercent, double discountPercent, int amount) {
+      WarehouseItem item = new WarehouseItem(id,category, name, description, price, profitPercent, discountPercent, amount);
       idToItem.put(item.getId(), item);
       logger.info("Item added to warehouse: " + item);
    }
@@ -113,10 +114,10 @@ public class ItemsWarehouse {
    }
 
    private static WarehouseItem itemToWarehouseItem(Item item) {
-      return new WarehouseItem(item.getId(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
+      return new WarehouseItem(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
 
    private static Item warehouseItemToItem(WarehouseItem item) {
-      return new Item(item.getId(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
+      return new Item(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
 }

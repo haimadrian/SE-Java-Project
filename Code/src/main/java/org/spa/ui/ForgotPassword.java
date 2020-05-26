@@ -92,6 +92,7 @@ public class ForgotPassword {
                 if(userAnswer.equals(answer.getText())){
                     ResetPassword rp = new ResetPassword();
                     rp.ResetPassword();
+                    rp.currentUser(u);
                     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
                 }
                 else

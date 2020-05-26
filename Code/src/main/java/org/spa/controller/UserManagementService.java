@@ -4,6 +4,8 @@ import org.spa.common.Repository;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.cart.ShoppingCartObserver;
+import org.spa.controller.item.WarehouseItem;
 import org.spa.model.dal.UserRepository;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Guest;
@@ -11,7 +13,9 @@ import org.spa.model.user.Admin;
 import org.spa.model.user.SystemAdmin;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class UserManagementService {
 
@@ -21,11 +25,13 @@ public class UserManagementService {
    // private User user;
    //  private dbAccess;
    private User loggedInUser;
+   private final Set<UserManagementServiceObserver> observers;
 
    public UserManagementService() {
 
       userMap = new HashMap<>(1000); // Yeah sure...
       userRepository = new UserRepository();
+      observers = new HashSet<>();
    }
 
    /**
@@ -34,8 +40,13 @@ public class UserManagementService {
    public void start() {
       loggedInUser = new Guest();
       // Load data into memory
-      userRepository.selectAll().forEach(user -> userMap.put(user.getUserId(),user));
+        userRepository.selectAll().forEach(user -> userMap.put(user.getUserId(),user));
    }
+
+   public void stop() {
+      // Save data to disk
+   }
+
    public Map<String, User> getUserMap(){
       return userMap;
    }
@@ -45,12 +56,14 @@ public class UserManagementService {
       if (u instanceof Customer) {
          if (((Customer) u).getPassword().equals(pass)) {
             this.loggedInUser = u;
+            notifyUserLogin();
             logger.info(u.getUserId() + " Logged in");
             return u;
          }
       } else if (u instanceof SystemAdmin) {
          if(((SystemAdmin) u).getKey().equals(pass)) {
             this.loggedInUser = u;
+            notifyUserLogin();
             logger.info(u.getUserId() + " Logged in");
             return u;
          }
@@ -84,8 +97,14 @@ public class UserManagementService {
       }
    }
 
-   public void updateUser(User user) {
-      // TODO
+   public void updateUser(User user, String pass) {
+      User u = userMap.get(user.getUserId());
+      if (u instanceof Customer) {
+         ((Customer) u).setPassword(pass);
+      } else if (u instanceof SystemAdmin) {
+         ((SystemAdmin) u).setKey(pass);
+      }
+      // update in Repository
    }
 
    public User findUser(User user) {
@@ -96,22 +115,30 @@ public class UserManagementService {
    }
 
    public boolean isExist(String str) {
-      if(userMap.containsKey(str))
-         return true;
-      return false;
+      return (userMap.containsKey(str));
    }
 
    public void deleteUser(User user) {
       userMap.remove(user.getUserId());
+      // delete in Repository
    }
 
-   /**
-    * @param id ID of the item to retrieve
-    * @return The item with the specified ID, or <code>null</code> if there is no such item in warehouse
-    */
    public User getUser(String userId) {
       User u = userMap.get(userId);
       return u;
    }
 
+   public void registerObserver(UserManagementServiceObserver observer) {
+      observers.add(observer);
+   }
+
+   public void unregisterObserver(UserManagementServiceObserver observer) {
+      observers.remove(observer);
+   }
+
+   private void notifyUserLogin() {
+      for (UserManagementServiceObserver observer : observers) {
+         observer.userLogin(loggedInUser);
+      }
+   }
 }

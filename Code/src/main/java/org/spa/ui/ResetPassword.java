@@ -13,6 +13,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class ResetPassword {
 
     private JFrame frame;
+    private User currentUser;
 
     public void ResetPassword() {
         frame = new JFrame("Reset Password");
@@ -58,15 +59,18 @@ public class ResetPassword {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-               if(new String(newPasswordText.getPassword()).equals(new String(reEnterPasswordText.getPassword()))){
-                   showMessageDialog(null, "Password changed successfully!");
-                   // updateUser
-                   frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-               }
-                else {
+                if (new String(newPasswordText.getPassword()).equals(new String(reEnterPasswordText.getPassword()))) {
+                    showMessageDialog(null, "Password changed successfully!");
+                    SPAApplication.getInstance().getUserManagementService().updateUser(currentUser, new String(newPasswordText.getPassword()));
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                } else {
                     res.setText("Password do not match!");
                 }
             }
         });
+    }
+
+    public void currentUser(User user) {
+        this.currentUser = user;
     }
 }

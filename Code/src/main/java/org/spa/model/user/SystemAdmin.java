@@ -13,6 +13,10 @@ public class SystemAdmin extends AbstractUser implements User {
         this.key = key;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getKey() {
         return key;
     }

@@ -1,5 +1,6 @@
 package org.spa.ui;
 
+import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.item.WarehouseItem;
@@ -20,6 +21,7 @@ import java.util.Vector;
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     private JTable table;
+    private JButton management;
     private JButton login;
     private JTree categoryTree;
     private JTextField searchBar;
@@ -35,6 +37,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         File  read = new File(path+"\\data.txt");
         spaLogo = new ImageIcon(path+"\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
         categoryTree = new JTree();
+        management = new JButton("Management");
         shoppingCart = new ShoppingCartView(mainForm);
         login = new JButton("Login");
         login.addActionListener(new ActionListener() {
@@ -42,6 +45,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
             public void actionPerformed(ActionEvent e) {
                 LoginView.showLoginView();
             }
+
         });
         String[] columnNames = {"Picture", "Item name","Description","Price","Cart","Delete"};
         WarehouseItem[][] data = new WarehouseItem[0][6];
@@ -58,9 +62,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
             }
         };
         table = new JTable( model );
-
         lblUsername = new JLabel("Hello guest.");
-        searchBar = new JTextField("Search for product...",40); /*RowFilterUtil.createRowFilter(table);*/
+        searchBar = new JTextField("Search for product...",40);
         searchBar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -68,7 +71,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
 
             }
         });
-
         searchBar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -92,15 +94,18 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(shoppingCart.getNavigatingComponent());
         add(login);
+        //if(someone logged in) -> Change text to logout -> if click again  -> change text login again
         add(categoryTree);
         add(searchBar);
         add(lblUsername);
+        add(management);
+        management.setVisible(false);
         scrollPane.setPreferredSize(new Dimension(725, 400));
         JLabel imageContainer = new JLabel(spaLogo);
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername,management);
         add(scrollPane);
 
 
@@ -114,6 +119,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
 /*        table.setRowSorter(tr);*/
 /*        tr.setRowFilter(RowFilter.regexFilter(searchString));*/
 /*    }*/
+
     private static TableModel createTableModel() {
         Vector<String> columns = new Vector<>(Arrays.asList("Picture", "Item name","Description","Price","Cart","Delete"));
         Vector<Vector<Object>> rows = new Vector<>();
@@ -145,7 +151,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
             table.getColumnModel().getColumn(5).setMinWidth(0);
             table.getColumnModel().getColumn(5).setMaxWidth(0);
         }*/
-
+        table.setAutoCreateRowSorter(true);
         table.getColumnModel().getColumn(1).setWidth(100);
         table.getColumnModel().getColumn(1).setMinWidth(100);
         table.getColumnModel().getColumn(1).setMaxWidth(100);
@@ -219,7 +225,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
 
 
     }
-    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar,Component table,Component categoryTree,Component imageContainer,Component lblUsername)    {
+    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar
+                        ,Component table,Component categoryTree,Component imageContainer,Component lblUsername,Component management)    {
+        layout.putConstraint(SpringLayout.NORTH,management,70,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,management,150,SpringLayout.EAST,searchBar);
         layout.putConstraint(SpringLayout.NORTH,login,40,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,login,200,SpringLayout.EAST,searchBar);
         layout.putConstraint(SpringLayout.NORTH,cart,80,SpringLayout.NORTH,contentPane);
@@ -238,39 +247,28 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem> {
 
     public void readFromFile(DefaultTableModel model,File data,String path) throws FileNotFoundException {
 
+        String id;
+        String category;
         String imgName;
-        String title;
+        String name;
         String description;
         String price;
+        String profitPrecent;
+        String discountPercent;
+        String count;
         String cart="Add to cart";
         Scanner myReader = new Scanner(data);
         while (myReader.hasNextLine()) {
             imgName = myReader.nextLine();
-            title = myReader.nextLine();
+            name = myReader.nextLine();
             description = myReader.nextLine();
             price = myReader.nextLine();
             Icon icon = new ImageIcon(path+"\\"+imgName);
-            Object[] object = {icon, title, description, price, cart, "Delete"};
+//            SPAApplication.getInstance().getItemsWarehouse().addItem();
+            Object[] object = {icon, name, description, price, cart, "Delete"};
             model.addRow(object);
         }
         myReader.close();
     }
-/*    public void searchTableContents(String searchString) {
-        DefaultTableModel currtableModel = (DefaultTableModel) table.getModel();
-        //To empty the table before search
-        currtableModel.setRowCount(0);
-        //To search for contents from original table content
-        for (Object rows : originalTableModel) {
-            Vector rowVector = (Vector) rows;
-            for (Object column : rowVector) {
-                if (column.toString().contains(searchString)) {
-                    //content found so adding to table
-                    currtableModel.addRow(rowVector);
-                    break;
-                }
-            }
-
-        }
-    }*/
 }
 

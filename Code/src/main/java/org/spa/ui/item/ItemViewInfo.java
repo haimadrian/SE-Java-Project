@@ -13,6 +13,7 @@ import java.text.DecimalFormat;
 public class ItemViewInfo implements TableModelIfc {
    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
    private final String id;
+   private String category;
    private String name;
    private String description;
    private double price;
@@ -20,15 +21,20 @@ public class ItemViewInfo implements TableModelIfc {
    private double discountPercent;
    private int count;
 
-   public ItemViewInfo(String id, String name, String description, double price, double profitPercent, double discountPercent, int count) {
+   public ItemViewInfo(String id, String name,String category, String description, double price, double profitPercent, double discountPercent, int count) {
       this.id = id;
       this.name = name;
+      this.category = category;
       this.description = description;
       this.price = price;
       this.profitPercent = profitPercent;
       this.discountPercent = discountPercent;
       this.count = count;
    }
+
+   public String getCategory() {return category;}
+
+   public void setCategory(String category) {this.category = category;}
 
    public String getId() {
       return id;

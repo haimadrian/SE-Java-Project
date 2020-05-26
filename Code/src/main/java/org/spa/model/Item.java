@@ -9,14 +9,16 @@ import java.util.Objects;
 public class Item {
    private final String id;
    private final String name;
+   private String category;
    private String description;
    private double price;
    private double profitPercent;
    private double discountPercent;
    private int count;
 
-   public Item(String id, String name, String description, double price, double profitPercent, double discountPercent, int count) {
+   public Item(String id, String category, String name, String description, double price, double profitPercent, double discountPercent, int count) {
       this.id = id;
+      this.category = category;
       this.name = name;
       this.description = description;
       this.price = price;
@@ -24,6 +26,10 @@ public class Item {
       this.discountPercent = discountPercent;
       this.count = count;
    }
+
+   public String getCategory() {return category;}
+
+   public void setCategory(String category){this.category= category;}
 
    public String getId() {
       return id;

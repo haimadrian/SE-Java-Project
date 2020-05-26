@@ -8,7 +8,12 @@ public class SystemAdmin extends AbstractUser implements User {
 
     private String key;
 
-    public SystemAdmin(String key ) {
+    public SystemAdmin(String userId, String key ) {
+        this.userId = userId;
+        this.key = key;
+    }
+
+    public void setKey(String key) {
         this.key = key;
     }
 

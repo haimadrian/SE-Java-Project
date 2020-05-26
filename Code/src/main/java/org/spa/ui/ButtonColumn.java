@@ -1,4 +1,8 @@
 package org.spa.ui;
+import org.spa.common.SPAApplication;
+import org.spa.controller.cart.ShoppingCart;
+import org.spa.controller.cart.ShoppingCartException;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -221,26 +225,21 @@ public class ButtonColumn extends AbstractCellEditor
     }
 
     public void mouseClicked(MouseEvent e) {
-        Action delete = new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-                JTable table = (JTable)e.getSource();
-                int modelRow = Integer.parseInt( e.getActionCommand() );
-                ((DefaultTableModel)table.getModel()).removeRow(modelRow);
-            }
-        };
-        ButtonColumn buttonColumn = new ButtonColumn(table, delete, 5);
-        buttonColumn.setMnemonic(KeyEvent.VK_D);
-       /* Action count = new AbstractAction() {
+        Action count = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JButton cart = (JButton) e.getSource();
+                ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();
+                JTable table = (JTable)e.getSource();
                 int modelRow = Integer.parseInt( e.getActionCommand() );
+                String itemId= (String) ((DefaultTableModel)table.getModel()).getValueAt(modelRow,0);
+                try {
+                    shoppingCart.add(itemId,1);
+                } catch (ShoppingCartException ex) {
+                    ex.printStackTrace();
+                }
             }
         };
-        ButtonColumn buttonColumn1 = new ButtonColumn(table, count, 4);
-*/
+        ButtonColumn buttonColumn = new ButtonColumn(table, count, 5);
     }
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}

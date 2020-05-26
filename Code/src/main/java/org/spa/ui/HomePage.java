@@ -40,10 +40,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private JLabel lblUsername;
     private ImageIcon  spaLogo;
     private final UserManagementService userManagement;
-
+    final ItemsWarehouse itemsWarehouse;
 
     public HomePage(JFrame parent) throws FileNotFoundException {
-
+        itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         userManagement = SPAApplication.getInstance().getUserManagementService();
         userManagement.registerObserver(this);
         final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
@@ -52,7 +52,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         spaLogo = new ImageIcon(path+"\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
         categoryTree = new JTree();
         management = new JButton("Management");
-
         shoppingCart = new ShoppingCartView(mainForm);
         logout = new JButton("Logout");
         logout.setVisible(false);
@@ -74,19 +73,14 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 login.setVisible(true);
             }
         });
-        String[] columnNames = {"Picture", "Item name","Description","Price","Cart","Delete"};
-        WarehouseItem[][] data = new WarehouseItem[0][6];
+        String[] columnNames = {"Barcode","Picture", "Item name","Description","Price","Cart"};
+        WarehouseItem[][] data = new WarehouseItem[0][5];
         model = new DefaultTableModel(data, columnNames)
         {
             @Override
             public Class getColumnClass(int column)
             {
                 return getValueAt(0, column).getClass();
-            }
-            public void addRow(String barcode,ImageIcon icon,String title,String description) {
-                //super.addRow();
-              /*  Object[] rowData = {barcode,icon,title,description};
-                super.addRow(rowData);*/
             }
         };
         table = new JTable( model );
@@ -101,7 +95,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         searchBar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-
                 super.keyTyped(e);
                 DefaultTableModel table1 = (DefaultTableModel)table.getModel();
                 String searchString = "(?i).*" + searchBar.getText() + ".*";
@@ -137,17 +130,11 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     }
 
     private static TableModel createTableModel() {
-        final ItemsWarehouse itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
-
-        Vector<String> columns = new Vector<>(Arrays.asList("Picture", "Item name","Description","Price","Cart","Delete"));
+        Vector<String> columns = new Vector<>(Arrays.asList("Barcode", "Picture", "Item name", "Description", "Price", "Cart"));
         Vector<Vector<Item>> rows = new Vector<>();
-
-           /* Vector<Object> v = new Vector<>();
-            rows.add(v);*/
-            DefaultTableModel model = new DefaultTableModel(rows, columns) {
+        DefaultTableModel model = new DefaultTableModel(rows, columns) {
             @Override
-            public Class getColumnClass(int column)
-            {
+            public Class getColumnClass(int column) {
                 return getValueAt(0, column).getClass();
             }
         };
@@ -159,41 +146,31 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         table.getTableHeader().setReorderingAllowed(false);
-        //For user - we hide the delete button
-/*        if(isAdmin()) {
-            table.getColumnModel().getColumn(5).setWidth(100);
-            table.getColumnModel().getColumn(5).setMinWidth(100);
-            table.getColumnModel().getColumn(5).setMaxWidth(100);
-        }
-        else{
-            table.getColumnModel().getColumn(5).setWidth(0);
-            table.getColumnModel().getColumn(5).setMinWidth(0);
-            table.getColumnModel().getColumn(5).setMaxWidth(0);
-        }*/
         table.setAutoCreateRowSorter(true);
-        table.getColumnModel().getColumn(1).setWidth(100);
-        table.getColumnModel().getColumn(1).setMinWidth(100);
-        table.getColumnModel().getColumn(1).setMaxWidth(100);
-        table.getColumnModel().getColumn(2).setWidth(300);
-        table.getColumnModel().getColumn(2).setMinWidth(300);
-        table.getColumnModel().getColumn(2).setMaxWidth(300);
-        table.getColumnModel().getColumn(4).setWidth(100);
-        table.getColumnModel().getColumn(4).setMinWidth(100);
-        table.getColumnModel().getColumn(4).setMaxWidth(100);
+
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(2).setWidth(100);
+        table.getColumnModel().getColumn(2).setMinWidth(100);
+        table.getColumnModel().getColumn(2).setMaxWidth(100);
+        table.getColumnModel().getColumn(3).setWidth(300);
+        table.getColumnModel().getColumn(3).setMinWidth(300);
+        table.getColumnModel().getColumn(3).setMaxWidth(300);
+        table.getColumnModel().getColumn(5).setWidth(100);
+        table.getColumnModel().getColumn(5).setMinWidth(100);
+        table.getColumnModel().getColumn(5).setMaxWidth(100);
 
         //Makes the text be in the center
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for (int i = 1; i < 4; i++) {
+        for (int i = 2; i < 5; i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         table.setPreferredScrollableViewportSize(table.getPreferredSize());
-        ButtonColumn cart = new ButtonColumn(table,null,4);
-        ButtonColumn delete = new ButtonColumn(table,null,5);
+        ButtonColumn cart = new ButtonColumn(table,null,5);
         table.getColumn("Cart").setCellRenderer(cart);
-        table.getColumn("Delete").setCellRenderer(delete);
     }
-    private boolean DEBUG = false;
 
     @Override
     public void close() {
@@ -251,13 +228,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         }
     }
 
-    public void frameComponent(JFrame frame) {
-        SpringLayout layout = new SpringLayout();
-
-        //searchBar.setPreferredSize(new Dimension(100, 30)); //NOT WORKING
-
-
-    }
     public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar
                                  ,Component table,Component categoryTree,Component imageContainer,Component lblUsername,
                                   Component management,Component logout)    {
@@ -282,7 +252,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     }
 
     public void readFromFile(DefaultTableModel model,File data,String path) throws FileNotFoundException {
- /*       String id;
+        String id;
         String category;
         String imgName;
         String name;
@@ -295,17 +265,21 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         Scanner myReader = new Scanner(data);
         while (myReader.hasNextLine()) {
             imgName = myReader.nextLine();
+            id = myReader.nextLine();
+            category = myReader.nextLine();
             name = myReader.nextLine();
             description = myReader.nextLine();
             price = myReader.nextLine();
+            profitPrecent = myReader.nextLine();
+            discountPercent = myReader.nextLine();
+            count = myReader.nextLine();
             Icon icon = new ImageIcon(path+"\\"+imgName);
-//            SPAApplication.getInstance().getItemsWarehouse().addItem();
-            Object[] object = {icon, name, description, price, cart, "Delete"};
+            itemsWarehouse.addItem(id,category,name,description,Double.parseDouble(price)
+                    ,Double.parseDouble(profitPrecent),Double.parseDouble(discountPercent),Integer.parseInt(count));
+            Object[] object = {id,icon, name, description, price, cart};
             model.addRow(object);
         }
         myReader.close();
-        */
-
     }
 }
 

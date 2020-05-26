@@ -1,6 +1,8 @@
 package org.spa.ui;
 
 import org.spa.common.User;
+import org.spa.controller.UserManagementService;
+import org.spa.controller.UserType;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Admin;
 import org.spa.model.user.SystemAdmin;
@@ -220,7 +222,7 @@ class Registration
         tanswer.setLineWrap(true);
         c.add(tanswer);
 
-        if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType().equals("SystemAdmin")) {
+        if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == (UserType.SysAdmin)) {
             usertype = new JLabel("User Type");
             usertype.setFont(new Font("Arial", Font.PLAIN, 20));
             usertype.setSize(100, 20);
@@ -281,14 +283,14 @@ class Registration
                 {
                     res.setText("Username Already Exist");
                 }
-                else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType().equals("Guest")) {
+                else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == (UserType.Guest)) {
                     Customer customer = new Customer(tname.getText(), new String(tpassword.getPassword()), tmno.getText(),
                             new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
                             new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String) tanswer.getText());
                     SPAApplication.getInstance().getUserManagementService().createUser(customer);
                     showMessageDialog(null, "Registration Completed Successfully");
                     dispose();
-                } else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType().equals("SystemAdmin")) {
+                } else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == (UserType.SysAdmin)) {
                     String data = (String) tusertype.getSelectedItem();
                     switch (data) {
                         case "System Admin":

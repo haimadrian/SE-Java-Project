@@ -22,7 +22,6 @@ public class UserManagementService {
    //  private dbAccess;
    private User loggedInUser;
 
-
    public UserManagementService() {
 
       userMap = new HashMap<>(1000); // Yeah sure...
@@ -63,15 +62,15 @@ public class UserManagementService {
       return loggedInUser;
    }
 
-   public String getLoggedInUserType() {
+   public UserType getLoggedInUserType() {
       if(loggedInUser instanceof SystemAdmin)
-         return "SystemAdmin";
+         return UserType.SysAdmin;
       else if (loggedInUser instanceof Admin)
-         return "Admin";
+         return UserType.Admin;
       else if (loggedInUser instanceof Customer)
-         return "Customer";
+         return UserType.Customer;
       else
-         return "Guest";
+         return UserType.Guest;
    }
 
    public void createUser(User user) {
@@ -111,7 +110,8 @@ public class UserManagementService {
     * @return The item with the specified ID, or <code>null</code> if there is no such item in warehouse
     */
    public User getUser(String userId) {
-      return userMap.get(userId);
+      User u = userMap.get(userId);
+      return u;
    }
 
 }

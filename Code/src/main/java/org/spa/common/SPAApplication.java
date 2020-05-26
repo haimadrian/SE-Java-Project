@@ -1,5 +1,6 @@
 package org.spa.common;
 
+import org.spa.controller.order.OrderSystem;
 import org.spa.model.dal.UserRepository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
@@ -26,6 +27,7 @@ public class SPAApplication {
    private final ShoppingCart shoppingCart;
    private final UserManagementService userManagementService;
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
+   private final OrderSystem orderSystem;
 
    //private final Repository<User> userRepository;
    // Disallow creation of this class from outside
@@ -35,8 +37,7 @@ public class SPAApplication {
       shoppingCart = new ShoppingCart();
       userManagementService = new UserManagementService();
       selectionModel = new SelectionModelManager<>();
-
-//      userRepository = new UserRepository();
+      orderSystem = new OrderSystem();
    }
 
    /**
@@ -54,6 +55,7 @@ public class SPAApplication {
       itemsWarehouse.start();
       alertSystem.start();
       userManagementService.start();
+      orderSystem.start();
    }
 
    /**

@@ -10,6 +10,7 @@ import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.main.SPAMain;
+import org.spa.model.Item;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
@@ -39,10 +40,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private JLabel lblUsername;
     private ImageIcon  spaLogo;
     private final UserManagementService userManagement;
-    private final ItemsWarehouse itemsWarehouse;
+
 
     public HomePage(JFrame parent) throws FileNotFoundException {
-        itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
+
         userManagement = SPAApplication.getInstance().getUserManagementService();
         userManagement.registerObserver(this);
         final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
@@ -136,8 +137,11 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     }
 
     private static TableModel createTableModel() {
+        final ItemsWarehouse itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
+
         Vector<String> columns = new Vector<>(Arrays.asList("Picture", "Item name","Description","Price","Cart","Delete"));
-        Vector<Vector<Object>> rows = new Vector<>();
+        Vector<Vector<Item>> rows = new Vector<>();
+
            /* Vector<Object> v = new Vector<>();
             rows.add(v);*/
             DefaultTableModel model = new DefaultTableModel(rows, columns) {
@@ -207,9 +211,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     }
 
     @Override
-    public void updateStatus(String text) {
-
-    }
+    public void updateStatus(String text) {}
 
     @Override
     public JComponent getNavigatingComponent() {
@@ -257,7 +259,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
 
     }
     public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar
-                        ,Component table,Component categoryTree,Component imageContainer,Component lblUsername,Component management,Component logout)    {
+                                 ,Component table,Component categoryTree,Component imageContainer,Component lblUsername,
+                                  Component management,Component logout)    {
         layout.putConstraint(SpringLayout.NORTH,management,70,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,management,150,SpringLayout.EAST,searchBar);
         layout.putConstraint(SpringLayout.NORTH,login,40,SpringLayout.NORTH,contentPane);
@@ -279,8 +282,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     }
 
     public void readFromFile(DefaultTableModel model,File data,String path) throws FileNotFoundException {
-
-        String id;
+ /*       String id;
         String category;
         String imgName;
         String name;
@@ -302,6 +304,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             model.addRow(object);
         }
         myReader.close();
+        */
+
     }
 }
 

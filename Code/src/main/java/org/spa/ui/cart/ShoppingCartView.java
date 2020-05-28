@@ -90,21 +90,21 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
             return;
          }
 
-         new Thread(() -> {
-            // Save order
-            try {
-               ActionManager.executeAction(ActionType.Purchase);
-               SwingUtilities.invokeLater(() -> {
-                  Dialogs.hideWaitingDialog();
-                  Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
-                  close();
-               });
-            } catch (Exception e1) {
-               logger.error("Error has occurred while saving order.", e1);
-               Dialogs.showSimpleErrorDialog(getParentDialog(), "Error has occurred while placing order: " + e1.getMessage(), "Error");
-            }
-         }, "Order Creation Thread").start();
-         Dialogs.showWaitingDialog(this, "Placing your order...");
+         Dialogs.executeWithWaitingDialog(() -> {
+                  // Save order
+                  try {
+                     ActionManager.executeAction(ActionType.Purchase);
+                     SwingUtilities.invokeLater(() -> {
+                        Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
+                        SwingUtilities.invokeLater(this::close);
+                     });
+                  } catch (Exception e1) {
+                     logger.error("Error has occurred while saving order.", e1);
+                     SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), "Error has occurred while placing order: " + e1.getMessage(), "Error"));
+                  }
+               },
+               getParentDialog(),
+               "Placing your order...");
       };
 
       SPAApplication.getInstance().getUserManagementService().registerObserver(loggedInUser -> {
@@ -146,11 +146,15 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       }
 
       clearCartButton = createButton("Clear Cart", e -> {
+               if (shoppingCart.count() == 0) {
+                  return;
+               }
+
                if (Dialogs.showQuestionDialog(getParentDialog(), "This action will remove all items from cart.\nContinue?.", "Clear Cart")) {
                   try {
                      ActionManager.executeAction(ActionType.ClearCart);
                   } catch (ActionException actionException) {
-                     SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
+                     SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
                   }
                }
             },
@@ -205,7 +209,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                            params.put("itemId", selection.getId());
                            ActionManager.executeAction(ActionType.RemoveFromCart, params);
                         } catch (ActionException actionException) {
-                           SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
+                           SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
                         }
                      }
                   } else {

@@ -67,10 +67,7 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
 
       title = Controls.createTitle("Alerts");
 
-      clearButton = createButton("Clear All", e -> {
-               alertSystem.clear();
-            },
-            true);
+      clearButton = createButton("Clear All", e -> alertSystem.clear(), true);
 
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -99,9 +96,7 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
             item.addActionListener(e -> {
                AlertViewInfo selectedModel = tableManager.getSelectedModel();
                if (selectedModel != null) {
-                  logger.info("Alert has been acknowledged. Alert: " + selectedModel);
-                  tableModelList.remove(selectedModel);
-                  tableManager.refresh();
+                  alertSystem.acknowledge(selectedModel.getKey());
                }
             });
             return Arrays.asList(item);

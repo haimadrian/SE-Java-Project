@@ -5,13 +5,14 @@ import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.ui.HomePage;
+import org.spa.ui.control.ImageViewer;
 import org.spa.ui.util.Controls;
+import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -31,30 +32,113 @@ public class SPAMain {
         Controls.tweakPLAF();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         logger.info("Starting application");
-        JFrame mainForm = new JFrame("SPA Store");
-        mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
-        SwingUtilities.invokeLater(() -> mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 250)));
 
-        SPAApplication.getInstance().start();
+        showSplashScreen(() -> {
+            JFrame mainForm = new JFrame("SPA Store");
+            mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
 
-        HomePage homePage = new HomePage(mainForm);
-
-        mainForm.setContentPane(homePage);
-        mainForm.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                logger.info("Exiting application");
-                SPAApplication.getInstance().stop();
-                LogManager.shutdown();
+            HomePage homePage = null;
+            try {
+                homePage = new HomePage(mainForm);
+            } catch (Throwable t) {
+                shutDownDueToError("Failed creating home page", t, mainForm);
             }
+
+            mainForm.setContentPane(homePage);
+            mainForm.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    logger.info("Exiting application");
+                    SPAApplication.getInstance().stop();
+                    LogManager.shutdown();
+                }
+            });
+            mainForm.pack();
+            Controls.centerDialog(mainForm);
+            mainForm.setVisible(true);
         });
-        mainForm.pack();
-        Controls.centerDialog(mainForm);
-        mainForm.setVisible(true);
+    }
+
+    /**
+     * We first display a splash screen to have an animation while loading all data from storage.<br/>
+     * When start tasks (SPAApplication.start) finished, we execute the specified action (to display home page)<br/>
+     * We do this because it might take some time to load data from storage, because there might be a lot of data
+     * and we also need to decompress it.
+     * @param taskToRunWhenFinish The task to run when data is loaded and application is ready
+     */
+    private static void showSplashScreen(Runnable taskToRunWhenFinish) {
+        logger.info("Showing splash screen while loading data from storage");
+
+        JFrame splashForm = new JFrame();
+        splashForm.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        splashForm.setUndecorated(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        splashForm.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+
+        ImageIcon logo = ImagesCache.getInstance().getImage("LOGO.png");
+        ImageViewer imageViewer = new ImageViewer(logo.getImage());
+        JProgressBar waitBar = new JProgressBar();
+        waitBar.setIndeterminate(true);
+
+        splashForm.getContentPane().setLayout(new BorderLayout());
+        splashForm.getContentPane().add(imageViewer, BorderLayout.CENTER);
+        splashForm.getContentPane().add(waitBar, BorderLayout.SOUTH);
+        splashForm.pack();
+        splashForm.setResizable(false);
+        Controls.centerDialog(splashForm);
+
+        // Loading the application might take some time (reading compressed data from disk)
+        // So we display a waiting dialog for the meanwhile
+        executeWithWaitingDialog(() -> {
+            try {
+                SPAApplication.getInstance().start();
+            } catch (Throwable t) {
+                shutDownDueToError("Failed starting the application", t, splashForm);
+            }
+        }, splashForm, taskToRunWhenFinish);
+    }
+
+    private static void executeWithWaitingDialog(Runnable runnable, JFrame splashForm, Runnable taskToRunWhenFinish) {
+        splashForm.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        new Thread(() -> {
+            try {
+                // ensure show dialog was executed before hide dialog
+                Thread.sleep(1000);
+                runnable.run();
+            } catch (InterruptedException e) {
+                logger.error("Sleep was interrupted", e);
+            } catch (Throwable t) {
+                shutDownDueToError("Failed starting the application", t, splashForm);
+            }
+
+            logger.info("End loading data. Disposing splash screen to present Home page");
+            splashForm.setVisible(false);
+            splashForm.dispose();
+            taskToRunWhenFinish.run();
+        }, "Application Startup Thread").start();
+
+        splashForm.setVisible(true);
+        splashForm.setCursor(Cursor.getDefaultCursor());
+    }
+
+    /**
+     * When there is an uncaught exception we use this function to terminate the application.
+     * @param message The message to log
+     * @param t The exception
+     * @param windowToDispose An optional window to dispose. Can be null
+     */
+    private static void shutDownDueToError(String message, Throwable t, Window windowToDispose) {
+        logger.error(message + ": " + t.getMessage(), t);
+        SPAApplication.getInstance().stop();
+        LogManager.shutdown();
+        if (windowToDispose != null) {
+            windowToDispose.dispose();
+        }
+        System.exit(2);
     }
 
     /**

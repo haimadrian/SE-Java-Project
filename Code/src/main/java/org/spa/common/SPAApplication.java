@@ -27,6 +27,7 @@ public class SPAApplication {
    private final UserManagementService userManagementService;
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
    private final OrderSystem orderSystem;
+   private boolean isStarted = false;
 
    //private final Repository<User> userRepository;
    // Disallow creation of this class from outside
@@ -55,20 +56,25 @@ public class SPAApplication {
       alertSystem.start();
       userManagementService.start();
       orderSystem.start();
+      isStarted = true;
    }
 
    /**
     * Stop all services in the application
     */
    public void stop() {
-      logger.info("Stopping services");
-      alertSystem.stop();
+      if (isStarted) {
+         logger.info("Stopping services");
+         alertSystem.stop();
 
-      // Clear shopping cart before stopping warehouse, because it might update counts in warehouse.
-      shoppingCart.stop();
+         // Clear shopping cart before stopping warehouse, because it might update counts in warehouse.
+         shoppingCart.stop();
 
-      orderSystem.stop();
-      itemsWarehouse.stop();
+         orderSystem.stop();
+         itemsWarehouse.stop();
+
+         isStarted = false;
+      }
    }
 
    /**

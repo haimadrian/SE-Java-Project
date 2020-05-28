@@ -67,7 +67,7 @@ public class CountCellEditor extends DefaultCellEditor {
             } catch (ShoppingCartException ex) {
                // Reset to previous value
                spinner.setValue(prevValue);
-               Dialogs.showSimpleErrorDialog(null, "Error has occurred while updating shopping cart item's count:\n" + ex.getMessage(), "Error");
+               Dialogs.showErrorDialog(null, "Error has occurred while updating shopping cart item's count:\n" + ex.getMessage(), "Error");
             }
          });
       });

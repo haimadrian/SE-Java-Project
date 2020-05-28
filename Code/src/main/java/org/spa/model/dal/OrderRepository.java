@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * @author Haim Adrian
@@ -36,14 +38,18 @@ public class OrderRepository implements Repository<Order> {
     public List<Order> selectAll() {
         if (orders.isEmpty()) {
             if (FILE.exists()) {
-                try (BufferedReader reader = new BufferedReader(new FileReader(FILE))) {
+                logger.info("Reading orders from file");
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(FILE))))) {
                     OrdersList ordersFromFile = JsonUtils.readValue(reader, OrdersList.class);
                     if (ordersFromFile != null) {
                         ordersFromFile.getOrders().forEach(order -> orders.put(order.getOrderId(), order));
+                        logger.info(orders.size() + " orders have been read");
                     }
                 } catch (Exception e) {
-                    logger.error("Error has occurred while reading orders from file.", e);
+                    logger.error("Error has occurred while reading orders from file", e);
                 }
+            } else {
+                logger.info("Orders file does not exist. Nothing to read");
             }
 
             if (orders.isEmpty()) {
@@ -86,10 +92,12 @@ public class OrderRepository implements Repository<Order> {
         this.orders.remove("#22222");
 
         if (!this.orders.isEmpty()) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE))) {
+            logger.info("Saving " + this.orders.size() + " orders to file");
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(FILE))))) {
                 JsonUtils.writeValue(writer, new OrdersList(new ArrayList<>(this.orders.values())));
+                logger.info("Orders saved");
             } catch (Exception e) {
-                logger.error("Error has occurred while writing orders to file.", e);
+                logger.error("Error has occurred while writing orders to file", e);
             }
         }
     }

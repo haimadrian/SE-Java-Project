@@ -11,14 +11,11 @@ import org.spa.controller.cart.ShoppingCartException;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.main.SPAMain;
-import org.spa.model.Item;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
 import org.spa.ui.alert.AlertsView;
 import org.spa.ui.cart.ShoppingCartView;
-import org.spa.ui.LoginView;
 import org.spa.ui.util.Dialogs;
 
 import javax.swing.*;
@@ -27,9 +24,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.Vector;
 
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver {
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
@@ -177,7 +172,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     WarehouseItem shoppingCartItem = shoppingCart.getItems().stream().filter(item -> item.getId().equals(itemId)).findFirst().orElse(null);
                     shoppingCart.add(itemId, shoppingCartItem == null ? 1 : shoppingCartItem.getCount() + 1);
                 } catch (ShoppingCartException ex) {
-                    SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(null, ex.getMessage(), "Error"));
+                    SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(null, ex.getMessage(), "Error"));
                 }
             }
         }

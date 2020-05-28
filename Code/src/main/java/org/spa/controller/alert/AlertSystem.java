@@ -58,7 +58,7 @@ public class AlertSystem {
       });
 
       // Schedule our job to run within 2 seconds and then every 5 minutes
-      logger.info("Scheduling AlertSystemCheckJob to run every " + ALERT_SYSTEM_CHECK_RATE_MINUTES + " minute/s");
+      logger.info("Scheduling AlertSystemCheckJob to run every " + ALERT_SYSTEM_CHECK_RATE_MINUTES + " minutes");
       alertSystemCheck.scheduleAtFixedRate(new AlertSystemCheckJob(), 2, ALERT_SYSTEM_CHECK_RATE_MINUTES*60, TimeUnit.SECONDS);
    }
 
@@ -171,7 +171,7 @@ public class AlertSystem {
       }
 
       if (!notificationWorkers.isEmpty()) {
-         logger.info("Using executor to notify listeners about alert");
+         logger.debug(() -> "Using executor to notify listeners about alert");
 
          try {
             notifier.invokeAll(notificationWorkers);

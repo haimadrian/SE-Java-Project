@@ -16,7 +16,7 @@ import static org.spa.ui.util.Controls.*;
  * @author Haim Adrian
  * @since 23-May-20
  */
-public class ItemInfoDialog extends JDialog {
+public class ItemInfoDialog extends JFrame {
    private final ItemViewInfo item;
 
    public ItemInfoDialog(ItemViewInfo item) {
@@ -25,6 +25,7 @@ public class ItemInfoDialog extends JDialog {
 
    public ItemInfoDialog init() {
       setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       setPreferredSize(new Dimension((int)(screenSize.width / 1.5), (int)(screenSize.height / 2)));
 

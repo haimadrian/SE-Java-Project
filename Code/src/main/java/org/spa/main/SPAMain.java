@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class SPAMain {
         Controls.tweakPLAF();
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         logger.info("Starting application");
         JFrame mainForm = new JFrame("SPA Store");
         mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,14 +65,6 @@ public class SPAMain {
         mainForm.pack();
         Controls.centerDialog(mainForm);
         mainForm.setVisible(true);
-
-        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> {
-            try {
-                SPAApplication.getInstance().getShoppingCart().add(item.getId(), 1);
-            } catch (ShoppingCartException e) {
-                logger.error("Failed to add to cart. Item: " + item, e);
-            }
-        });
     }
 
     private static TableManager<AlertColumn, AlertViewInfo> createAlertsTable() {

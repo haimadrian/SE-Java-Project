@@ -9,11 +9,13 @@ import java.util.Date;
  * @since 15-May-20
  */
 public class AlertViewInfo implements TableModelIfc {
+   private final String key;
    private final String message;
    private final long date;
    private final SeverityViewInfo severity;
 
-   public AlertViewInfo(String message, long date, String severity) {
+   public AlertViewInfo(String key, String message, long date, String severity) {
+      this.key = key;
       this.message = message;
       this.date = date;
       this.severity = SeverityViewInfo.valueOf(severity);
@@ -39,6 +41,22 @@ public class AlertViewInfo implements TableModelIfc {
    @Override
    public void setAttributeValue(String attributeName, Object value) {
       // Not editable.
+   }
+
+   public String getKey() {
+      return key;
+   }
+
+   public String getMessage() {
+      return message;
+   }
+
+   public long getDate() {
+      return date;
+   }
+
+   public SeverityViewInfo getSeverity() {
+      return severity;
    }
 
    @Override

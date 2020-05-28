@@ -3,7 +3,9 @@ package org.spa.ui.table.editor;
 import org.spa.common.SPAApplication;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartException;
+import org.spa.ui.util.Controls;
 import org.spa.ui.util.Dialogs;
+import org.spa.ui.util.Fonts;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,8 +41,10 @@ public class CountCellEditor extends DefaultCellEditor {
       editor = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
       editor.setHorizontalAlignment(JTextField.CENTER);
       editor.setEditable(false);
+      editor.setFont(Fonts.PLAIN_FONT);
       editor.addActionListener(actionEvent -> stopCellEditing());
 
+      Controls.increaseComponentWidth(spinner, JButton.class, 1.5);
       spinner.setValue(Integer.valueOf(count));
       spinner.addChangeListener(e -> {
          ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();

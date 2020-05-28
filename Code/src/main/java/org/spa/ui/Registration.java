@@ -14,7 +14,7 @@ import java.util.Date;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
-class Registration
+public class Registration
         extends JFrame
         implements ActionListener {
 
@@ -83,9 +83,12 @@ class Registration
             "Manager",
             "Customer"};
 
+    private final Window owner;
+
     // constructor, to initialize the components
     // with default values.
-    public Registration() {
+    public Registration(Window owner) {
+        this.owner = owner;
         setTitle("Registration");
         setBounds(600, 200, 600, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -290,6 +293,7 @@ class Registration
                     SPAApplication.getInstance().getUserManagementService().createUser(customer);
                     showMessageDialog(null, "Registration Completed Successfully");
                     dispose();
+                    new LoginView(owner);
                 } else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == (UserType.SysAdmin)) {
                     String data = (String) tusertype.getSelectedItem();
                     switch (data) {
@@ -312,6 +316,7 @@ class Registration
                     }
                     showMessageDialog(null, "Registration Completed Successfully");
                     dispose();
+                    new LoginView(owner);
                 }
             } else {
                 res.setText("Please accept the terms");

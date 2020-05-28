@@ -1,5 +1,8 @@
 package org.spa.ui.table.renderer;
 
+import org.spa.ui.util.Controls;
+import org.spa.ui.util.Fonts;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
@@ -24,19 +27,21 @@ public class SpinnerCellRenderer extends DefaultTableCellRenderer {
          count = 0;
       }
 
-      JSpinner countSpinner = new JSpinner();
+      JSpinner spinner = new JSpinner();
       // Set transparency if it is an odd row cause Nimbus L&F uses a different background color
       // for such rows. In addition, check if it is selected or focused cause it got a different background
-      countSpinner.setOpaque(row % 2 == 1 || isSelected || isFocused);
-      JTextField editor = ((JSpinner.DefaultEditor)countSpinner.getEditor()).getTextField();
+      spinner.setOpaque(row % 2 == 1 || isSelected || isFocused);
+      JTextField editor = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
       editor.setHorizontalAlignment(JTextField.CENTER);
-      countSpinner.setValue(Integer.valueOf(count));
+      editor.setFont(Fonts.PLAIN_FONT);
+      spinner.setValue(Integer.valueOf(count));
+      Controls.increaseComponentWidth(spinner, JButton.class, 1.5);
 
       if (isSelected) {
-         countSpinner.setForeground(table.getSelectionForeground());
-         countSpinner.setBackground(table.getSelectionBackground());
+         spinner.setForeground(table.getSelectionForeground());
+         spinner.setBackground(table.getSelectionBackground());
       }
 
-      return countSpinner;
+      return spinner;
    }
 }

@@ -16,6 +16,7 @@ import org.spa.model.Item;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
+import org.spa.ui.alert.AlertsView;
 import org.spa.ui.cart.ShoppingCartView;
 import org.spa.ui.LoginView;
 import org.spa.ui.util.Dialogs;
@@ -41,6 +42,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private DefaultTableModel model;
     private JFrame mainForm;
     private ShoppingCartView shoppingCart;
+    private AlertsView alerts;
     private JLabel lblUsername;
     private ImageIcon  spaLogo;
     private final UserManagementService userManagement;
@@ -57,14 +59,14 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         categoryTree = new JTree();
         management = new JButton("Management");
         shoppingCart = new ShoppingCartView(mainForm);
+        alerts = new AlertsView(mainForm);
         logout = new JButton("Logout");
         logout.setVisible(false);
         login = new JButton("Login");
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginView lv= new LoginView();
-                lv.LoginView();
+                new LoginView(parent);
             }
 
         });
@@ -118,19 +120,21 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(shoppingCart.getNavigatingComponent());
+        add(alerts.getNavigatingComponent());
         add(login);
         add(logout);
         add(categoryTree);
         add(searchBar);
         add(lblUsername);
         add(management);
+        alerts.getNavigatingComponent().setVisible(false);
         management.setVisible(false);
         scrollPane.setPreferredSize(new Dimension(725, 400));
         JLabel imageContainer = new JLabel(spaLogo);
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername,management,logout);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), alerts.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername,management,logout);
         add(scrollPane);
     }
     public void tableConfiguration(JTable table){
@@ -229,8 +233,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     @Override
     public void userLogin(User loggedInUser) {
         if((loggedInUser instanceof SystemAdmin)
-                || (loggedInUser instanceof Admin))
-        management.setVisible(true);
+                || (loggedInUser instanceof Admin)) {
+            alerts.getNavigatingComponent().setVisible(true);
+            management.setVisible(true);
+        }
         if((loggedInUser instanceof SystemAdmin)
                 || (loggedInUser instanceof Admin)
                 || (loggedInUser instanceof Customer))
@@ -239,7 +245,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             login.setVisible(false);
             logout.setVisible(true);
         }
-        else lblUsername.setText("Hello guest.");
+        else {
+            alerts.getNavigatingComponent().setVisible(false);
+            lblUsername.setText("Hello guest.");
+        }
     }
 
     private static class JTableButtonRenderer implements TableCellRenderer {
@@ -249,11 +258,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         }
     }
 
-    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component login,Component searchBar
+    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component alerts,Component login,Component searchBar
                                  ,Component table,Component categoryTree,Component imageContainer,Component lblUsername,
                                   Component management,Component logout)    {
         layout.putConstraint(SpringLayout.NORTH,management,70,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,management,150,SpringLayout.EAST,searchBar);
+        layout.putConstraint(SpringLayout.NORTH,alerts,5,SpringLayout.SOUTH, management);
+        layout.putConstraint(SpringLayout.WEST,alerts,0, SpringLayout.WEST, management);
         layout.putConstraint(SpringLayout.NORTH,login,40,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,login,200,SpringLayout.EAST,searchBar);
         layout.putConstraint(SpringLayout.NORTH,logout,40,SpringLayout.NORTH,contentPane);

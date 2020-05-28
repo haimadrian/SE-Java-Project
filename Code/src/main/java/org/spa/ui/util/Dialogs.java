@@ -18,6 +18,9 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiFunction;
 
+import static org.spa.ui.util.Controls.centerDialog;
+import static org.spa.ui.util.Controls.setFontToComponents;
+
 /**
  * Contain some helper methods to show different time of message dialogs.
  *
@@ -139,7 +142,7 @@ public class Dialogs {
    protected static volatile boolean waitingDialogShown = false;
    protected static JPanel waitingCancel;
    protected static CancelListener cancelNotifier = null;
-   private static volatile boolean errorDialogShown = false;
+   private static volatile boolean dialogShown = false;
    private static Component mainComponent;
 
    /**
@@ -148,7 +151,8 @@ public class Dialogs {
     * @param workArea The SPAExplorerIfc
     */
    protected static void initWaitingDialog(final SPAExplorerIfc<?> workArea) {
-      waitingDialog = new JDialog((JFrame) workArea, "Please Wait", true);
+      final Window parentDialog = workArea.getParentDialog();
+      waitingDialog = new JDialog(parentDialog, "Please Wait", Dialog.ModalityType.APPLICATION_MODAL);
       JProgressBar waitBar = new JProgressBar();
       waitBar.setIndeterminate(true);
 
@@ -157,6 +161,7 @@ public class Dialogs {
       waitingDialog.getContentPane().setLayout(new BorderLayout());
 
       waitingDialogLabel = new JLabel(DEFAULT_WAITINGDIALOG_MESSAGE);
+      waitingDialogLabel.setFont(Fonts.PANEL_HEADING_FONT);
       waitingDialogLabel.setHorizontalAlignment(SwingConstants.CENTER);
       waitingDialogLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
 
@@ -175,8 +180,9 @@ public class Dialogs {
             Box.createHorizontalGlue() }), Box.createVerticalStrut(5) });
       waitingDialog.getContentPane().add(waitBar, BorderLayout.CENTER);
       waitingDialog.getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      waitingDialog.setPreferredSize(new Dimension(parentDialog.getPreferredSize().width / 2, 100));
 
-      ((JComponent) waitingDialog.getContentPane()).setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+      ((JComponent)waitingDialog.getContentPane()).setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
 
       waitingDialog.pack();
       waitingDialog.setResizable(false);
@@ -185,8 +191,7 @@ public class Dialogs {
       waitingDialog.addComponentListener(new ComponentAdapter() {
          @Override
          public void componentShown(ComponentEvent e) {
-            waitingDialog.setLocation(((JFrame) workArea).getLocation().x + (((JFrame) workArea).getSize().width - waitingDialog.getSize().width) / 2,
-                  ((JFrame) workArea).getLocation().y + (((JFrame) workArea).getSize().height - waitingDialog.getSize().height) / 2);
+            centerDialog(parentDialog, waitingDialog);
             synchronized (waitingDialogLock) {
                logger.info("componentShown(): waitingDialogShown = true");
                waitingDialogShown = true; // the waiting dialog is completely shown
@@ -367,7 +372,7 @@ public class Dialogs {
     * @param title The title of the dialog
     */
    public static void showErrorDialog(Component parent, String text, String detailedErrorText, String title) {
-      if (errorDialogShown) {
+      if (dialogShown) {
          return;
       }
 
@@ -426,7 +431,7 @@ public class Dialogs {
       dialog.addWindowListener(new WindowAdapter() {
          @Override
          public void windowClosed(WindowEvent windowEvent) {
-            errorDialogShown = false;
+            dialogShown = false;
          }
       });
 
@@ -443,7 +448,7 @@ public class Dialogs {
       dialog.setResizable(true);
       Controls.centerDialog(dialog);
       okButton.requestFocus();
-      errorDialogShown = true;
+      dialogShown = true;
       dialog.setVisible(true);
    }
 
@@ -641,17 +646,26 @@ public class Dialogs {
    }
 
    private static boolean doShowDialog(Component parent, String title, String text, int messageType, int optionType, int acceptOption) {
+      if (dialogShown) {
+         return false;
+      }
+
+      dialogShown = true;
       JOptionPane opt = new JOptionPane(text, messageType, optionType) {
          @Override
          public int getMaxCharactersPerLineCount() {
             return 80;
          }
       };
+      // Set font to all of the components in the option pane because we calculate font based on
+      // screen resolution and we need the option pane to calculate the correct size of text inside it.
+      setFontToComponents(opt, Fonts.PLAIN_FONT);
       JDialog dlg = opt.createDialog(parent, title);
       Controls.centerDialog(dlg);
       dlg.setResizable(false);
       dlg.setVisible(true);
       dlg.dispose();
+      dialogShown = false;
 
       if (opt.getValue() == null || !(opt.getValue() instanceof Integer) || ((Integer)opt.getValue()).intValue() != acceptOption) {
          return false;
@@ -674,6 +688,9 @@ public class Dialogs {
       pane.setWantsInput(true);
       pane.setInitialValue(initial);
       pane.setInitialSelectionValue(initial);
+      // Set font to all of the components in the option pane because we calculate font based on
+      // screen resolution and we need the option pane to calculate the correct size of text inside it.
+      setFontToComponents(pane, Fonts.PLAIN_FONT);
       JDialog dlg = pane.createDialog(parent, title);
       dlg.setResizable(false);
       dlg.setVisible(true);
@@ -715,6 +732,9 @@ public class Dialogs {
       ((JTextField) message[1]).setSelectionEnd(initial[0].length());
 
       JOptionPane pane = new JOptionPane(message, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+      // Set font to all of the components in the option pane because we calculate font based on
+      // screen resolution and we need the option pane to calculate the correct size of text inside it.
+      setFontToComponents(pane, Fonts.PLAIN_FONT);
       JDialog dlg = pane.createDialog(parent, title);
       dlg.setResizable(false);
       dlg.setVisible(true);

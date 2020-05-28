@@ -76,6 +76,11 @@ public class ShoppingCart {
 
             // This also notifies observer so it will update itself. We work on a copy because we should not modify a collection while iterating it
             new ArrayList<>(items).forEach(item -> remove(item.getId()));
+         } else {
+            new ArrayList<>(items).forEach(item -> {
+               items.remove(item);
+               notifyItemRemoved(item);
+            });
          }
 
          items.clear();

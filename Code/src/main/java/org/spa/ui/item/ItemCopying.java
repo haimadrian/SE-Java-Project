@@ -21,7 +21,7 @@ public class ItemCopying {
          return null;
       }
 
-      return new ItemViewInfo(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
+      return new ItemViewInfo(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
 
    /**
@@ -34,6 +34,6 @@ public class ItemCopying {
          return null;
       }
 
-      return new WarehouseItem(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
+      return new WarehouseItem(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
 }

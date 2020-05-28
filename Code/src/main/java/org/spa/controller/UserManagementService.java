@@ -4,7 +4,8 @@ import org.spa.common.Repository;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
-
+import org.spa.controller.cart.ShoppingCartObserver;
+import org.spa.controller.item.WarehouseItem;
 import org.spa.model.dal.UserRepository;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Guest;
@@ -69,7 +70,10 @@ public class UserManagementService {
       }
       return null;
    }
-
+   public void logout(){
+      loggedInUser = new Guest();
+      notifyUserLogin();
+   }
    public User getLoggedInUser() {
       return loggedInUser;
    }

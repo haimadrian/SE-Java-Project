@@ -1,10 +1,17 @@
 package org.spa.model.dal;
 
 import org.spa.common.Repository;
+import org.spa.common.SPAApplication;
+import org.spa.controller.item.ItemsWarehouse;
 import org.spa.model.Item;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.function.Predicate;
 
 /**
@@ -16,7 +23,7 @@ public class ItemRepository implements Repository<Item> {
    public List<Item> selectAll() {
       int idCounter = 1;
       List<Item> dummy = new ArrayList<>();
-   /*   dummy.add(new Item("" + idCounter++,
+      dummy.add(new Item("" + idCounter++,"CPU",
             "Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor",
             "9th Gen Intel Processor\n" +
             "Intel UHD Graphics 630\n" +
@@ -33,7 +40,7 @@ public class ItemRepository implements Repository<Item> {
             0,
             10));
 
-      dummy.add(new Item("" + idCounter++,
+      dummy.add(new Item("" + idCounter++,"GPU",
             "ASUS ROG STRIX Z490-F GAMING LGA 1200 (Intel 10th Gen)",
             "Intel Z490 SATA 6Gb/s ATX Intel Motherboard (16 Power Stages, DDR4 4600, Intel 2.5Gb Ethernet, USB 3.2 Front Panel Type-C, Dual M.2 and AURA Sync)\n" +
                   "Intel LGA 1200 socket: Designed to unleash the maximum performance of 10th Gen Intel Core processors\n" +
@@ -48,7 +55,7 @@ public class ItemRepository implements Repository<Item> {
             2,
             5));
 
-      dummy.add(new Item("" + idCounter++,
+      dummy.add(new Item("" + idCounter++,"SSD",
             "Crucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1",
             "Sequential reads/writes up to 560/510 MB/s and random reads/writes up to 95k/90k on all file types\n" +
                   "Accelerated by Micron 3D NAND technology\n" +
@@ -58,7 +65,7 @@ public class ItemRepository implements Repository<Item> {
             2,
             1));
 
-      dummy.add(new Item("" + idCounter++,
+      dummy.add(new Item("" + idCounter++,"GPU",
             "EVGA GeForce RTX 2060 KO ULTRA GAMING Video Card, 06G-P4-2068-KR, 6GB GDDR6, Dual Fans, Metal Backplate",
             "Real Boost Clock: 1755 MHz; Memory Detail: 6144MB GDDR6\n" +
                   "Real-Time RAY TRACING in games for cutting-edge, hyper-realistic graphics\n" +
@@ -69,7 +76,7 @@ public class ItemRepository implements Repository<Item> {
             0,
             20));
 
-      dummy.add(new Item("" + idCounter++,
+      dummy.add(new Item("" + idCounter++,"GPU",
             "EVGA GeForce RTX 2080 SUPER XC ULTRA GAMING Video Card, 08G-P4-3183-KR, 8GB GDDR6, RGB LED, Metal Backplate",
             "Real Boost Clock: 1845 MHz; Memory Detail: 8192MB GDDR6.\n" +
                   "Real-Time RAY TRACING in games for cutting-edge, hyper-realistic graphics.\n" +
@@ -80,7 +87,7 @@ public class ItemRepository implements Repository<Item> {
             0,
             15));
 
-      dummy.add(new Item("" + idCounter++,
+      dummy.add(new Item("" + idCounter++,"GPU",
             "EVGA GeForce RTX 2080 Ti GAMING Video Card, 11G-P4-2380-KR, 11GB GDDR6, RGB LED Logo, Metal Backplate",
             "Real Boost Clock: 1545 MHz; Memory Detail: 11264MB GDDR6\n" +
                   "Real-Time RAY TRACING in games for cutting-edge, hyper-realistic graphics\n" +
@@ -91,7 +98,7 @@ public class ItemRepository implements Repository<Item> {
             0,
             6));
 
-      dummy.add(new Item("" + idCounter++,
+      dummy.add(new Item("" + idCounter++,"GPU",
             "MSI GeForce RTX 2080 TI GAMING X TRIO Video Card",
             "11GB 352-Bit GDDR6\n" +
                   "Core Clock 1350 MHz\n" +
@@ -102,10 +109,9 @@ public class ItemRepository implements Repository<Item> {
             1249.99,
             10,
             0,
-            2));*/
+            2));
       return dummy;
    }
-
    @Override
    public List<Item> select(Predicate<Item> filter) {
       return selectAll();

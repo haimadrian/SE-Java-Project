@@ -81,6 +81,10 @@ public class OrderRepository implements Repository<Order> {
     public void saveAll(Iterable<Order> orders) {
         orders.forEach(this::update);
 
+        // Remove the dummy values so we will not store them to disk.
+        this.orders.remove("#11111");
+        this.orders.remove("#22222");
+
         if (!this.orders.isEmpty()) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE))) {
                 JsonUtils.writeValue(writer, new OrdersList(new ArrayList<>(this.orders.values())));

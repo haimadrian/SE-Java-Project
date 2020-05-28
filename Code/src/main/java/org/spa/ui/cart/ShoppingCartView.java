@@ -3,6 +3,7 @@ package org.spa.ui.cart;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.UserType;
 import org.spa.controller.action.ActionException;
 import org.spa.controller.action.ActionManager;
 import org.spa.controller.action.ActionType;
@@ -10,8 +11,9 @@ import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.ui.control.ButtonWithBadge;
+import org.spa.ui.LoginView;
 import org.spa.ui.SPAExplorerIfc;
+import org.spa.ui.control.ButtonWithBadge;
 import org.spa.ui.item.ItemColumn;
 import org.spa.ui.item.ItemInfoDialog;
 import org.spa.ui.item.ItemViewInfo;
@@ -25,8 +27,12 @@ import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
@@ -42,6 +48,7 @@ import static org.spa.ui.util.Controls.createButton;
 public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, ShoppingCartObserver {
    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartView.class);
 
+   private JDialog shoppingCartDialog;
    private final Window parent;
    private final ButtonWithBadge shoppingCartButton;
    private final ShoppingCart shoppingCart;
@@ -61,16 +68,57 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
     */
    private List<ItemViewInfo> tableModelList;
 
+   private final ActionListener loginActionListener;
+   private final ActionListener placeOrderActionListener;
 
    public ShoppingCartView(Window parent) {
       this.parent = parent;
-
       shoppingCart = SPAApplication.getInstance().getShoppingCart();
       shoppingCart.registerObserver(this);
 
       shoppingCartButton = new ButtonWithBadge(ImagesCache.getInstance().getImage("shopping-cart-icon.png"));
       shoppingCartButton.setSize(70, 70);
       shoppingCartButton.setCountForBadge(shoppingCart.count());
+      shoppingCartButton.addActionListener(e -> {
+         logger.info("Opening Shopping Cart");
+         show();
+      });
+
+      loginActionListener = e -> new LoginView(this.parent);
+      placeOrderActionListener = e -> {
+         if (shoppingCart.count() == 0) {
+            Dialogs.showInfoDialog(getParentDialog(), "Cart is empty. Please go to home page and select some items", "Empty Cart");
+            return;
+         }
+
+         new Thread(() -> {
+            // Save order
+            try {
+               Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+               SwingUtilities.invokeLater(() -> {
+                  Dialogs.hideWaitingDialog();
+                  Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
+                  shoppingCart.clear(false);
+               });
+            } catch (Exception ignore) {
+            }
+         }, "Order Creation Thread").start();
+         Dialogs.showWaitingDialog(this, "Placing your order...");
+      };
+
+      SPAApplication.getInstance().getUserManagementService().registerObserver(loggedInUser -> {
+         if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Guest) {
+            continueButton.setText("Login");
+            continueButton.removeActionListener(placeOrderActionListener);
+            continueButton.removeActionListener(loginActionListener);
+            continueButton.addActionListener(loginActionListener);
+         } else {
+            continueButton.setText("Place Order");
+            continueButton.removeActionListener(placeOrderActionListener);
+            continueButton.removeActionListener(loginActionListener);
+            continueButton.addActionListener(placeOrderActionListener);
+         }
+      });
 
       initUI();
    }
@@ -90,11 +138,13 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    }
 
    private JPanel createWorkAreaButtons() {
-      continueButton = createButton(" Place Order ", e ->
-         Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed"),
-            true);
+      if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Guest) {
+         continueButton = createButton("Login", loginActionListener, true);
+      } else {
+         continueButton = createButton("Place Order", placeOrderActionListener, true);
+      }
 
-      clearCartButton = createButton(" Clear Cart ", e -> {
+      clearCartButton = createButton("Clear Cart", e -> {
                if (Dialogs.showQuestionDialog(getParentDialog(), "This action will remove all items from cart.\nContinue?.", "Clear Cart")) {
                   try {
                      ActionManager.executeAction(ActionType.ClearCart);
@@ -184,19 +234,43 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
    @Override
    public void show() {
-      workArea.setVisible(true);
       SPAApplication.getInstance().getSelectionModel().setSelection(this);
+      if (shoppingCartDialog == null) {
+         shoppingCartDialog = new JDialog(parent, "Shopping Cart");
+         shoppingCartDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+         Dimension parentSize = parent.getPreferredSize();
+         shoppingCartDialog.setPreferredSize(new Dimension(parentSize.width - 200, parentSize.height - 100));
+         SwingUtilities.invokeLater(() -> shoppingCartDialog.setPreferredSize(new Dimension(parentSize.width - 150, parentSize.height - 100)));
+
+         shoppingCartDialog.setContentPane(getMainContainer());
+         shoppingCartDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+               logger.info("Closing Shopping Cart");
+               shoppingCartDialog.remove(getMainContainer());
+               shoppingCartDialog = null;
+            }
+         });
+         shoppingCartDialog.pack();
+         Controls.centerDialog(shoppingCartDialog);
+         shoppingCartDialog.setVisible(true);
+      }
    }
 
    @Override
    public void close() {
-      workArea.setVisible(false);
+      if (shoppingCartDialog != null) {
+         shoppingCartDialog.dispatchEvent(new WindowEvent(shoppingCartDialog, WindowEvent.WINDOW_CLOSING));
+      }
       SPAApplication.getInstance().getSelectionModel().setSelection(null);
    }
 
    @Override
    public void updateTitle(String newTitle) {
       title.setText(newTitle);
+      if (shoppingCartDialog != null) {
+         shoppingCartDialog.setTitle(newTitle);
+      }
    }
 
    @Override
@@ -221,7 +295,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
    @Override
    public Window getParentDialog() {
-      return parent;
+      return shoppingCartDialog;
    }
 
    @Override

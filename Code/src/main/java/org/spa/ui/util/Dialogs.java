@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiFunction;
 
+import static org.spa.ui.util.Controls.centerDialog;
 import static org.spa.ui.util.Controls.setFontToComponents;
 
 /**
@@ -150,7 +151,8 @@ public class Dialogs {
     * @param workArea The SPAExplorerIfc
     */
    protected static void initWaitingDialog(final SPAExplorerIfc<?> workArea) {
-      waitingDialog = new JDialog((JFrame) workArea, "Please Wait", true);
+      final Window parentDialog = workArea.getParentDialog();
+      waitingDialog = new JDialog(parentDialog, "Please Wait", Dialog.ModalityType.APPLICATION_MODAL);
       JProgressBar waitBar = new JProgressBar();
       waitBar.setIndeterminate(true);
 
@@ -159,6 +161,7 @@ public class Dialogs {
       waitingDialog.getContentPane().setLayout(new BorderLayout());
 
       waitingDialogLabel = new JLabel(DEFAULT_WAITINGDIALOG_MESSAGE);
+      waitingDialogLabel.setFont(Fonts.PANEL_HEADING_FONT);
       waitingDialogLabel.setHorizontalAlignment(SwingConstants.CENTER);
       waitingDialogLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
 
@@ -177,8 +180,9 @@ public class Dialogs {
             Box.createHorizontalGlue() }), Box.createVerticalStrut(5) });
       waitingDialog.getContentPane().add(waitBar, BorderLayout.CENTER);
       waitingDialog.getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+      waitingDialog.setPreferredSize(new Dimension(parentDialog.getPreferredSize().width / 2, 100));
 
-      ((JComponent) waitingDialog.getContentPane()).setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+      ((JComponent)waitingDialog.getContentPane()).setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
 
       waitingDialog.pack();
       waitingDialog.setResizable(false);
@@ -187,8 +191,7 @@ public class Dialogs {
       waitingDialog.addComponentListener(new ComponentAdapter() {
          @Override
          public void componentShown(ComponentEvent e) {
-            waitingDialog.setLocation(((JFrame) workArea).getLocation().x + (((JFrame) workArea).getSize().width - waitingDialog.getSize().width) / 2,
-                  ((JFrame) workArea).getLocation().y + (((JFrame) workArea).getSize().height - waitingDialog.getSize().height) / 2);
+            centerDialog(parentDialog, waitingDialog);
             synchronized (waitingDialogLock) {
                logger.info("componentShown(): waitingDialogShown = true");
                waitingDialogShown = true; // the waiting dialog is completely shown

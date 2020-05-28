@@ -4,12 +4,12 @@ import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.item.WarehouseItem;
+import org.spa.model.Alert;
 import org.spa.model.Severity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.BiConsumer;
 
 /**
  * This class responsible for scheduling a task that runs every 5 minutes and checks if there
@@ -27,12 +27,15 @@ public class AlertSystem {
    private ScheduledExecutorService alertSystemCheck;
    private ExecutorService notifier;
 
+   private final Map<String, Alert> alerts;
+
    /**
     * Constructs a new {@link AlertSystem}
     */
    public AlertSystem() {
       observers = new ArrayList<>();
       alertConfig = new AlertConfig();
+      alerts = new HashMap<>();
    }
 
    /**
@@ -80,6 +83,38 @@ public class AlertSystem {
       }
    }
 
+   /**
+    * @return how many alerts there are currently
+    */
+   public int count() {
+      return alerts.size();
+   }
+
+   /**
+    * Acknowledge an alert (remove it from alert system)
+    * @param alertKey The key of the alert to acknowledge
+    */
+   public void acknowledge(String alertKey) {
+      Alert alert = alerts.remove(alertKey);
+      if (alert != null) {
+         notifyAboutAlert(alert, (observer, theAlert) -> observer.onAlertAcknowledged(this, theAlert));
+      }
+   }
+
+   /**
+    * Remove all alerts from alert system
+    */
+   public void clear() {
+      new ArrayList<>(getAlerts()).forEach(alert -> acknowledge(alert.getKey()));
+   }
+
+   /**
+    * @return The alerts there are currently in alert system
+    */
+   public Collection<Alert> getAlerts() {
+      return Collections.unmodifiableCollection(alerts.values());
+   }
+
    public AlertConfig getAlertConfig() {
       return alertConfig;
    }
@@ -109,22 +144,26 @@ public class AlertSystem {
     * @param item The item to alert about
     * @param matchingThreshold A threshold to use for the alert
     */
-   // TODO haim: AlertSystem should manage alerts in a map and the UI will ask for them when we call it to refresh itself.
-   //  This is so we can update existing alerts instead of showing them over and over
    private void raiseAlert(WarehouseItem item, Threshold matchingThreshold) {
       String key = item.getId();
-      String message = "<b>Only " + item.getCount() + " left</b> in stock for '" + item.getName() + "' <b>(Item ID=" + item.getId() + ")</b>";
+      String message = "Only " + item.getCount() + " left in stock for '" + item.getName() + "' (Item ID=" + item.getId() + ")";
       String severity = matchingThreshold.getSeverity().name();
       Date date = new Date(System.currentTimeMillis());
 
+      Alert alert = new Alert(key, message, date.getTime(), Severity.valueOf(severity));
+      alerts.put(key, alert);
+
+      notifyAboutAlert(alert, (observer, theAlert) -> observer.onAlertTriggered(this, theAlert));
+   }
+
+   private void notifyAboutAlert(Alert alert, BiConsumer<AlertSystemObserver, Alert> func) {
       List<Callable<Void>> notificationWorkers = new ArrayList<>(observers.size());
       for (AlertSystemObserver observer : observers) {
          notificationWorkers.add(() -> {
             try {
-               logger.info("Raising alert: " + message);
-               observer.onAlertTriggered(key, message, severity, date);
+               func.accept(observer, alert);
             } catch (Exception e) {
-               logger.error("Error has occurred while notifying observer about alert: " + message);
+               logger.error("Error has occurred while notifying observer about alert: " + alert.getMessage());
             }
 
             return null;

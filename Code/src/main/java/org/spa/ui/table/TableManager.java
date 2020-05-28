@@ -65,7 +65,6 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
 
    private void initTable() {
       table.setFont(Fonts.PLAIN_FONT);
-      //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       table.setColumnSelectionAllowed(false);
       table.setRowSelectionAllowed(true);
       //noinspection MagicConstant
@@ -162,7 +161,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
       scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
       scrollPane.setMinimumSize(new Dimension(200, Integer.MAX_VALUE));
-      scrollPane.setPreferredSize(new Dimension(20, Integer.MAX_VALUE));
+      scrollPane.setPreferredSize(new Dimension(20, 600));
       //scrollPane.getViewport().addChangeListener(e -> onResize());
    }
 

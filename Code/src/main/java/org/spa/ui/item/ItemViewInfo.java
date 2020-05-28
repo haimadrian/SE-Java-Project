@@ -21,10 +21,10 @@ public class ItemViewInfo implements TableModelIfc {
    private double discountPercent;
    private int count;
 
-   public ItemViewInfo(String id, String name,String category, String description, double price, double profitPercent, double discountPercent, int count) {
+   public ItemViewInfo(String id, String category, String name, String description, double price, double profitPercent, double discountPercent, int count) {
       this.id = id;
-      this.name = name;
       this.category = category;
+      this.name = name;
       this.description = description;
       this.price = price;
       this.profitPercent = profitPercent;
@@ -89,7 +89,7 @@ public class ItemViewInfo implements TableModelIfc {
    }
 
    public ImageIcon getImage() {
-      return ImagesCache.getInstance().getImage(getName() + ".jpg");
+      return ImagesCache.getInstance().getImage(getName() + ".png");
    }
 
    /**

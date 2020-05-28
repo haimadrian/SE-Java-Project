@@ -16,7 +16,7 @@ public class ItemRepository implements Repository<Item> {
    public List<Item> selectAll() {
       int idCounter = 1;
       List<Item> dummy = new ArrayList<>();
-      dummy.add(new Item("" + idCounter++,
+   /*   dummy.add(new Item("" + idCounter++,
             "Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor",
             "9th Gen Intel Processor\n" +
             "Intel UHD Graphics 630\n" +
@@ -102,7 +102,7 @@ public class ItemRepository implements Repository<Item> {
             1249.99,
             10,
             0,
-            2));
+            2));*/
       return dummy;
    }
 

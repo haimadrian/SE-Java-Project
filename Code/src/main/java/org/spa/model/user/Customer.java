@@ -13,7 +13,8 @@ public class Customer extends AbstractUser implements User {
     private String secretQuestion;
     private String secretAnswer;
 
-    public Customer(String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer) {
+    public Customer(String userId, String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer) {
+        this.userId = userId;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;

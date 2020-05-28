@@ -232,7 +232,7 @@ public class ButtonColumn extends AbstractCellEditor
         };
         ButtonColumn buttonColumn = new ButtonColumn(table, delete, 5);
         buttonColumn.setMnemonic(KeyEvent.VK_D);
-        Action count = new AbstractAction() {
+       /* Action count = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JButton cart = (JButton) e.getSource();
@@ -240,7 +240,7 @@ public class ButtonColumn extends AbstractCellEditor
             }
         };
         ButtonColumn buttonColumn1 = new ButtonColumn(table, count, 4);
-
+*/
     }
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}

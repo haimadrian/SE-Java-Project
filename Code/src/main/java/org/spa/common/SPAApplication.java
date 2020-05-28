@@ -1,5 +1,6 @@
 package org.spa.common;
 
+import org.spa.controller.order.OrderSystem;
 import org.spa.model.dal.UserRepository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
@@ -26,8 +27,9 @@ public class SPAApplication {
    private final ShoppingCart shoppingCart;
    private final UserManagementService userManagementService;
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
+   private final OrderSystem orderSystem;
 
-   private final Repository<User> userRepository;
+   //private final Repository<User> userRepository;
    // Disallow creation of this class from outside
    private SPAApplication() {
       itemsWarehouse = new ItemsWarehouse();
@@ -35,8 +37,8 @@ public class SPAApplication {
       shoppingCart = new ShoppingCart();
       userManagementService = new UserManagementService();
       selectionModel = new SelectionModelManager<>();
-
-      userRepository = new UserRepository();   }
+      orderSystem = new OrderSystem();
+   }
 
    /**
     * @return The single instance of this class
@@ -52,7 +54,8 @@ public class SPAApplication {
       logger.info("Starting services");
       itemsWarehouse.start();
       alertSystem.start();
-//      UserManagementService.start();
+      userManagementService.start();
+      orderSystem.start();
    }
 
    /**
@@ -100,9 +103,9 @@ public class SPAApplication {
       return userManagementService;
    }
 
-   public Repository<User> getUserRepository() {
-      return userRepository;
-   }
+//   public Repository<User> getUserRepository() {
+//      return userRepository;
+//   }
 
    /**
     * @return A reference to the global {@link SelectionModelManager}

@@ -1,5 +1,6 @@
 package org.spa.controller.item;
 
+
 import java.util.Objects;
 
 /**
@@ -11,6 +12,7 @@ import java.util.Objects;
 public class WarehouseItem {
    private final String id;
    private final String name;
+   private String category;
    private String description;
    private double price;
    private double profitPercent;
@@ -20,6 +22,7 @@ public class WarehouseItem {
    /**
     * Constructs a new {@link WarehouseItem}
     * @param id
+    * @param category
     * @param name
     * @param description
     * @param price
@@ -27,14 +30,16 @@ public class WarehouseItem {
     * @param discountPercent
     * @param count
     */
-   public WarehouseItem(String id, String name, String description, double price, double profitPercent, double discountPercent, int count) {
+   public WarehouseItem(String id,String category, String name, String description, double price, double profitPercent, double discountPercent, int count) {
       this.id = id;
+      this.category = category;
       this.name = name;
       this.description = description;
       this.price = price;
       this.profitPercent = profitPercent;
       this.discountPercent = discountPercent;
       this.count = count;
+
    }
 
    /**
@@ -43,6 +48,7 @@ public class WarehouseItem {
     */
    public WarehouseItem(WarehouseItem another) {
       this.id = another.getId();
+      this.category = another.getCategory();
       this.name = another.getName();
       this.description = another.getDescription();
       this.price = another.getPrice();
@@ -50,6 +56,10 @@ public class WarehouseItem {
       this.discountPercent = another.getDiscountPercent();
       this.count = another.getCount();
    }
+
+   public String getCategory() {return category; }
+
+   public void setCategory(String category) {this.category = category;}
 
    public String getId() {
       return id;

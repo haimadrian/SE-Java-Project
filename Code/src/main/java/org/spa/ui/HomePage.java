@@ -6,6 +6,8 @@ import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.UserManagementService;
 import org.spa.controller.UserManagementServiceObserver;
+import org.spa.controller.cart.ShoppingCart;
+import org.spa.controller.cart.ShoppingCartException;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
@@ -16,6 +18,8 @@ import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
 import org.spa.ui.cart.ShoppingCartView;
 import org.spa.ui.LoginView;
+import org.spa.ui.util.Dialogs;
+
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
@@ -68,13 +72,14 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 SPAApplication.getInstance().getUserManagementService().logout();
+                //TODO clear cart
                 logout.setVisible(false);
                 management.setVisible(false);
                 login.setVisible(true);
             }
         });
-        String[] columnNames = {"Barcode","Picture", "Item name","Description","Price","Cart"};
-        WarehouseItem[][] data = new WarehouseItem[0][5];
+        String[] columnNames = {"Barcode","Picture", "Item name","Description","Price","Cart","Delete"};
+        WarehouseItem[][] data = new WarehouseItem[0][columnNames.length-1];
         model = new DefaultTableModel(data, columnNames)
         {
             @Override
@@ -128,26 +133,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername,management,logout);
         add(scrollPane);
     }
-
-    private static TableModel createTableModel() {
-        Vector<String> columns = new Vector<>(Arrays.asList("Barcode", "Picture", "Item name", "Description", "Price", "Cart"));
-        Vector<Vector<Item>> rows = new Vector<>();
-        DefaultTableModel model = new DefaultTableModel(rows, columns) {
-            @Override
-            public Class getColumnClass(int column) {
-                return getValueAt(0, column).getClass();
-            }
-        };
-        return model;
-    }
     public void tableConfiguration(JTable table){
         table.setRowHeight(80);
-        table.setRowMargin(50);
+     //   table.setRowMargin(50);
         //table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         table.getTableHeader().setReorderingAllowed(false);
         table.setAutoCreateRowSorter(true);
-
         table.getColumnModel().getColumn(0).setWidth(0);
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
@@ -168,8 +160,37 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
         table.setPreferredScrollableViewportSize(table.getPreferredSize());
-        ButtonColumn cart = new ButtonColumn(table,null,5);
+        ButtonColumn cart = new ButtonColumn(table,null,5,new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();
+                if(!table.getColumnName(table.getEditingColumn()).equalsIgnoreCase("cart"))
+                    return;
+                int modelRow =table.getSelectedRow();
+//                int modelRow = Integer.parseInt(e.getActionCommand());
+                String itemId = (String) ((DefaultTableModel) table.getModel()).getValueAt(modelRow, 0);
+                try {
+                    WarehouseItem shoppingCartItem = shoppingCart.getItems().stream().filter(item -> item.getId().equals(itemId)).findFirst().orElse(null);
+                    shoppingCart.add(itemId, shoppingCartItem == null ? 1 : shoppingCartItem.getCount() + 1);
+                } catch (ShoppingCartException ex) {
+                    SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(null, ex.getMessage(), "Error"));
+                }
+            }
+        }
+        );
+        ButtonColumn delete = new ButtonColumn(table,null,6,new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if(!table.getColumnName(table.getEditingColumn()).equalsIgnoreCase("delete"))
+                    return;
+                int modelRow =table.getSelectedRow();
+                ((DefaultTableModel)table.getModel()).removeRow(modelRow);
+            }
+        }
+        );
+        delete.setMnemonic(KeyEvent.VK_D);
         table.getColumn("Cart").setCellRenderer(cart);
+        table.getColumn("Delete").setCellRenderer(delete);
     }
 
     @Override
@@ -258,10 +279,11 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         String name;
         String description;
         String price;
-        String profitPrecent;
+        String profitPercent;
         String discountPercent;
         String count;
         String cart="Add to cart";
+        Icon delete = new ImageIcon(path+"\\garbage.png");
         Scanner myReader = new Scanner(data);
         while (myReader.hasNextLine()) {
             imgName = myReader.nextLine();
@@ -270,13 +292,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             name = myReader.nextLine();
             description = myReader.nextLine();
             price = myReader.nextLine();
-            profitPrecent = myReader.nextLine();
+            profitPercent = myReader.nextLine();
             discountPercent = myReader.nextLine();
             count = myReader.nextLine();
             Icon icon = new ImageIcon(path+"\\"+imgName);
             itemsWarehouse.addItem(id,category,name,description,Double.parseDouble(price)
-                    ,Double.parseDouble(profitPrecent),Double.parseDouble(discountPercent),Integer.parseInt(count));
-            Object[] object = {id,icon, name, description, price, cart};
+                    ,Double.parseDouble(profitPercent),Double.parseDouble(discountPercent),Integer.parseInt(count));
+            Object[] object = {id,icon, name, description, price, cart,delete};
             model.addRow(object);
         }
         myReader.close();

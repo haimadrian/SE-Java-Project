@@ -112,38 +112,6 @@ public class ItemRepository implements Repository<Item> {
             2));
       return dummy;
    }
-
-   public void readFromFile(DefaultTableModel model, File data, String path) throws FileNotFoundException {
-      ItemsWarehouse itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
-      String id;
-      String category;
-      String imgName;
-      String name;
-      String description;
-      String price;
-      String profitPrecent;
-      String discountPercent;
-      String count;
-      String cart="Add to cart";
-      Scanner myReader = new Scanner(data);
-      while (myReader.hasNextLine()) {
-         imgName = myReader.nextLine();
-         id = myReader.nextLine();
-         category = myReader.nextLine();
-         name = myReader.nextLine();
-         description = myReader.nextLine();
-         price = myReader.nextLine();
-         profitPrecent = myReader.nextLine();
-         discountPercent = myReader.nextLine();
-         count = myReader.nextLine();
-         Icon icon = new ImageIcon(path+"\\"+imgName);
-         itemsWarehouse.addItem(id,category,name,description,Double.parseDouble(price)
-                 ,Double.parseDouble(profitPrecent),Double.parseDouble(discountPercent),Integer.parseInt(count));
-         Object[] object = {id,icon, name, description, price, cart};
-         model.addRow(object);
-      }
-      myReader.close();
-   }
    @Override
    public List<Item> select(Predicate<Item> filter) {
       return selectAll();

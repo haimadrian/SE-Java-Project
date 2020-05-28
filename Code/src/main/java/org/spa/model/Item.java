@@ -1,5 +1,8 @@
 package org.spa.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 /**
@@ -7,16 +10,40 @@ import java.util.Objects;
  * @since 16-May-20
  */
 public class Item {
-   private final String id;
-   private final String name;
+   @JsonProperty
+   private String id;
+
+   @JsonProperty
    private String category;
+
+   @JsonProperty
+   private String name;
+
+   @JsonProperty
    private String description;
+
+   @JsonProperty
    private double price;
+
+   @JsonProperty
    private double profitPercent;
+
+   @JsonProperty
    private double discountPercent;
+
+   @JsonProperty
    private int count;
 
-   public Item(String id, String category, String name, String description, double price, double profitPercent, double discountPercent, int count) {
+   //@formatter:off
+   @JsonCreator
+   public Item(@JsonProperty(value = "id") String id,
+               @JsonProperty(value = "category") String category,
+               @JsonProperty(value = "name") String name,
+               @JsonProperty(value = "description") String description,
+               @JsonProperty(value = "price") double price,
+               @JsonProperty(value = "profitPercent") double profitPercent,
+               @JsonProperty(value = "discountPercent") double discountPercent,
+               @JsonProperty(value = "count") int count) {
       this.id = id;
       this.category = category;
       this.name = name;
@@ -26,6 +53,7 @@ public class Item {
       this.discountPercent = discountPercent;
       this.count = count;
    }
+   //@formatter:on
 
    public String getCategory() {return category;}
 

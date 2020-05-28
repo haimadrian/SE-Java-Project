@@ -39,6 +39,13 @@ public class ShoppingCart {
    }
 
    /**
+    * Stop the shopping cart system and revert everything in it back to the warehouse.
+    */
+   public void stop() {
+      clear(true);
+   }
+
+   /**
     * @return The {@link SelectionModelManager} of shopping cart, to get focused item in shopping cart
     */
    public SelectionModelManager<WarehouseItem> getSelectionModel() {

@@ -4,8 +4,6 @@ import org.spa.common.Repository;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
-import org.spa.controller.cart.ShoppingCartObserver;
-import org.spa.controller.item.WarehouseItem;
 import org.spa.model.dal.UserRepository;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Guest;
@@ -95,7 +93,7 @@ public class UserManagementService {
          logger.warn("UserId Already Exist");
       } else {
          userMap.put(user.getUserId(), user);
-         userRepository.add(user);
+         userRepository.create(user);
          logger.info("User added to Users DB: " + user.getUserId());
       }
    }

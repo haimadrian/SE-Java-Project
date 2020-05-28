@@ -29,7 +29,7 @@ public class ImagesCache {
 
    private ImagesCache() {
       cache = new ConcurrentHashMap<>();
-      imagesDir = new File(SPAApplication.getInstance().getWorkingDirectory(), "images");
+      imagesDir = new File(SPAApplication.getWorkingDirectory(), "images");
    }
 
    public static ImagesCache getInstance() {

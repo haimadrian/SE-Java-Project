@@ -5,6 +5,7 @@ import org.spa.common.SPAApplication;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
+import org.spa.controller.order.OrderSystem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +16,11 @@ import java.util.Map;
  */
 public class ActionContext {
    // Keep references to the services here to ease the access and skip the "SPAApplication.getInstance()" prefix.
-   private UserManagementService userManagement;
-   private ItemsWarehouse itemsWarehouse;
-   private ShoppingCart shoppingCart;
-   private AlertSystem alertSystem;
+   private final UserManagementService userManagement;
+   private final ItemsWarehouse itemsWarehouse;
+   private final ShoppingCart shoppingCart;
+   private final AlertSystem alertSystem;
+   private final OrderSystem orderSystem;
 
    /**
     * A way to let users of this class to append any value that they need to pass from action invoker to the action they implement
@@ -34,6 +36,7 @@ public class ActionContext {
       itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
       shoppingCart = SPAApplication.getInstance().getShoppingCart();
       alertSystem = SPAApplication.getInstance().getAlertSystem();
+      orderSystem = SPAApplication.getInstance().getOrderSystem();
    }
 
    /**
@@ -72,5 +75,9 @@ public class ActionContext {
 
    public AlertSystem getAlertSystem() {
       return alertSystem;
+   }
+
+   public OrderSystem getOrderSystem() {
+      return orderSystem;
    }
 }

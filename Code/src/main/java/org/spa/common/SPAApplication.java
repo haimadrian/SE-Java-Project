@@ -1,15 +1,14 @@
 package org.spa.common;
 
-import org.spa.controller.order.OrderSystem;
-import org.spa.model.dal.UserRepository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.UserManagementService;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
+import org.spa.controller.order.OrderSystem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
-import org.spa.controller.UserManagementService;
 
 /**
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
@@ -66,15 +65,16 @@ public class SPAApplication {
       alertSystem.stop();
 
       // Clear shopping cart before stopping warehouse, because it might update counts in warehouse.
-      shoppingCart.clear(true);
+      shoppingCart.stop();
 
+      orderSystem.stop();
       itemsWarehouse.stop();
    }
 
    /**
     * @return Working directory used for storing and loading files from disk
     */
-   public String getWorkingDirectory() {
+   public static String getWorkingDirectory() {
       return "C:\\temp\\SPAApp";
    }
 
@@ -103,9 +103,9 @@ public class SPAApplication {
       return userManagementService;
    }
 
-//   public Repository<User> getUserRepository() {
-//      return userRepository;
-//   }
+   public OrderSystem getOrderSystem() {
+      return orderSystem;
+   }
 
    /**
     * @return A reference to the global {@link SelectionModelManager}

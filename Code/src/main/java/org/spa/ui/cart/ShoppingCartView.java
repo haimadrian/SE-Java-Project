@@ -32,7 +32,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
@@ -94,13 +93,15 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
          new Thread(() -> {
             // Save order
             try {
-               Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+               ActionManager.executeAction(ActionType.Purchase);
                SwingUtilities.invokeLater(() -> {
                   Dialogs.hideWaitingDialog();
                   Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
-                  shoppingCart.clear(false);
+                  close();
                });
-            } catch (Exception ignore) {
+            } catch (Exception e1) {
+               logger.error("Error has occurred while saving order.", e1);
+               Dialogs.showSimpleErrorDialog(getParentDialog(), "Error has occurred while placing order: " + e1.getMessage(), "Error");
             }
          }, "Order Creation Thread").start();
          Dialogs.showWaitingDialog(this, "Placing your order...");

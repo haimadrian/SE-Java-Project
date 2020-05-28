@@ -1,18 +1,15 @@
 package org.spa.model.dal;
 
-import org.spa.common.SPAApplication;
-import org.spa.controller.item.ItemsWarehouse;
-import org.spa.model.user.Customer;
-import org.spa.model.user.Admin;
-import org.spa.model.user.SystemAdmin;
-import org.spa.common.User;
 import org.spa.common.Repository;
+import org.spa.common.User;
+import org.spa.model.user.Admin;
+import org.spa.model.user.Customer;
+import org.spa.model.user.SystemAdmin;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class UserRepository implements Repository<User> {
     List<User> dummy;
@@ -37,7 +34,7 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public User add(User user) {
+    public User create(User user) {
        if(user instanceof Customer){
            dummy.add(new Customer(user.getUserId(),((Customer) user).getPassword(),
                    user.getPhoneNumber(),user.getBirthDay(),user.getRegistrationDate(),
@@ -50,8 +47,19 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public List<User> saveAll(List<User> users) {
+    public User update(User item) {
+        // TODO: update list
+        return null;
+    }
+
+    @Override
+    public User delete(User item) {
+        // TODO: remove from list
+        return null;
+    }
+
+    @Override
+    public void saveAll(Iterable<User> users) {
        // TODO implement save
-        return users;
     }
 }

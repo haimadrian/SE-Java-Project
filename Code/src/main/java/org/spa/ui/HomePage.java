@@ -126,6 +126,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         });
         add(tableManager.getMainPanel());
         add(shoppingCart.getNavigatingComponent());
+        JPanel panel = new JPanel();
+        panel.add(tableManager.getMainPanel());
         add(alerts.getNavigatingComponent());
         add(login);
         add(logout);

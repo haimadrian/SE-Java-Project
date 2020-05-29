@@ -16,11 +16,11 @@ import javax.swing.table.TableCellRenderer;
  * @since 15-May-20
  */
 public enum ItemColumn implements TableColumnIfc {
-   Image("Image", 0.15, ImageIcon.class, new StretchedImageCellRenderer(10), null, false),
+   Image("Image", 0.15, ImageIcon.class, new StretchedImageCellRenderer(10, ItemViewInfo.ADS_ATTRIBUTE_NAME), null, false),
    Name("Name", 0.15, String.class, new TextCellRenderer(), null, false),
-   Description("Description", 0.58, String.class, new TextCellRenderer(), null, false),
+   Description("Description", 0.54, String.class, new TextCellRenderer(), null, false),
    Count("Count", 0.06, Integer.class, new SpinnerCellRenderer(), new CountCellEditor(), true),
-   Price("Price", 0.06, Double.class, new TextCellRenderer(), null, false);
+   Price("Price", 0.1, Double.class, new TextCellRenderer(), null, false);
 
    private final String header;
    private final double cellWidth;
@@ -82,4 +82,6 @@ public enum ItemColumn implements TableColumnIfc {
    public TableCellEditor getCellEditor() {
       return editor;
    }
+
+
 }

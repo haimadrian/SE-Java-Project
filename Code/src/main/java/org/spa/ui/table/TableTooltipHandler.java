@@ -95,16 +95,21 @@ public class TableTooltipHandler extends MouseAdapter {
    }
 
    private String cellValueToString(Object cellValue) {
-      if (cellValue instanceof ImageIcon) {
-         return ((ImageIcon)cellValue).getDescription();
-      } else if (cellValue instanceof JButton) {
-         return ((JButton)cellValue).getText();
-      } else if (cellValue instanceof JCheckBox) {
-         return String.valueOf(((JCheckBox)cellValue).isSelected());
-      } else if (cellValue instanceof JSpinner) {
-         return String.valueOf(((JSpinner)cellValue).getValue());
+      Object actualCellValue = cellValue;
+      if (actualCellValue instanceof TableCellValue) {
+         actualCellValue = ((TableCellValue<?>)actualCellValue).getValue();
+      }
+
+      if (actualCellValue instanceof ImageIcon) {
+         return ((ImageIcon)actualCellValue).getDescription();
+      } else if (actualCellValue instanceof JButton) {
+         return ((JButton)actualCellValue).getText();
+      } else if (actualCellValue instanceof JCheckBox) {
+         return String.valueOf(((JCheckBox)actualCellValue).isSelected());
+      } else if (actualCellValue instanceof JSpinner) {
+         return String.valueOf(((JSpinner)actualCellValue).getValue());
       } else {
-         return String.valueOf(cellValue);
+         return String.valueOf(actualCellValue);
       }
    }
 

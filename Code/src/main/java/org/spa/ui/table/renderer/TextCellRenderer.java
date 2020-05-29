@@ -34,7 +34,7 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocused, int row, int column) {
       super.getTableCellRendererComponent(table, value, isSelected, isFocused, row, column);
 
-      textArea.setText(String.valueOf(value));
+      textArea.setText(getCellText(value));
 
       if (isSelected) {
          textArea.setForeground(table.getSelectionForeground());
@@ -65,20 +65,11 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
    }
 
    /**
-    * Override to return custom text format
-    * @param value Current cell's value
-    * @return The value you want to display
+    * Expose this method so derived renderers can customize their values before we print them
+    * @param value The value to customize
+    * @return The value to present
     */
    protected String getCellText(Object value) {
       return String.valueOf(value);
    }
-
-   /**
-    * @return Additional properties for div style, to be used when making the label an HTML one
-    */
-   protected String getAdditionalDivStyle() {
-      return "";
-   }
-
-
 }

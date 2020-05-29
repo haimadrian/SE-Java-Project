@@ -31,9 +31,4 @@ public class DateCellRenderer extends TextCellRenderer {
 
       return super.getCellText(value);
    }
-
-   @Override
-   protected String getAdditionalDivStyle() {
-      return "text-align: center;vertical-align: middle;";
-   }
 }

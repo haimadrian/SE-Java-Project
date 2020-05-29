@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 
 import static org.spa.ui.util.Controls.*;
 
@@ -17,6 +18,7 @@ import static org.spa.ui.util.Controls.*;
  * @since 23-May-20
  */
 public class ItemInfoDialog extends JFrame {
+   private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
    private final ItemViewInfo item;
 
    public ItemInfoDialog(ItemViewInfo item) {
@@ -44,16 +46,30 @@ public class ItemInfoDialog extends JFrame {
       // Lay out the members from left to right.
       JPanel namePanel = createMemberPanelWithLabel("Name:", item.getName());
       JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, 600);
-      JPanel pricePanel = createMemberPanelWithoutTextArea("Price: " + item.getPrice() + "$");
+      JPanel pricePanel;
+      JPanel priceAfterDiscount = null;
+      String priceText = "Price: " + decimalFormat.format(item.getPriceWithProfit()) + "$";
+
+      if (item.getDiscountPercent() != 0) {
+         priceText = "<html><strike>" + priceText + "</strike></html>";
+         priceAfterDiscount = createMemberPanelWithoutTextArea("Current Price: " + decimalFormat.format(item.getActualPrice()) + "$");
+      }
+
+      pricePanel = createMemberPanelWithoutTextArea(priceText);
 
       fields.add(namePanel);
       fields.add(Box.createRigidArea(new Dimension(0, 25)));
       fields.add(descPanel);
       fields.add(Box.createRigidArea(new Dimension(0, 25)));
       fields.add(pricePanel);
+      if (priceAfterDiscount != null) {
+         //fields.add(Box.createRigidArea(new Dimension(0, 5)));
+         fields.add(priceAfterDiscount);
+      }
 
       JLabel label = createTitle("Item Info");
-      ImageViewer imageViewer = new ImageViewer(item.getImage().getImage(), true, 0);
+      String ads = String.valueOf(item.getAttributeValue(ItemViewInfo.ADS_ATTRIBUTE_NAME));
+      ImageViewer imageViewer = new ImageViewer(item.getImage().getImage(), true, 0, ads);
 
       imageViewer.setSize(300, 300);
       imageViewer.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));

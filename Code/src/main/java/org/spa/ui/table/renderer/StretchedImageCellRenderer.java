@@ -1,6 +1,7 @@
 package org.spa.ui.table.renderer;
 
 import org.spa.ui.control.ImageViewer;
+import org.spa.ui.table.TableCellValue;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -17,13 +18,19 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
    private final int margin;
    private final Border originalBorder;
    private final Border focusBorder;
+   private final String adsAttributeName;
 
    public StretchedImageCellRenderer() {
       this(0);
    }
 
    public StretchedImageCellRenderer(int margin) {
+      this(margin, "");
+   }
+
+   public StretchedImageCellRenderer(int margin, String adsAttributeName) {
       this.margin = margin;
+      this.adsAttributeName = adsAttributeName;
       originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
@@ -36,12 +43,22 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
          return this;
       }
 
-      Image image = ((ImageIcon)value).getImage();
+      Object actualValue = value;
+      String ads = "";
+      if (value instanceof TableCellValue) {
+         actualValue = ((TableCellValue<?>)value).getValue();
+
+         if (!adsAttributeName.isEmpty()) {
+            ads = String.valueOf(((TableCellValue<?>)value).getItem().getAttributeValue(adsAttributeName));
+         }
+      }
+
+      Image image = ((ImageIcon)actualValue).getImage();
       if (image == null) {
          return this;
       }
 
-      ImageViewer imageViewer = new ImageViewer(image, margin);
+      ImageViewer imageViewer = new ImageViewer(image, margin, ads);
       // Set transparency if it is an odd row cause Nimbus L&F uses a different background color
       // for such rows. In addition, check if it is selected or focused cause it got a different background
       imageViewer.setOpaque(row % 2 == 1 || isSelected || isFocused);

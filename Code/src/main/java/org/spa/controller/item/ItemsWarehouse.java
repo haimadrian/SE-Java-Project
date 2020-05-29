@@ -30,6 +30,8 @@ public class ItemsWarehouse {
     * Call this method to read data from storage
     */
    public void start() {
+      logger.info("Starting ItemsWarehouse - Select items from repository");
+
       // Load data into memory
       itemRepository.selectAll().forEach(item -> idToItem.put(item.getId(), itemToWarehouseItem(item)));
    }
@@ -38,7 +40,9 @@ public class ItemsWarehouse {
     * Call this method when exiting the application, to save the in memory data to disk
     */
    public void stop() {
-      // Save data to disk
+      logger.info("Stopping ItemsWarehouse - Save items to repository");
+
+      // Save data to repository
       itemRepository.saveAll(idToItem.values().stream().map(ItemsWarehouse::warehouseItemToItem).collect(Collectors.toList()));
    }
 

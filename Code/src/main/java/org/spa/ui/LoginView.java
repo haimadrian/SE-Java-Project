@@ -1,25 +1,20 @@
 package org.spa.ui;
-import org.spa.common.User;
-import org.spa.common.SPAApplication;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import org.spa.common.SPAApplication;
+import org.spa.common.User;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import static javax.swing.JOptionPane.getFrameForComponent;
-import static javax.swing.JOptionPane.showMessageDialog;
-
 public class LoginView {
 
-    private JFrame frame;
+    private JDialog frame;
+    private final Window owner;
 
-    public void LoginView() {
-        frame = new JFrame("Login");
+    public LoginView(Window owner) {
+        this.owner = owner;
+        frame = new JDialog(owner, "Login", Dialog.ModalityType.APPLICATION_MODAL);
         frame.setSize(350, 200);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -79,7 +74,8 @@ public class LoginView {
                 User loggedInUser = SPAApplication.getInstance().getUserManagementService().login(userText.getText(),new String(passwordText.getPassword()));
                 if(loggedInUser != null) {
                     // close login form
-                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                    frame.dispose();
+                    frame = null;
                 }
                 else {
                     res.setText("Invalid Username or password!");
@@ -94,7 +90,8 @@ public class LoginView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //your actions
-                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                frame.dispose();
+                frame = null;
             }
         });
 
@@ -102,7 +99,9 @@ public class LoginView {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Registration registration = new Registration();
+                frame.dispose();
+                frame = null;
+                new Registration(owner);
             }
         });
 

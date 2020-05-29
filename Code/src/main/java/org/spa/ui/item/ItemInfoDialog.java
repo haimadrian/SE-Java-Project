@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
 
 import static org.spa.ui.util.Controls.*;
 
@@ -16,7 +17,8 @@ import static org.spa.ui.util.Controls.*;
  * @author Haim Adrian
  * @since 23-May-20
  */
-public class ItemInfoDialog extends JDialog {
+public class ItemInfoDialog extends JFrame {
+   private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
    private final ItemViewInfo item;
 
    public ItemInfoDialog(ItemViewInfo item) {
@@ -25,6 +27,7 @@ public class ItemInfoDialog extends JDialog {
 
    public ItemInfoDialog init() {
       setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       setPreferredSize(new Dimension((int)(screenSize.width / 1.5), (int)(screenSize.height / 2)));
 
@@ -42,18 +45,31 @@ public class ItemInfoDialog extends JDialog {
 
       // Lay out the members from left to right.
       JPanel namePanel = createMemberPanelWithLabel("Name:", item.getName());
-      JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, 100);
-      JPanel pricePanel = createMemberPanelWithoutTextArea("Price: " + item.getPrice() + "$");
+      JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, 600);
+      JPanel pricePanel;
+      JPanel priceAfterDiscount = null;
+      String priceText = "Price: " + decimalFormat.format(item.getPriceWithProfit()) + "$";
+
+      if (item.getDiscountPercent() != 0) {
+         priceText = "<html><strike>" + priceText + "</strike></html>";
+         priceAfterDiscount = createMemberPanelWithoutTextArea("Current Price: " + decimalFormat.format(item.getActualPrice()) + "$");
+      }
+
+      pricePanel = createMemberPanelWithoutTextArea(priceText);
 
       fields.add(namePanel);
       fields.add(Box.createRigidArea(new Dimension(0, 25)));
-      descPanel.setSize(250, 100);
       fields.add(descPanel);
       fields.add(Box.createRigidArea(new Dimension(0, 25)));
       fields.add(pricePanel);
+      if (priceAfterDiscount != null) {
+         //fields.add(Box.createRigidArea(new Dimension(0, 5)));
+         fields.add(priceAfterDiscount);
+      }
 
       JLabel label = createTitle("Item Info");
-      ImageViewer imageViewer = new ImageViewer(item.getImage().getImage(), true, 0);
+      String ads = String.valueOf(item.getAttributeValue(ItemViewInfo.ADS_ATTRIBUTE_NAME));
+      ImageViewer imageViewer = new ImageViewer(item.getImage().getImage(), true, 0, ads);
 
       imageViewer.setSize(300, 300);
       imageViewer.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
@@ -72,8 +88,8 @@ public class ItemInfoDialog extends JDialog {
       splitPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       splitPane.setLeftComponent(detailsPanel);
       splitPane.setRightComponent(imageViewer);
-      splitPane.setDividerSize(15);
-      splitPane.setDividerLocation((int)(getPreferredSize().width / 1.8));
+      //splitPane.setDividerSize(15);
+      splitPane.setDividerLocation((int)(getPreferredSize().width * 0.6));
       splitPane.setOpaque(true);
       splitPane.setContinuousLayout(true);
       splitPane.addMouseListener(new MouseAdapter() {
@@ -130,7 +146,6 @@ public class ItemInfoDialog extends JDialog {
       JPanel inner = new JPanel();
       inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
       JLabel label = createLabel(name, Fonts.PANEL_HEADING_FONT);
-      label.setSize(40, 20);
       label.setVerticalAlignment(SwingConstants.TOP);
 
       inner.add(label);
@@ -147,8 +162,7 @@ public class ItemInfoDialog extends JDialog {
             inner2.add(Box.createHorizontalGlue());
             memberPanel.add(inner2);
          } else {
-            JTextArea textArea = createTextArea(value, textAreaWidth, textAreaHeight);
-            memberPanel.add(withScrollPane(textArea));
+            memberPanel.add(withScrollPane(createTextArea(value, false), textAreaWidth, textAreaHeight));
          }
       } else {
          memberPanel.add(Box.createVerticalGlue());

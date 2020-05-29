@@ -1,5 +1,7 @@
 package org.spa.ui.control;
 
+import org.spa.ui.util.Fonts;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -17,6 +19,7 @@ public class ImageViewer extends JPanel {
    private int x = 0;
    private int y = 0;
    private Image scaledImage;
+   private String ad;
 
    /**
     * Constructs an {@link ImageViewer} with margin=0
@@ -36,15 +39,37 @@ public class ImageViewer extends JPanel {
    }
 
    /**
+    * Constructs an {@link ImageViewer} with custom margin and an ad
+    * @param image The image to display
+    * @param margin The space to take from image's container boundaries
+    * @param ad An additional text that can be printed over the picture, at its top left corner - used for ads
+    */
+   public ImageViewer(Image image, int margin, String ad) {
+      this(image, true, margin, ad);
+   }
+
+   /**
     * Constructs an {@link ImageViewer} with custom margin
     * @param image The image to display
     * @param isStretched Whether to stretch the image or not
     * @param margin The space to take from image's container boundaries
     */
    public ImageViewer(Image image, boolean isStretched, int margin) {
+      this(image, isStretched, margin, "");
+   }
+
+   /**
+    * Constructs an {@link ImageViewer} with custom margin
+    * @param image The image to display
+    * @param isStretched Whether to stretch the image or not
+    * @param margin The space to take from image's container boundaries
+    * @param ad An additional text that can be printed over the picture, at its top left corner - used for ads
+    */
+   public ImageViewer(Image image, boolean isStretched, int margin, String ad) {
       this.image = image;
       this.isStretched = isStretched;
       this.margin = margin;
+      this.ad = ad;
       setOpaque(true);
 
       addComponentListener(new ComponentAdapter() {
@@ -70,6 +95,20 @@ public class ImageViewer extends JPanel {
          } else {
             g.drawImage(image, x + margin, y + margin, this);
          }
+      }
+
+      if (!ad.isEmpty()) {
+         Color colorBackup = g.getColor();
+         Font fontBackup = g.getFont();
+         g.setFont(Fonts.PANEL_HEADING_FONT);
+         g.setColor(Color.RED);
+         int doubleMargin = margin*2;
+         if (doubleMargin == 0) {
+            doubleMargin = 10;
+         }
+         g.drawChars(ad.toCharArray(), 0, ad.length(), x + doubleMargin, y + doubleMargin + 10);
+         g.setFont(fontBackup);
+         g.setColor(colorBackup);
       }
    }
 
@@ -128,5 +167,13 @@ public class ImageViewer extends JPanel {
    public void setImageY(int y) {
       this.y = y;
       repaint();
+   }
+
+   public String getAd() {
+      return ad;
+   }
+
+   public void setAd(String ad) {
+      this.ad = ad;
    }
 }

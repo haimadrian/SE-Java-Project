@@ -1,5 +1,6 @@
 package org.spa.ui.item;
 
+import org.spa.ui.table.TableCellValue;
 import org.spa.ui.table.TableModelIfc;
 import org.spa.ui.util.ImagesCache;
 
@@ -11,6 +12,11 @@ import java.text.DecimalFormat;
  * @since 16-May-20
  */
 public class ItemViewInfo implements TableModelIfc {
+   /**
+    * In order to win the ability to draw ads over item's image, we expose a custom attribute which is not an
+    * item column. We use this at ItemColumn.Image
+    */
+   public static final String ADS_ATTRIBUTE_NAME = "ads";
    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
    private final String id;
    private String category;
@@ -21,10 +27,10 @@ public class ItemViewInfo implements TableModelIfc {
    private double discountPercent;
    private int count;
 
-   public ItemViewInfo(String id, String name,String category, String description, double price, double profitPercent, double discountPercent, int count) {
+   public ItemViewInfo(String id, String category, String name, String description, double price, double profitPercent, double discountPercent, int count) {
       this.id = id;
-      this.name = name;
       this.category = category;
+      this.name = name;
       this.description = description;
       this.price = price;
       this.profitPercent = profitPercent;
@@ -64,6 +70,34 @@ public class ItemViewInfo implements TableModelIfc {
       this.price = price;
    }
 
+   /**
+    * @return The price after adding it the profit and discount values
+    */
+   public double getActualPrice() {
+      return getPriceWithProfit() - getDiscountValue();
+   }
+
+   /**
+    * @return The price after adding it the profit value
+    */
+   public double getPriceWithProfit() {
+      return getPrice() + getProfitValue();
+   }
+
+   /**
+    * @return The profit of this item
+    */
+   public double getProfitValue() {
+      return getPrice() * (getProfitPercent() / 100.0);
+   }
+
+   /**
+    * @return The discount of this item
+    */
+   public double getDiscountValue() {
+      return getPriceWithProfit() * (getDiscountPercent() / 100.0);
+   }
+
    public double getProfitPercent() {
       return profitPercent;
    }
@@ -89,7 +123,7 @@ public class ItemViewInfo implements TableModelIfc {
    }
 
    public ImageIcon getImage() {
-      return ImagesCache.getInstance().getImage(getName() + ".jpg");
+      return ImagesCache.getInstance().getImage(getName() + ".png");
    }
 
    /**
@@ -99,32 +133,56 @@ public class ItemViewInfo implements TableModelIfc {
     * @return The price, formatted for JTable as text
     */
    protected String getPriceFormattedForTable() {
-      String text = "" + decimalFormat.format(getPrice() * getCount()) + "$" + System.lineSeparator() +
-            Double.valueOf(getPrice()).toString() + "$ each";
+      double actualPrice = getActualPrice();
+
+      String text = decimalFormat.format(actualPrice * getCount()) + "$" + System.lineSeparator() +
+            decimalFormat.format(getPriceWithProfit()) + "$ each";
+
+      if (getDiscountPercent() != 0) {
+         double savings = getDiscountValue();
+         text += System.lineSeparator() + "You saved: " + decimalFormat.format(savings * getCount()) + "$";
+      }
+
       return text;
    }
 
    @Override
    public Object getAttributeValue(String attributeName) {
-      switch (ItemColumn.valueOf(attributeName)) {
-         case Image: {
-            return getImage();
+      try {
+         switch (ItemColumn.valueOf(attributeName)) {
+            case Image: {
+               return new TableCellValue<ItemViewInfo>(getImage(), this);
+            }
+            case Name: {
+               return new TableCellValue<ItemViewInfo>(getName(), this);
+            }
+            case Description: {
+               return new TableCellValue<ItemViewInfo>(getDescription(), this);
+            }
+            case Price: {
+               return new TableCellValue<ItemViewInfo>(getPriceFormattedForTable(), this);
+            }
+            case Count: {
+               return new TableCellValue<ItemViewInfo>(Integer.valueOf(getCount()), this);
+            }
+            default:
+               return handleDefault(attributeName);
          }
-         case Name: {
-            return getName();
-         }
-         case Description: {
-            return getDescription();
-         }
-         case Price: {
-            return getPriceFormattedForTable();
-         }
-         case Count: {
-            return Integer.valueOf(getCount());
-         }
-         default:
-            return null;
+      } catch (IllegalArgumentException e) {
+         // When it is a custom cell which is not listed as enum, we get here.
+         return handleDefault(attributeName);
       }
+   }
+
+   private Object handleDefault(String attributeName) {
+      if (ADS_ATTRIBUTE_NAME.equalsIgnoreCase(attributeName)) {
+         String ads = "";
+         if (discountPercent > 0) {
+            ads = decimalFormat.format(discountPercent) + "% off!";
+         }
+         return ads;
+      }
+      return null;
    }
 
    @Override

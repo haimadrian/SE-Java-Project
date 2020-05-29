@@ -1,6 +1,7 @@
 package org.spa.controller.action;
 
 import org.spa.controller.action.impl.ClearCartAction;
+import org.spa.controller.action.impl.PurchaseAction;
 import org.spa.controller.action.impl.RemoveFromCartAction;
 
 /**
@@ -9,7 +10,8 @@ import org.spa.controller.action.impl.RemoveFromCartAction;
  */
 public enum ActionType {
    ClearCart(ClearCartAction.class),
-   RemoveFromCart(RemoveFromCartAction.class);
+   RemoveFromCart(RemoveFromCartAction.class),
+   Purchase(PurchaseAction.class);
 
    final Class<? extends Action<?>> clazz;
 

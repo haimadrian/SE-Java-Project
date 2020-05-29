@@ -1,6 +1,6 @@
 package org.spa.ui.table.editor;
 
-import org.spa.ui.util.Fonts;
+import org.spa.ui.util.Controls;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -40,21 +40,13 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
    }
 
    private void initTextArea() {
-      textArea = new JTextArea();
-      textArea.setWrapStyleWord(true);
-      textArea.setLineWrap(true);
-      textArea.setFont(Fonts.PLAIN_FONT);
+      textArea = Controls.createTextArea("", true);
       textArea.addFocusListener(this);
       editorComponent = textArea;
    }
 
    private void initScrollPane() {
-      scrollPane = new JScrollPane(textArea);
-      scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-      scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-      scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-      scrollPane.setMinimumSize(new Dimension(100, Integer.MAX_VALUE));
-      scrollPane.setPreferredSize(new Dimension(20, Integer.MAX_VALUE));
+      scrollPane = Controls.withScrollPane(textArea, 200, Integer.MAX_VALUE);
    }
 
    @Override

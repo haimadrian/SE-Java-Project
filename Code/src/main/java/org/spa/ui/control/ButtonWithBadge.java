@@ -47,19 +47,21 @@ public class ButtonWithBadge extends JButton {
 
       if (countForBadge > 0) {
          String countStr = String.valueOf(countForBadge);
-         int badgeWidth = 30;
-         int badgeHeight = 30;
+         int badgeDiameter = (int)(getWidth() / 3.33333333);
 
          Color colorBackup = g.getColor();
          Font fontBackup = g.getFont();
          g.setFont(Fonts.BOLD_FONT);
 
          g.setColor(Color.WHITE);
-         g.fillOval(0, 0, badgeWidth, badgeHeight);
+         g.fillOval(0, 0, badgeDiameter, badgeDiameter);
          g.setColor(Color.RED);
-         g.fillOval(2, 2, badgeWidth - 4, badgeHeight - 4);
+         g.fillOval(2, 2, badgeDiameter - 4, badgeDiameter - 4);
          g.setColor(Color.WHITE);
-         g.drawChars(countStr.toCharArray(), 0, countStr.length(), badgeWidth / 2 + 6 - (countStr.length() * 8), badgeHeight / 2 + 6);
+         int halfFontSize = Fonts.PLAIN_FONT.getSize() / 2;
+         int xAdjustment = countStr.length() == 1 ? 2 : (countStr.length()-1) * halfFontSize;
+         int yAdjustment = halfFontSize - (halfFontSize % 2);
+         g.drawChars(countStr.toCharArray(), 0, countStr.length(), badgeDiameter / 2 - xAdjustment, badgeDiameter / 2 + yAdjustment);
 
          g.setFont(fontBackup);
          g.setColor(colorBackup);

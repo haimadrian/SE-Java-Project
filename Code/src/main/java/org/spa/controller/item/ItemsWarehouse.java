@@ -6,6 +6,7 @@ import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ItemsWarehouse {
    /**
     * Call this method to read data from storage
     */
-   public void start() {
+   public void start() throws FileNotFoundException {
       // Load data into memory
       itemRepository.selectAll().forEach(item -> idToItem.put(item.getId(), itemToWarehouseItem(item)));
    }

@@ -3,6 +3,8 @@ package org.spa.controller.order;
 import org.spa.common.Repository;
 import org.spa.model.Order;
 import org.spa.model.dal.OrderRepository;
+
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +18,7 @@ public class OrderSystem {
         orderRepository = new OrderRepository();
     }
 
-    public void start() {
+    public void start() throws FileNotFoundException {
         // Load data into memory
         orderRepository.selectAll().forEach(order -> ordersMap.put(order.getUserId(),order));
     }

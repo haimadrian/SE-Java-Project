@@ -39,6 +39,13 @@ public class ShoppingCart {
    }
 
    /**
+    * Stop the shopping cart system and revert everything in it back to the warehouse.
+    */
+   public void stop() {
+      clear(true);
+   }
+
+   /**
     * @return The {@link SelectionModelManager} of shopping cart, to get focused item in shopping cart
     */
    public SelectionModelManager<WarehouseItem> getSelectionModel() {
@@ -76,6 +83,11 @@ public class ShoppingCart {
 
             // This also notifies observer so it will update itself. We work on a copy because we should not modify a collection while iterating it
             new ArrayList<>(items).forEach(item -> remove(item.getId()));
+         } else {
+            new ArrayList<>(items).forEach(item -> {
+               items.remove(item);
+               notifyItemRemoved(item);
+            });
          }
 
          items.clear();

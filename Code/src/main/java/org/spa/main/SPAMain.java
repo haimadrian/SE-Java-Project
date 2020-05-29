@@ -4,26 +4,17 @@ import org.apache.logging.log4j.LogManager;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
-import org.spa.controller.cart.ShoppingCartException;
 import org.spa.ui.HomePage;
-import org.spa.ui.alert.AlertColumn;
-import org.spa.ui.alert.AlertViewInfo;
-import org.spa.ui.table.PopupAdapter;
-import org.spa.ui.table.TableConfig;
-import org.spa.ui.table.TableManager;
+import org.spa.ui.control.ImageViewer;
 import org.spa.ui.util.Controls;
+import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Haim Adrian
@@ -41,63 +32,113 @@ public class SPAMain {
         Controls.tweakPLAF();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         logger.info("Starting application");
-        JFrame mainForm = new JFrame("SPA Store");
-        mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
-        SwingUtilities.invokeLater(() -> mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 250)));
 
-        SPAApplication.getInstance().start();
+        showSplashScreen(() -> {
+            JFrame mainForm = new JFrame("SPA Store");
+            mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
 
-        HomePage homePage = new HomePage(mainForm);
-
-        mainForm.setContentPane(homePage);
-        mainForm.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                logger.info("Exiting application");
-                SPAApplication.getInstance().stop();
-                LogManager.shutdown();
+            HomePage homePage = null;
+            try {
+                homePage = new HomePage(mainForm);
+            } catch (Throwable t) {
+                shutDownDueToError("Failed creating home page", t, mainForm);
             }
+
+            mainForm.setContentPane(homePage);
+            mainForm.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    logger.info("Exiting application");
+                    SPAApplication.getInstance().stop();
+                    LogManager.shutdown();
+                }
+            });
+            mainForm.pack();
+            Controls.centerDialog(mainForm);
+            mainForm.setVisible(true);
         });
-        mainForm.pack();
-        Controls.centerDialog(mainForm);
-        mainForm.setVisible(true);
     }
 
-    private static TableManager<AlertColumn, AlertViewInfo> createAlertsTable() {
-        List<AlertColumn> alertCols = Arrays.asList(AlertColumn.Severity, AlertColumn.Message, AlertColumn.Date);
-        List<AlertViewInfo> alerts = new ArrayList<>();
-        TableManager<AlertColumn, AlertViewInfo> tableManager = new TableManager<>(alertCols, alerts, TableConfig.create().withRowHeight(64).build());
-        tableManager.setPopupAdapter(new PopupAdapter() {
-            @Override
-            protected List<JMenuItem> getMenuItemsForPopup() {
-                JMenuItem item = new JMenuItem("Acknowledge");
-                item.setDisplayedMnemonicIndex(0);
-                item.addActionListener(e -> {
-                    AlertViewInfo selectedModel = tableManager.getSelectedModel();
-                    if (selectedModel != null) {
-                        logger.info("Alert has been acknowledged. Alert: " + selectedModel);
-                        alerts.remove(selectedModel);
-                        tableManager.refresh();
-                    }
-                });
-                return Arrays.asList(item);
-            }
-        });
+    /**
+     * We first display a splash screen to have an animation while loading all data from storage.<br/>
+     * When start tasks (SPAApplication.start) finished, we execute the specified action (to display home page)<br/>
+     * We do this because it might take some time to load data from storage, because there might be a lot of data
+     * and we also need to decompress it.
+     * @param taskToRunWhenFinish The task to run when data is loaded and application is ready
+     */
+    private static void showSplashScreen(Runnable taskToRunWhenFinish) {
+        logger.info("Showing splash screen while loading data from storage");
 
-        logger.info("Registering alert listener");
-        SPAApplication.getInstance().getAlertSystem().registerAlertObserver((key, message, severity, date) -> SwingUtilities.invokeLater(() -> {
+        JFrame splashForm = new JFrame();
+        splashForm.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        splashForm.setUndecorated(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        splashForm.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
+
+        ImageIcon logo = ImagesCache.getInstance().getImage("LOGO.png");
+        ImageViewer imageViewer = new ImageViewer(logo.getImage());
+        JProgressBar waitBar = new JProgressBar();
+        waitBar.setIndeterminate(true);
+
+        splashForm.getContentPane().setLayout(new BorderLayout());
+        splashForm.getContentPane().add(imageViewer, BorderLayout.CENTER);
+        splashForm.getContentPane().add(waitBar, BorderLayout.SOUTH);
+        splashForm.pack();
+        splashForm.setResizable(false);
+        Controls.centerDialog(splashForm);
+
+        // Loading the application might take some time (reading compressed data from disk)
+        // So we display a waiting dialog for the meanwhile
+        executeWithWaitingDialog(() -> {
             try {
-                alerts.add(new AlertViewInfo(message, date.getTime(), severity));
-                tableManager.refresh();
+                SPAApplication.getInstance().start();
             } catch (Throwable t) {
-                logger.error("Error has occurred while trying to add alert to table. severity=" + severity, t);
+                shutDownDueToError("Failed starting the application", t, splashForm);
             }
-        }));
-        return tableManager;
+        }, splashForm, taskToRunWhenFinish);
+    }
+
+    private static void executeWithWaitingDialog(Runnable runnable, JFrame splashForm, Runnable taskToRunWhenFinish) {
+        splashForm.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        new Thread(() -> {
+            try {
+                // ensure show dialog was executed before hide dialog
+                Thread.sleep(1000);
+                runnable.run();
+            } catch (InterruptedException e) {
+                logger.error("Sleep was interrupted", e);
+            } catch (Throwable t) {
+                shutDownDueToError("Failed starting the application", t, splashForm);
+            }
+
+            logger.info("End loading data. Disposing splash screen to present Home page");
+            splashForm.setVisible(false);
+            splashForm.dispose();
+            taskToRunWhenFinish.run();
+        }, "Application Startup Thread").start();
+
+        splashForm.setVisible(true);
+        splashForm.setCursor(Cursor.getDefaultCursor());
+    }
+
+    /**
+     * When there is an uncaught exception we use this function to terminate the application.
+     * @param message The message to log
+     * @param t The exception
+     * @param windowToDispose An optional window to dispose. Can be null
+     */
+    private static void shutDownDueToError(String message, Throwable t, Window windowToDispose) {
+        logger.error(message + ": " + t.getMessage(), t);
+        SPAApplication.getInstance().stop();
+        LogManager.shutdown();
+        if (windowToDispose != null) {
+            windowToDispose.dispose();
+        }
+        System.exit(2);
     }
 
     /**

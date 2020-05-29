@@ -13,9 +13,9 @@ import javax.swing.table.TableCellRenderer;
  * @since 15-May-20
  */
 public enum AlertColumn implements TableColumnIfc {
-   Severity("Severity", 0.1, ImageIcon.class, new ImageCellRenderer()),
-   Message("Description", 0.7, String.class, new TextCellRenderer()),
-   Date("Time", 0.2, java.util.Date.class, new DateCellRenderer());
+   Severity("Severity", 0.13, ImageIcon.class, new ImageCellRenderer()),
+   Message("Description", 0.64, String.class, new TextCellRenderer()),
+   Date("Time", 0.23, java.util.Date.class, new DateCellRenderer());
 
    private final String header;
    private final double cellWidth;

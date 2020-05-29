@@ -55,13 +55,25 @@ public class ItemRepository implements Repository<Item> {
    }
 
    @Override
-   public Item add(Item item) {
+   public Item create(Item item) {
+      // TODO: implement it
       return null;
    }
 
    @Override
-   public List<Item> saveAll(List<Item> items) {
+   public Item update(Item item) {
+      // TODO: implement it
+      return item;
+   }
+
+   @Override
+   public Item delete(Item item) {
+      // TODO: implement it
+      return item;
+   }
+
+   @Override
+   public void saveAll(Iterable<Item> items) {
       // TODO: implement save
-      return items;
    }
 }

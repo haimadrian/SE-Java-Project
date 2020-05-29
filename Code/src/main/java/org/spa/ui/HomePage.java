@@ -1,9 +1,9 @@
 package org.spa.ui;
 
-import org.spa.common.Repository;
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
+import org.spa.ui.util.Dialogs;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.UserManagementService;
 import org.spa.controller.UserManagementServiceObserver;
@@ -15,13 +15,11 @@ import org.spa.controller.cart.ShoppingCartException;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.main.SPAMain;
-import org.spa.model.Item;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
+import org.spa.ui.alert.AlertsView;
 import org.spa.ui.cart.ShoppingCartView;
-import org.spa.ui.LoginView;
 import org.spa.ui.item.ItemColumn;
 import org.spa.ui.item.ItemInfoDialog;
 import org.spa.ui.item.ItemViewInfo;
@@ -29,7 +27,6 @@ import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
 import org.spa.ui.util.Dialogs;
-
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
@@ -44,7 +41,6 @@ import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver {
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
-    private JTable table;
     private JButton management;
     private JButton login;
     private JButton logout;
@@ -53,23 +49,26 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private DefaultTableModel model;
     private JFrame mainForm;
     private ShoppingCartView shoppingCart;
+    private AlertsView alerts;
     private JLabel lblUsername;
     private ImageIcon spaLogo;
     private final UserManagementService userManagement;
     private ItemsWarehouse itemsWarehouse;
     private TableManager<ItemColumn, ItemViewInfo> tableManager;
     private ArrayList<String> itemsPick;
-    private List<ItemViewInfo> tableModelList;
+    private java.util.List<ItemViewInfo> tableModelList;
     public HomePage(JFrame parent) throws FileNotFoundException {
         itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         userManagement = SPAApplication.getInstance().getUserManagementService();
         userManagement.registerObserver(this);
+        createItemsTable();
         final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
         mainForm = parent;
         spaLogo = new ImageIcon(path + "\\SPALOGO_transparent_Small.png", "The best electronic store money can buy");
         categoryTree = new JTree();
         management = new JButton("Management");
         shoppingCart = new ShoppingCartView(mainForm);
+        alerts = new AlertsView(mainForm);
         logout = new JButton("Logout");
         logout.setVisible(false);
         login = new JButton("Login");
@@ -77,8 +76,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginView lv = new LoginView();
-                lv.LoginView();
+                new LoginView(parent);
             }
 
         });
@@ -97,7 +95,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
         });
 
-        String[] columnNames = {"Barcode", "Picture", "Item name", "Description", "Price", "Cart", "Delete"};
+     /*   String[] columnNames = {"Barcode", "Picture", "Item name", "Description", "Price", "Cart", "Delete"};
         WarehouseItem[][] data = new WarehouseItem[0][columnNames.length - 1];
         model = new DefaultTableModel(data, columnNames) {
             @Override
@@ -105,7 +103,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 return getValueAt(0, column).getClass();
             }
         };
-        table = new JTable(model);
+        table = new JTable(model);*/
         lblUsername = new JLabel("Hello guest.");
         searchBar = new JTextField("Search for product...", 40);
         searchBar.addMouseListener(new MouseAdapter() {
@@ -118,42 +116,35 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             @Override
             public void keyReleased(KeyEvent e) {
                 super.keyTyped(e);
-                DefaultTableModel table1 = (DefaultTableModel) table.getModel();
+//                DefaultTableModel table1 = (DefaultTableModel) table.getModel();
                 String searchString = "(?i).*" + searchBar.getText() + ".*";
-                TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
-                table.setRowSorter(tr);
-                tr.setRowFilter(RowFilter.regexFilter(searchString));
+//                TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+//                table.setRowSorter(tr);
+//                tr.setRowFilter(RowFilter.regexFilter(searchString));
                 logger.info(searchString);
             }
         });
-        try {
-            addRepoToTable(model, path);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        tableConfiguration(table);
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(tableManager.getMainPanel());
         add(shoppingCart.getNavigatingComponent());
-
-        createItemsTable();
+        add(alerts.getNavigatingComponent());
         add(login);
         add(logout);
         add(categoryTree);
         add(searchBar);
         add(lblUsername);
         add(management);
+        alerts.getNavigatingComponent().setVisible(false);
         management.setVisible(false);
-        scrollPane.setPreferredSize(new Dimension(725, 400));
+//        scrollPane.setPreferredSize(new Dimension(725, 400));
         JLabel imageContainer = new JLabel(spaLogo);
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree, imageContainer, lblUsername, management, logout);
-        add(scrollPane);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), alerts.getNavigatingComponent(), login, searchBar/*, tableManager*/, categoryTree,imageContainer,lblUsername,management,logout);
+//        add(scrollPane);
     }
 
+/*
     public void tableConfiguration(JTable table) {
         table.setRowHeight(80);
         //   table.setRowMargin(50);
@@ -194,7 +185,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     shoppingCart.add(itemId, shoppingCartItem == null ? 1 : shoppingCartItem.getCount() + 1);
                     itemsPick.add(itemId);
                 } catch (ShoppingCartException ex) {
-                    SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(null, ex.getMessage(), "Error"));
+                    SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(null, ex.getMessage(), "Error"));
                 }
             }
         }
@@ -212,7 +203,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     shoppingCart.add(itemId, 0);
 
                 } catch (ShoppingCartException ex) {
-                    SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(null, ex.getMessage(), "Error"));
+                    SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(null, ex.getMessage(), "Error"));
                 }
                 ((DefaultTableModel) table.getModel()).removeRow(modelRow);
             }
@@ -222,6 +213,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         table.getColumn("Cart").setCellRenderer(cart);
         table.getColumn("Delete").setCellRenderer(delete);
     }
+*/
 
     public void clearCartBeforeLogout() throws ShoppingCartException {
         Iterator<String> itr=itemsPick.iterator();
@@ -243,7 +235,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
 
     @Override
     public SelectionModelManager<WarehouseItem> getSelectionModel() {
-        return null;
+        return itemsWarehouse.getSelectionModel();
     }
 
     @Override
@@ -268,49 +260,50 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     @Override
     public void userLogin(User loggedInUser) {
         if ((loggedInUser instanceof SystemAdmin)
-                || (loggedInUser instanceof Admin))
+                || (loggedInUser instanceof Admin)) {
+            alerts.getNavigatingComponent().setVisible(true);
             management.setVisible(true);
-        if ((loggedInUser instanceof SystemAdmin)
+        }
+        if((loggedInUser instanceof SystemAdmin)
                 || (loggedInUser instanceof Admin)
                 || (loggedInUser instanceof Customer)) {
             lblUsername.setText("Hello " + loggedInUser.getUserId() + ".");
             login.setVisible(false);
             logout.setVisible(true);
-        } else lblUsername.setText("Hello guest.");
-    }
-
-    private static class JTableButtonRenderer implements TableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            JButton button = (JButton) value;
-            return button;
+        }
+        else {
+            alerts.getNavigatingComponent().setVisible(false);
+            lblUsername.setText("Hello guest.");
         }
     }
 
-    public void ComponentLocation(SpringLayout layout, Container contentPane, Component cart, Component login, Component searchBar
-            , Component table, Component categoryTree, Component imageContainer, Component lblUsername,
-                                  Component management, Component logout) {
-        layout.putConstraint(SpringLayout.NORTH, management, 70, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, management, 150, SpringLayout.EAST, searchBar);
-        layout.putConstraint(SpringLayout.NORTH, login, 40, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, login, 200, SpringLayout.EAST, searchBar);
-        layout.putConstraint(SpringLayout.NORTH, logout, 40, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, logout, 195, SpringLayout.EAST, searchBar);
-        layout.putConstraint(SpringLayout.NORTH, cart, 80, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, cart, 360, SpringLayout.WEST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, searchBar, 135, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, searchBar, 500, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, table, 200, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, table, 300, SpringLayout.WEST, categoryTree);
-        layout.putConstraint(SpringLayout.NORTH, categoryTree, 200, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, categoryTree, 60, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, imageContainer, 40, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, imageContainer, 60, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, lblUsername, 45, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, lblUsername, 890, SpringLayout.NORTH, searchBar);
+    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component alerts,Component login,Component searchBar
+                                /* ,Component tableManager*/,Component categoryTree,Component imageContainer,Component lblUsername,
+                                  Component management,Component logout)    {
+
+        layout.putConstraint(SpringLayout.NORTH,management,70,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,management,150,SpringLayout.EAST,searchBar);
+        layout.putConstraint(SpringLayout.NORTH,alerts,5,SpringLayout.SOUTH, management);
+        layout.putConstraint(SpringLayout.WEST,alerts,0, SpringLayout.WEST, management);
+        layout.putConstraint(SpringLayout.NORTH,login,40,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,login,200,SpringLayout.EAST,searchBar);
+        layout.putConstraint(SpringLayout.NORTH,logout,40,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,logout,195,SpringLayout.EAST,searchBar);
+        layout.putConstraint(SpringLayout.NORTH,cart,80,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,cart,360,SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH,searchBar,135,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,searchBar,500,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.NORTH,tableManager.getMainPanel(),200,SpringLayout.NORTH,contentPane);
+        layout.putConstraint(SpringLayout.WEST,tableManager.getMainPanel(),300,SpringLayout.WEST, categoryTree);
+        layout.putConstraint(SpringLayout.NORTH, categoryTree,200,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, categoryTree,60,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, imageContainer,40,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, imageContainer,60,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, lblUsername,45,SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, lblUsername,890,SpringLayout.NORTH, searchBar);
     }
 
-    public void addRepoToTable(DefaultTableModel model, String path) throws FileNotFoundException {
+   /* public void addRepoToTable(DefaultTableModel model, String path) throws FileNotFoundException {
         String id="";
         String category="";
         String imgName="";
@@ -326,35 +319,34 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         List<WarehouseItem> idToItem = warehouse.getItems();
         Iterator<WarehouseItem> i = idToItem.iterator();
         while(i.hasNext()) {
-/*            id = i.next().getId();
+*//*            id = i.next().getId();
             name = i.next().getName();
             category = i.next().getCategory();
             description = i.next().getDescription();
             price = i.next().getPrice();
             profitPercent = i.next().getProfitPercent();
             discountPercent = i.next().getDiscountPercent();
-            count = i.next().getCount();*/
+            count = i.next().getCount();*//*
         }
         Icon icon = new ImageIcon(path + "\\" + name +".png");
         Object[] object = {id, icon, name, description, price, cart, delete};
         model.addRow(object);
-    }
+    }*/
 
 
     private void createItemsTable() {
         List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Count, ItemColumn.Price);
         tableModelList = new ArrayList<>();
         TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(false).build();
-
         tableManager = new TableManager<>(itemCols, tableModelList, tableConfig);
-        tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> shoppingCart.getSelectionModel().setSelection(itemViewInfoToWarehouseItem(selectedModel)));
+        tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> itemsWarehouse.getSelectionModel().setSelection(itemViewInfoToWarehouseItem(selectedModel)));
         tableManager.setPopupAdapter(new PopupAdapter() {
             @Override
-            protected List<JMenuItem> getMenuItemsForPopup() {
+            protected java.util.List<JMenuItem> getMenuItemsForPopup() {
                 JMenuItem item = new JMenuItem("View More...");
                 item.setDisplayedMnemonicIndex(0);
                 item.addActionListener(e -> {
-                    WarehouseItem selection = shoppingCart.getSelectionModel().getSelection();
+                    WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
                     SwingUtilities.invokeLater(() -> {
                         if (selection != null) {
                             new ItemInfoDialog(warehouseItemToItemViewInfo(selection)).init().setVisible(true);
@@ -363,36 +355,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                         }
                     });
                 });
-                JMenuItem item2 = new JMenuItem("Remove from cart");
-                item2.setDisplayedMnemonicIndex(1);
-                item2.addActionListener(e -> {
-                    WarehouseItem selection = shoppingCart.getSelectionModel().getSelection();
-                    SwingUtilities.invokeLater(() -> {
-                        if (selection != null) {
-                            if (Dialogs.showQuestionDialog(getParentDialog(), "Are you sure you want to remove item from cart?", "Confirmation")) {
-                                logger.info("Removing item from cart. Item: " + selection);
-                                try {
-                                    Map<String, Object> params = new HashMap<>();
-                                    params.put("itemId", selection.getId());
-                                    ActionManager.executeAction(ActionType.RemoveFromCart, params);
-                                } catch (ActionException actionException) {
-                                    SwingUtilities.invokeLater(() -> Dialogs.showSimpleErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
-                                }
-                            }
-                        } else {
-                            Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
-                        }
-                    });
-                });
-
-                return Arrays.asList(item, item2);
+                return Arrays.asList(item);
             }
         });
         refreshTable();
     }
     private void refreshTable() {
         // First clear the list and then add all items from shopping cart as view info models
-        tableModelList.clear();
         itemsWarehouse.getItems().forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
 
         try {

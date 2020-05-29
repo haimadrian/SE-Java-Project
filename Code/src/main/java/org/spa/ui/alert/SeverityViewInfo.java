@@ -18,7 +18,7 @@ public enum SeverityViewInfo {
       if ("DISABLED".equalsIgnoreCase(name())) {
          icon1 = null;
       } else {
-         icon1 = ImagesCache.getInstance().getImage(name() + ".gif");
+         icon1 = ImagesCache.getInstance().getImage(name() + ".png");
       }
 
       icon = icon1;

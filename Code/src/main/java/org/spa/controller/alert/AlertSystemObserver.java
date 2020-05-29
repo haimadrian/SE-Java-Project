@@ -1,6 +1,6 @@
 package org.spa.controller.alert;
 
-import java.util.Date;
+import org.spa.model.Alert;
 
 /**
  * Whoever wants to listen to the {@link AlertSystem} should implement this interface and register itself as
@@ -10,12 +10,16 @@ import java.util.Date;
  */
 public interface AlertSystemObserver {
    /**
-    * When alert system finds that an alert should be raised, it will call this method specifying alert data as fields
-    * so there is no dependency on data layer.
-    * @param key Key represents the alert, to support updating existing alert instead of showing a duplicate of it
-    * @param message The up to date message
-    * @param severity The severity this alert got. One of: NORMAL, LOW, MEDIUM, HIGH
-    * @param date When this alert has been generated
+    * When alert system finds that an alert should be raised, it will call this method specifying the alert
+    * @param alertSystem A reference to {@link AlertSystem}
+    * @param alert The alert
     */
-   void onAlertTriggered(String key, String message, String severity, Date date);
+   void onAlertTriggered(AlertSystem alertSystem, Alert alert);
+
+   /**
+    * When acknowledging an alert or clearing alert system, this method is called
+    * @param alertSystem A reference to {@link AlertSystem}
+    * @param alert The acknowledged alert
+    */
+   void onAlertAcknowledged(AlertSystem alertSystem, Alert alert);
 }

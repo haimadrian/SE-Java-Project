@@ -3,6 +3,7 @@ package org.spa.controller.item;
 import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
 
@@ -21,16 +22,21 @@ public class ItemsWarehouse {
    private static final Logger logger = LoggerFactory.getLogger(ItemsWarehouse.class);
    private final Map<String, WarehouseItem> idToItem;
    private final Repository<Item> itemRepository;
-
+   private final SelectionModelManager<WarehouseItem> selectionModel;
    public ItemsWarehouse() {
-      idToItem = new HashMap<>(1000); // Yeah sure...
+      idToItem = new HashMap<>(1000);
       itemRepository = new ItemRepository();
+      selectionModel = new SelectionModelManager<>();
    }
-
+   public SelectionModelManager<WarehouseItem> getSelectionModel() {
+      return selectionModel;
+   }
    /**
     * Call this method to read data from storage
     */
    public void start() throws FileNotFoundException {
+      logger.info("Starting ItemsWarehouse - Select items from repository");
+
       // Load data into memory
       itemRepository.selectAll().forEach(item -> idToItem.put(item.getId(), itemToWarehouseItem(item)));
    }
@@ -39,7 +45,9 @@ public class ItemsWarehouse {
     * Call this method when exiting the application, to save the in memory data to disk
     */
    public void stop() {
-      // Save data to disk
+      logger.info("Stopping ItemsWarehouse - Save items to repository");
+
+      // Save data to repository
       itemRepository.saveAll(idToItem.values().stream().map(ItemsWarehouse::warehouseItemToItem).collect(Collectors.toList()));
    }
 

@@ -1,35 +1,57 @@
 package org.spa.model;
 
-import org.spa.common.SPAApplication;
-import org.spa.controller.item.WarehouseItem;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
-    private final String orderId;
-    private final Date orderDate;
-    private final String userId;
-    private  Map<Integer, WarehouseItem> itemsMap; //TODO ask what should be here
+    @JsonProperty
+    private String orderId;
 
+    @JsonProperty
+    private long orderTime;
 
-    public Order(String orderId, Date orderDate, String userId, Map<String, WarehouseItem> idToItem) {
+    @JsonProperty
+    private String userId;
+
+    @JsonProperty
+    private List<Item> items;
+
+    //@formatter:off
+    @JsonCreator()
+    public Order(@JsonProperty(value = "orderId") String orderId,
+                 @JsonProperty(value = "orderTime") long orderTime,
+                 @JsonProperty(value = "userId") String userId,
+                 @JsonProperty(value = "items") List<Item> items) {
         this.orderId = orderId;
-        this.orderDate = orderDate;
+        this.orderTime = orderTime;
         this.userId = userId;
-        this.itemsMap = new HashMap<>(); //TODO ask what should be here
+        this.items = items;
+    }
+    //@formatter:on
+
+    public Order(Order copy) {
+        this.orderId = copy.getOrderId();
+        this.orderTime = copy.getOrderTime();
+        this.userId = copy.getUserId();
+        this.items = new ArrayList<>(copy.getItems());
     }
 
     public String getOrderId() {
         return orderId;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public long getOrderTime() {
+        return orderTime;
     }
 
     public String getUserId() {
         return userId;
+    }
+
+    public List<Item> getItems() {
+        return items;
     }
 }

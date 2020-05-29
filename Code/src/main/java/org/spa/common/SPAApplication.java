@@ -1,15 +1,14 @@
 package org.spa.common;
 
-import org.spa.controller.order.OrderSystem;
-import org.spa.model.dal.UserRepository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.UserManagementService;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
+import org.spa.controller.order.OrderSystem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
-import org.spa.controller.UserManagementService;
 
 import java.io.FileNotFoundException;
 
@@ -30,6 +29,7 @@ public class SPAApplication {
    private final UserManagementService userManagementService;
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
    private final OrderSystem orderSystem;
+   private boolean isStarted = false;
 
    //private final Repository<User> userRepository;
    // Disallow creation of this class from outside
@@ -58,25 +58,31 @@ public class SPAApplication {
       alertSystem.start();
       userManagementService.start();
       orderSystem.start();
+      isStarted = true;
    }
 
    /**
     * Stop all services in the application
     */
    public void stop() {
-      logger.info("Stopping services");
-      alertSystem.stop();
+      if (isStarted) {
+         logger.info("Stopping services");
+         alertSystem.stop();
 
-      // Clear shopping cart before stopping warehouse, because it might update counts in warehouse.
-      shoppingCart.clear(true);
+         // Clear shopping cart before stopping warehouse, because it might update counts in warehouse.
+         shoppingCart.stop();
 
-      itemsWarehouse.stop();
+         orderSystem.stop();
+         itemsWarehouse.stop();
+
+         isStarted = false;
+      }
    }
 
    /**
     * @return Working directory used for storing and loading files from disk
     */
-   public String getWorkingDirectory() {
+   public static String getWorkingDirectory() {
       return "C:\\temp\\SPAApp";
    }
 
@@ -105,9 +111,9 @@ public class SPAApplication {
       return userManagementService;
    }
 
-//   public Repository<User> getUserRepository() {
-//      return userRepository;
-//   }
+   public OrderSystem getOrderSystem() {
+      return orderSystem;
+   }
 
    /**
     * @return A reference to the global {@link SelectionModelManager}

@@ -52,14 +52,12 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         File  read = new File(path+"\\data.txt");
         spaLogo = new ImageIcon(path+"\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
 
-        categoryTree = new CategoryTree();
+        categoryTree = new CategoryTree(mainForm);
+
         categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 String node = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
-                DefaultTableModel table1 = (DefaultTableModel) table.getModel();
-                TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
-                table.setRowSorter(tr);
-                tr.setRowFilter(RowFilter.regexFilter(node));
+                //TODO filter table by node
             }
         });
 
@@ -140,7 +138,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), alerts.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername,management,logout);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), alerts.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree.getCategoryTree(),imageContainer,lblUsername,management,logout);
         add(scrollPane);
     }
 

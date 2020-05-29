@@ -534,6 +534,7 @@ public class Controls {
       // Override info because tooltip uses "info" background instead of tooltip.background.. WTF dude?
       UIManager.put("info", UIManager.get("ToolTip.background"));
       UIManager.put("ToolTip.font", PLAIN_FONT);
+      UIManager.put("Tree.background", UIManager.get("ToolTip.background"));
       // See all options here: https://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/_nimbusDefaults.html
    }
 }

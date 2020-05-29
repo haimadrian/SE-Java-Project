@@ -3,49 +3,50 @@ package org.spa.ui;
 import org.spa.common.SPAApplication;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
+import org.spa.ui.util.Fonts;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CategoryTree
 {
     final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
     private JTree categoryTree;
-    private final List<ItemsWarehouse> itemRepo;
-    private Map<String, WarehouseItem> itemsWH;
-    public CategoryTree()
+    private  List<WarehouseItem> itemsRepository;
+    private Set<String> itemsCategories;
+    public CategoryTree(Window owner)
     {
-        itemRepo = (List<ItemsWarehouse>) SPAApplication.getInstance().getItemsWarehouse();
+
+        itemsRepository = SPAApplication.getInstance().getItemsWarehouse().getItems();
 
         //create the root node
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
         //create the child nodes
-        itemRepo.stream().forEach(item -> );
-        DefaultMutableTreeNode cpu = new DefaultMutableTreeNode("CPU");
-        DefaultMutableTreeNode gpu = new DefaultMutableTreeNode("GPU");
-        DefaultMutableTreeNode ssd = new DefaultMutableTreeNode("SSD");
-        DefaultMutableTreeNode hdd = new DefaultMutableTreeNode("HDD");
-        DefaultMutableTreeNode screens = new DefaultMutableTreeNode("Screens");
+        itemsCategories = itemsRepository.stream().map(WarehouseItem::getCategory).collect(Collectors.toSet());
 
-        //add the child nodes to the root node
-        root.add(cpu);
-        root.add(gpu);
-        root.add(ssd);
-        root.add(hdd);
-        root.add(screens);
+        for (String category : itemsCategories) {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(category);
+            root.add(node);
+        }
 
         //create the tree by passing in the root node
         categoryTree = new JTree(root);
         categoryTree.setShowsRootHandles(true);
         categoryTree.setRootVisible(false);
+        categoryTree.setPreferredSize(new Dimension(200,owner.getPreferredSize().height-250));
+        categoryTree.setFont(Fonts.BIG_FONT);
+        categoryTree.setBorder(BorderFactory.createLineBorder(Color.gray,1));
 
-        ImageIcon imageIcon = new ImageIcon(path+"\\leaf.gif","Leaf");
-        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) categoryTree.getCellRenderer();
-        renderer.setLeafIcon(imageIcon);
+       DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) categoryTree.getCellRenderer();
+        renderer.setLeafIcon(null);
     }
 
     public JTree getCategoryTree() {

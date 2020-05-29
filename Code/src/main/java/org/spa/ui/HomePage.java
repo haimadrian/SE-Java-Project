@@ -11,13 +11,10 @@ import org.spa.controller.cart.ShoppingCartException;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.main.SPAMain;
-import org.spa.model.Item;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
 import org.spa.ui.cart.ShoppingCartView;
-import org.spa.ui.LoginView;
 import org.spa.ui.util.Dialogs;
 
 import javax.swing.*;
@@ -26,9 +23,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.Vector;
 
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver {
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
@@ -36,7 +31,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private JButton management;
     private JButton login;
     private JButton logout;
-    private JTree categoryTree;
+    private CategoryTree categoryTree;
     private JTextField searchBar;
     private DefaultTableModel model;
     private JFrame mainForm;
@@ -54,7 +49,18 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         mainForm = parent;
         File  read = new File(path+"\\data.txt");
         spaLogo = new ImageIcon(path+"\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
-        categoryTree = new JTree();
+
+        categoryTree = new CategoryTree();
+        categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                String node = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
+                DefaultTableModel table1 = (DefaultTableModel) table.getModel();
+                TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+                table.setRowSorter(tr);
+                tr.setRowFilter(RowFilter.regexFilter(node));
+            }
+        });
+
         management = new JButton("Management");
         shoppingCart = new ShoppingCartView(mainForm);
         logout = new JButton("Logout");
@@ -120,7 +126,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(shoppingCart.getNavigatingComponent());
         add(login);
         add(logout);
-        add(categoryTree);
+        add(categoryTree.getCategoryTree());
         add(searchBar);
         add(lblUsername);
         add(management);
@@ -130,9 +136,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername,management,logout);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree.getCategoryTree(),imageContainer,lblUsername,management,logout);
         add(scrollPane);
     }
+
     public void tableConfiguration(JTable table){
         table.setRowHeight(80);
      //   table.setRowMargin(50);

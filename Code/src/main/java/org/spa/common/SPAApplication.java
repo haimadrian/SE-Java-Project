@@ -29,7 +29,6 @@ public class SPAApplication {
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
    private final OrderSystem orderSystem;
 
-   //private final Repository<User> userRepository;
    // Disallow creation of this class from outside
    private SPAApplication() {
       itemsWarehouse = new ItemsWarehouse();

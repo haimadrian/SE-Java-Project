@@ -119,7 +119,9 @@ public class ImageViewer extends JPanel {
    private Image scaleImageIfNeeded() {
       if (isStretched) {
          int doubleMargin = margin*2;
-         return image.getScaledInstance(getWidth() - doubleMargin, getHeight() - doubleMargin, Image.SCALE_SMOOTH);
+         int width = Math.max(getWidth() - doubleMargin, 1);
+         int height = Math.max(getHeight() - doubleMargin, 1);
+         return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
       } else {
          return null;
       }

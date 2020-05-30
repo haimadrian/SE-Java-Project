@@ -3,9 +3,11 @@ package org.spa.controller.item;
 import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,16 +22,19 @@ public class ItemsWarehouse {
    private static final Logger logger = LoggerFactory.getLogger(ItemsWarehouse.class);
    private final Map<String, WarehouseItem> idToItem;
    private final Repository<Item> itemRepository;
-
+   private final SelectionModelManager<WarehouseItem> selectionModel;
    public ItemsWarehouse() {
-      idToItem = new HashMap<>(1000); // Yeah sure...
+      idToItem = new HashMap<>(1000);
       itemRepository = new ItemRepository();
+      selectionModel = new SelectionModelManager<>();
    }
-
+   public SelectionModelManager<WarehouseItem> getSelectionModel() {
+      return selectionModel;
+   }
    /**
     * Call this method to read data from storage
     */
-   public void start() {
+   public void start() throws FileNotFoundException {
       logger.info("Starting ItemsWarehouse - Select items from repository");
 
       // Load data into memory

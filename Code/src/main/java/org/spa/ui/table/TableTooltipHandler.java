@@ -74,7 +74,7 @@ public class TableTooltipHandler extends MouseAdapter {
       if ((table.getModel() != null) && (row >= 0 && row < table.getRowCount())) {
          Object cellValue = table.getModel().getValueAt(row, modelCol);
          if (cellValue == null) {
-            setTooltipText("<null>");
+            setTooltipText("");
          } else {
             String cellText = cellValueToString(cellValue);
             if (cellText == null) {

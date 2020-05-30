@@ -45,7 +45,7 @@ public class ItemInfoDialog extends JFrame {
 
       // Lay out the members from left to right.
       JPanel namePanel = createMemberPanelWithLabel("Name:", item.getName());
-      JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, 600);
+      JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, 350);
       JPanel pricePanel;
       JPanel priceAfterDiscount = null;
       String priceText = "Price: " + decimalFormat.format(item.getPriceWithProfit()) + "$";
@@ -58,9 +58,9 @@ public class ItemInfoDialog extends JFrame {
       pricePanel = createMemberPanelWithoutTextArea(priceText);
 
       fields.add(namePanel);
-      fields.add(Box.createRigidArea(new Dimension(0, 25)));
+      fields.add(Box.createRigidArea(new Dimension(0, 10)));
       fields.add(descPanel);
-      fields.add(Box.createRigidArea(new Dimension(0, 25)));
+      fields.add(Box.createRigidArea(new Dimension(0, 10)));
       fields.add(pricePanel);
       if (priceAfterDiscount != null) {
          //fields.add(Box.createRigidArea(new Dimension(0, 5)));

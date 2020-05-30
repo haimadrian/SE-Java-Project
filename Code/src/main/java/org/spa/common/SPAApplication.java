@@ -11,6 +11,8 @@ import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.util.ImagesCache;
 
+import java.io.FileNotFoundException;
+
 /**
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
  * Everybody can access this class in order to get to the different services in the project. The
@@ -50,7 +52,7 @@ public class SPAApplication {
    /**
     * Start all services in the application
     */
-   public void start() {
+   public void start() throws FileNotFoundException {
       logger.info("Starting services");
 
       // Load persistent images from disk

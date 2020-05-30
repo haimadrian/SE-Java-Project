@@ -70,7 +70,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       //noinspection MagicConstant
       table.setSelectionMode(tableConfig.getSelectionMode());
       table.setCellSelectionEnabled(true);
-      table.setMinimumSize(new Dimension(200, 100));
+      table.setMinimumSize(new Dimension(400, 400));
       table.setPreferredScrollableViewportSize(table.getPreferredSize());
       table.getTableHeader().setFont(Fonts.PANEL_HEADING_FONT);
       table.getTableHeader().setReorderingAllowed(tableConfig.isColumnReorderingAllowed());
@@ -253,19 +253,24 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       }
 
       @Override
+      public void setColumnCount(int columnCount) {
+         super.setColumnCount(columnCount);
+      }
+
+      @Override
       public int getRowCount() {
          return tableModelList.size();
       }
 
       @Override
       public boolean isCellEditable(int row, int col) {
-         Column column = TableManager.this.columns.get(col);
+         Column column = columns.get(col);
          return tableConfig.isEditable() && column.isEditable();
       }
 
       @Override
       public Object getValueAt(int row, int col) {
-         if (row < 0 || row >= tableModelList.size())
+         if (row < 0 || row >= tableModelList.size() || col >= columns.size())
             return "";
 
          Model model = tableModelList.get(row);

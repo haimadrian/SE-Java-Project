@@ -1,4 +1,3 @@
-image1.gif
 73921
 GPU
 RTX 2080 ti
@@ -7,18 +6,8 @@ The best GPU MA SHE ANI OMERRRRRRRRRRR
 12
 0
 10
-image1.gif
 73920
-GPU
-RTX 2060 super
-Idan manyak . txt
-350
-30
-4
-4
-image1.gif
-73920
-GPU
+SSD
 RTX 2060 super
 Idan manyak . txt
 350

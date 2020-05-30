@@ -9,6 +9,7 @@ import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.order.OrderSystem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
+import org.spa.ui.util.ImagesCache;
 
 /**
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
@@ -51,6 +52,10 @@ public class SPAApplication {
     */
    public void start() {
       logger.info("Starting services");
+
+      // Load persistent images from disk
+      ImagesCache.getInstance().start();
+
       itemsWarehouse.start();
       alertSystem.start();
       userManagementService.start();
@@ -71,7 +76,11 @@ public class SPAApplication {
 
          orderSystem.stop();
          itemsWarehouse.stop();
+
          userManagementService.stop();
+         // Save persistent images to disk
+         ImagesCache.getInstance().stop();
+
          isStarted = false;
       }
    }

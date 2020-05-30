@@ -165,6 +165,12 @@ public class ItemViewInfo implements TableModelIfc {
             case Count: {
                return new TableCellValue<ItemViewInfo>(Integer.valueOf(getCount()), this);
             }
+            case Cart: {
+               return new TableCellValue<ItemViewInfo>(ImagesCache.getInstance().getImage("Add To Cart.png"), this);
+            }
+            case Delete: {
+               return new TableCellValue<ItemViewInfo>(ImagesCache.getInstance().getImage("garbage.png"), this);
+            }
             default:
                return handleDefault(attributeName);
          }

@@ -67,6 +67,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       table.setFont(Fonts.PLAIN_FONT);
       table.setColumnSelectionAllowed(false);
       table.setRowSelectionAllowed(true);
+      table.setAutoCreateRowSorter(true); //TODO Ask why not working
       //noinspection MagicConstant
       table.setSelectionMode(tableConfig.getSelectionMode());
       table.setCellSelectionEnabled(true);
@@ -259,13 +260,13 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
 
       @Override
       public boolean isCellEditable(int row, int col) {
-         Column column = TableManager.this.columns.get(col);
+         Column column = columns.get(col);
          return tableConfig.isEditable() && column.isEditable();
       }
 
       @Override
       public Object getValueAt(int row, int col) {
-         if (row < 0 || row >= tableModelList.size())
+         if (row < 0 || row >= tableModelList.size() || col >= columns.size())
             return "";
 
          Model model = tableModelList.get(row);

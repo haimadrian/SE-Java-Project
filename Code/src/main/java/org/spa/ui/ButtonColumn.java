@@ -48,7 +48,8 @@ public class ButtonColumn extends DefaultCellEditor implements TableCellRenderer
         renderButton = new JButton();
         editButton = new JButton();
         editButton.setFocusPainted(false);
-        editButton.addActionListener(actionEvent -> listener.accept(table));
+        editButton.addActionListener(actionEvent -> {this.stopCellEditing();
+        listener.accept(table);});
         originalBorder = editButton.getBorder();
         setFocusBorder(new LineBorder(Color.BLUE));
         setClickCountToStart(1);

@@ -67,7 +67,6 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       table.setFont(Fonts.PLAIN_FONT);
       table.setColumnSelectionAllowed(false);
       table.setRowSelectionAllowed(true);
-      table.setAutoCreateRowSorter(true); //TODO Ask why not working
       //noinspection MagicConstant
       table.setSelectionMode(tableConfig.getSelectionMode());
       table.setCellSelectionEnabled(true);
@@ -251,6 +250,11 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       @Override
       public int getColumnCount() {
          return columns.size();
+      }
+
+      @Override
+      public void setColumnCount(int columnCount) {
+         super.setColumnCount(columnCount);
       }
 
       @Override

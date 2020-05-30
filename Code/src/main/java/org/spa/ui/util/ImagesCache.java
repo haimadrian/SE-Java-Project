@@ -114,6 +114,7 @@ public class ImagesCache {
    public void stop() {
       logger.info("Start storing missing images to disk. There are " + cache.size() + " images total");
       AtomicInteger imagesCount = new AtomicInteger();
+      imagesDir.mkdirs();
       cache.forEach((imageName, image) -> {
          File currImageFile = new File(imagesDir, imageName);
          if (!currImageFile.exists()) {

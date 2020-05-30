@@ -40,6 +40,10 @@ public class CategoryTree
         renderer.setLeafIcon(null);
     }
 
+    public void clear()
+    {
+        categoryTree.clearSelection();
+    }
     public JTree getCategoryTree() {
         return categoryTree;
     }

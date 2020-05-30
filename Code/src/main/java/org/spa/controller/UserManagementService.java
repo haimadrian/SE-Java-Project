@@ -42,7 +42,8 @@ public class UserManagementService {
    }
 
    public void stop() {
-      //TODO Save data to disk
+      //save data to storage
+      userRepository.saveAll(userMap.values());
    }
 
    public Map<String, User> getUserMap(){

@@ -71,7 +71,7 @@ public class SPAApplication {
 
          orderSystem.stop();
          itemsWarehouse.stop();
-
+         userManagementService.stop();
          isStarted = false;
       }
    }

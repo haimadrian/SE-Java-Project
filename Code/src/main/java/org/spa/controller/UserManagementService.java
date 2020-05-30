@@ -42,7 +42,8 @@ public class UserManagementService {
    }
 
    public void stop() {
-      // Save data to disk
+      //save data to storage
+      userRepository.saveAll(userMap.values());
    }
 
    public Map<String, User> getUserMap(){
@@ -105,7 +106,7 @@ public class UserManagementService {
       } else if (u instanceof SystemAdmin) {
          ((SystemAdmin) u).setKey(pass);
       }
-      // update in Repository
+      //TODO update in Repository
    }
 
    public User findUser(User user) {
@@ -121,7 +122,7 @@ public class UserManagementService {
 
    public void deleteUser(User user) {
       userMap.remove(user.getUserId());
-      // delete in Repository
+      // TODO delete in Repository
    }
 
    public User getUser(String userId) {

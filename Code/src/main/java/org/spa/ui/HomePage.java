@@ -32,7 +32,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private JButton management;
     private JButton login;
     private JButton logout;
-    private JTree categoryTree;
+    private CategoryTree categoryTree;
     private JTextField searchBar;
     private DefaultTableModel model;
     private JFrame mainForm;
@@ -51,7 +51,16 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         mainForm = parent;
         File  read = new File(path+"\\data.txt");
         spaLogo = new ImageIcon(path+"\\SPALOGO_transparent_Small.png","The best electronic store money can buy");
-        categoryTree = new JTree();
+
+        categoryTree = new CategoryTree(mainForm);
+
+        categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                String node = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
+                //TODO filter table by node
+            }
+        });
+
         management = new JButton("Management");
         shoppingCart = new ShoppingCartView(mainForm);
         alerts = new AlertsView(mainForm);
@@ -118,7 +127,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(alerts.getNavigatingComponent());
         add(login);
         add(logout);
-        add(categoryTree);
+        add(categoryTree.getCategoryTree());
         add(searchBar);
         add(lblUsername);
         add(management);
@@ -129,9 +138,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), alerts.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree,imageContainer,lblUsername,management,logout);
+        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(), alerts.getNavigatingComponent(), login, searchBar, scrollPane, categoryTree.getCategoryTree(),imageContainer,lblUsername,management,logout);
         add(scrollPane);
     }
+
     public void tableConfiguration(JTable table){
         table.setRowHeight(80);
      //   table.setRowMargin(50);

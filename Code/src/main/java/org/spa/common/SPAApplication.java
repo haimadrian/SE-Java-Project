@@ -30,7 +30,6 @@ public class SPAApplication {
    private final OrderSystem orderSystem;
    private boolean isStarted = false;
 
-   //private final Repository<User> userRepository;
    // Disallow creation of this class from outside
    private SPAApplication() {
       itemsWarehouse = new ItemsWarehouse();
@@ -78,6 +77,7 @@ public class SPAApplication {
          orderSystem.stop();
          itemsWarehouse.stop();
 
+         userManagementService.stop();
          // Save persistent images to disk
          ImagesCache.getInstance().stop();
 

@@ -9,7 +9,6 @@ import org.spa.model.user.SystemAdmin;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class UserRepository implements Repository<User> {
     List<User> dummy;
@@ -26,11 +25,6 @@ public class UserRepository implements Repository<User> {
                 "What is your favourite color ?", "dark-chocolate"));
 
         return dummy;
-    }
-
-    @Override
-    public List<User> select(Predicate<User> filter) {
-        return selectAll();
     }
 
     @Override

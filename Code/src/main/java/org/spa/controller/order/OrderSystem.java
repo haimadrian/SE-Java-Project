@@ -8,7 +8,6 @@ import org.spa.model.Item;
 import org.spa.model.Order;
 import org.spa.model.dal.OrderRepository;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,7 +21,7 @@ public class OrderSystem {
         orderRepository = new OrderRepository();
     }
 
-    public void start() throws FileNotFoundException {
+    public void start() {
         logger.info("Starting OrderSystem - Select orders from repository");
 
         // Load data into memory

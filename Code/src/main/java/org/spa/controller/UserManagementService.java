@@ -5,12 +5,11 @@ import org.spa.common.User;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.model.dal.UserRepository;
+import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Guest;
-import org.spa.model.user.Admin;
 import org.spa.model.user.SystemAdmin;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class UserManagementService {
    /**
     * Call this method to read data from storage
     */
-   public void start() throws FileNotFoundException {
+   public void start() {
       loggedInUser = new Guest();
       // Load data into memory
         userRepository.selectAll().forEach(user -> userMap.put(user.getUserId(),user));

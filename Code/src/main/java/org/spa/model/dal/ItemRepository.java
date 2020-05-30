@@ -2,56 +2,71 @@ package org.spa.model.dal;
 
 import org.spa.common.Repository;
 import org.spa.common.SPAApplication;
-import org.spa.controller.item.ItemsWarehouse;
+import org.spa.common.util.log.Logger;
+import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.model.Item;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 /**
- * @author Haim Adrian
+ * @author Lior Shor
  * @since 16-May-20
  */
 public class ItemRepository implements Repository<Item> {
+   private static final File FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "data.txt");
+   private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
+
    @Override
-   public List<Item> selectAll() throws FileNotFoundException {
-      int idCounter = 1;
-      List<Item> dummy = new ArrayList<>();
+   public List<Item> selectAll() {
+      List<Item> items = new ArrayList<>();
       String id;
       String category;
-      String imgName;
       String name;
       String description;
       String price;
       String profitPercent;
       String discountPercent;
       String count;
-      String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
-      File  read = new File(path+"\\data.txt");
-      Scanner myReader = new Scanner(read);
-      while (myReader.hasNextLine()) {
-         id = myReader.nextLine();
-         category = myReader.nextLine();
-         name = myReader.nextLine();
-         description = myReader.nextLine();
-         price = myReader.nextLine();
-         profitPercent = myReader.nextLine();
-         discountPercent = myReader.nextLine();
-         count = myReader.nextLine();
-         Item item = new Item(id, category, name, description, Double.parseDouble(price), Double.parseDouble(profitPercent), Double.parseDouble(discountPercent), Integer.parseInt(count));
-         dummy.add(item);
+
+      if (!FILE.exists()) {
+         logger.info("Data file of items does not exist. Copying from resources");
+         try {
+            Files.copy(ItemRepository.class.getResourceAsStream("data.txt"), FILE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+         } catch (Exception e) {
+            logger.error("Error has occurred while copying data.txt from resources to working directory", e);
+         }
       }
-        return dummy;
-   }
-   @Override
-   public List<Item> select(Predicate<Item> filter) throws FileNotFoundException {
-      return selectAll();
+
+      if (FILE.exists()) {
+         logger.info("Reading items from file");
+         try (Scanner myReader = new Scanner(FILE)) {
+            while (myReader.hasNextLine()) {
+               id = myReader.nextLine();
+               category = myReader.nextLine();
+               name = myReader.nextLine();
+               description = myReader.nextLine();
+               price = myReader.nextLine();
+               profitPercent = myReader.nextLine();
+               discountPercent = myReader.nextLine();
+               count = myReader.nextLine();
+               Item item = new Item(id, category, name, description, Double.parseDouble(price), Double.parseDouble(profitPercent), Double.parseDouble(discountPercent), Integer.parseInt(count));
+               items.add(item);
+            }
+
+            logger.info(items.size() + " items have been read");
+         } catch (Exception e) {
+            logger.error("Failed reading items from file", e);
+         }
+      } else {
+         logger.info("Items file does not exist. Nothing to read");
+      }
+
+      return items;
    }
 
    @Override

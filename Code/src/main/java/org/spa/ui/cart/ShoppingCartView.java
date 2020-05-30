@@ -174,7 +174,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    private void createItemsTable() {
       List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price, ItemColumn.Count);
       tableModelList = new ArrayList<>();
-      TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(true).build();
+      TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(false).build();
 
       tableManager = new TableManager<>(itemCols, tableModelList, tableConfig);
       tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> shoppingCart.getSelectionModel().setSelection(itemViewInfoToWarehouseItem(selectedModel)));

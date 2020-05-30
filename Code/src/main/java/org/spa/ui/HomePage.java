@@ -4,6 +4,7 @@ import org.spa.common.SPAApplication;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
 import org.spa.controller.UserType;
+import org.spa.ui.item.ItemViewInfoHome;
 import org.spa.ui.util.Dialogs;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.UserManagementService;
@@ -47,9 +48,9 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private ImageIcon spaLogo;
     private final UserManagementService userManagement;
     private ItemsWarehouse itemsWarehouse;
-    private TableManager<ItemColumn, ItemViewInfo> tableManager;
+    private TableManager<ItemColumn, ItemViewInfoHome> tableManager;
     private ArrayList<String> itemsPick;
-    private java.util.List<ItemViewInfo> tableModelList;
+    private java.util.List<ItemViewInfoHome> tableModelList;
     public HomePage(JFrame parent) {
         itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         userManagement = SPAApplication.getInstance().getUserManagementService();
@@ -81,7 +82,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     }
                 });
                 tableModelList.clear();
-                selectedCategory.forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
+                selectedCategory.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
                 tableManager.refresh();
             }
         });
@@ -123,7 +124,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     }
                 });
                 tableModelList.clear();
-                searchedItems.forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
+                searchedItems.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
                 tableManager.refresh();
             }
         });
@@ -257,7 +258,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
                     SwingUtilities.invokeLater(() -> {
                         if (selection != null) {
-                            new ItemInfoDialog(warehouseItemToItemViewInfo(selection)).init().setVisible(true);
+                            new ItemInfoDialog(new ItemViewInfoHome(warehouseItemToItemViewInfo(selection))).init().setVisible(true);
                         } else {
                             Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to show.\nPlease select a row first.", "No selection");
                         }
@@ -271,7 +272,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
 
     private void refreshTable() {
         tableModelList.clear();
-        itemsWarehouse.getItems().forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
+        itemsWarehouse.getItems().forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
         try {
             tableManager.refresh();
         } catch (Throwable t) {

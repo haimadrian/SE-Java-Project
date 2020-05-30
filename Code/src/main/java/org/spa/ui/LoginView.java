@@ -109,8 +109,9 @@ public class LoginView {
         {
             public void mouseClicked(MouseEvent e)
             {
-                ForgotPassword fp = new ForgotPassword();
-                fp.ForgotPassword();
+                frame.dispose();
+                frame = null;
+                new ForgotPassword(owner);
             }
         });
     }

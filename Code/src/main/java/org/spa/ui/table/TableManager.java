@@ -94,7 +94,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
          int colWidth = (int)(column.getWidth() * (mainPanel.getWidth() - scrollPane.getVerticalScrollBar().getWidth()));
          tableColumn.setPreferredWidth(colWidth);
          tableColumn.setWidth(colWidth);
-         tableColumn.setMinWidth(Math.max(colWidth / 3, 10));
+         tableColumn.setMinWidth(Math.max(colWidth / 3, 30));
 
          if (column.isEditable()) {
             tableColumn.setCellEditor(column.getCellEditor());

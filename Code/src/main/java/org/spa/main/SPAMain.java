@@ -107,7 +107,7 @@ public class SPAMain {
         new Thread(() -> {
             try {
                 // ensure show dialog was executed before hide dialog
-                Thread.sleep(1000);
+                Thread.sleep(250);
                 runnable.run();
             } catch (InterruptedException e) {
                 logger.error("Sleep was interrupted", e);

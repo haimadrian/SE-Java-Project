@@ -9,6 +9,7 @@ import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.order.OrderSystem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
+import org.spa.ui.util.ImagesCache;
 
 import java.io.FileNotFoundException;
 
@@ -31,7 +32,6 @@ public class SPAApplication {
    private final OrderSystem orderSystem;
    private boolean isStarted = false;
 
-   //private final Repository<User> userRepository;
    // Disallow creation of this class from outside
    private SPAApplication() {
       itemsWarehouse = new ItemsWarehouse();
@@ -54,6 +54,10 @@ public class SPAApplication {
     */
    public void start() throws FileNotFoundException {
       logger.info("Starting services");
+
+      // Load persistent images from disk
+      ImagesCache.getInstance().start();
+
       itemsWarehouse.start();
       alertSystem.start();
       userManagementService.start();
@@ -74,6 +78,10 @@ public class SPAApplication {
 
          orderSystem.stop();
          itemsWarehouse.stop();
+
+         userManagementService.stop();
+         // Save persistent images to disk
+         ImagesCache.getInstance().stop();
 
          isStarted = false;
       }

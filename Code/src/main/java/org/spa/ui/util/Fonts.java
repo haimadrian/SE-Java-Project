@@ -17,6 +17,7 @@ public class Fonts {
    public static final Font BOLD_FONT = new Font(DEFAULT_FONT_FACE, Font.BOLD, DEFAULT_FONT_SIZE);
    public static final Font PLAIN_FONT = new Font(DEFAULT_FONT_FACE, Font.PLAIN, DEFAULT_FONT_SIZE);
    public static final Font SMALL_FONT = new Font(DEFAULT_FONT_FACE, Font.PLAIN, DEFAULT_FONT_SIZE - PROPORTIONAL_FONT_SIZE_CHANGE);
+   public static final Font BIG_FONT = new Font(DEFAULT_FONT_FACE, Font.PLAIN, DEFAULT_FONT_SIZE + PROPORTIONAL_FONT_SIZE_CHANGE);
    public static final Font ITALIC_FONT = new Font(DEFAULT_FONT_FACE, Font.ITALIC, DEFAULT_FONT_SIZE);
    public static final Font BOLD_ITALIC_FONT = new Font(DEFAULT_FONT_FACE, Font.BOLD | Font.ITALIC, DEFAULT_FONT_SIZE);
    public static final Font MONOSPACED_FONT = new Font(DEFAULT_MONOSPACED_FONT_FACE, Font.PLAIN, DEFAULT_FONT_SIZE);

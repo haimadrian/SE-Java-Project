@@ -49,6 +49,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private JButton login;
     private JButton logout;
     private JButton searchBtn;
+    private CategoryTree categoryTree;
     private JTree categoryTree;
     private JTextField searchBar;
     private JFrame mainForm;
@@ -70,7 +71,16 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         mainForm = parent;
         spaLogo = new ImageIcon(path + "\\SPALOGO_transparent_Small.png", "The best electronic store money can buy");
         JLabel imageContainer = new JLabel(spaLogo);
-        categoryTree = new JTree();
+
+        categoryTree = new CategoryTree(mainForm);
+
+        categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                String node = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
+                //TODO filter table by node
+            }
+        });
+
         management = new JButton("Management");
         shoppingCart = new ShoppingCartView(mainForm);
         alerts = new AlertsView(mainForm);
@@ -125,7 +135,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(searchBtn);
         add(login);
         add(logout);
-        add(categoryTree);
+        add(categoryTree.getCategoryTree());
         add(searchBar);
         add(lblUsername);
         add(management);

@@ -14,3 +14,12 @@ Idan manyak . txt
 30
 4
 4
+image1.gif
+73920
+GPU
+RTX 2060 super
+Idan manyak . txt
+350
+30
+4
+4

@@ -7,16 +7,18 @@ import org.spa.common.util.log.factory.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Caching images mapped to their path, to ease images loading and avoid of duplicating images
- * in the application.
+ * in the application.<br/>
+ * Note that this cache is persistent. Use the {@link #start()} to load stored images from local disk and use {@link #stop()}
+ * to save non-existing images at the local disk
  * @author Haim Adrian
  * @since 16-May-20
  */
@@ -62,9 +64,13 @@ public class ImagesCache {
             }
 
             if (resource != null) {
-               image = new ImageIcon(ImageIO.read(resource));
-               image.setDescription(imageName); // So we will use this description in tooltips
-               cache.put(imageName, image);
+               try {
+                  image = new ImageIcon(ImageIO.read(resource));
+                  image.setDescription(imageName); // So we will use this description in tooltips
+                  cache.put(imageName, image);
+               } finally {
+                  resource.close();
+               }
             }
          } catch (Exception e) {
             image = null;
@@ -85,5 +91,78 @@ public class ImagesCache {
          logger.error("Could not find class.. This should never happen and still..", e);
          return null;
       }
+   }
+
+   /**
+    * Load images from local disk
+    */
+   public void start() {
+      if (imagesDir.exists()) {
+         logger.info("Start loading images from disk");
+         for (File image : imagesDir.listFiles()) {
+            if (image.isFile()) {
+               loadImageFromFile(image.getName(), image);
+            }
+         }
+         logger.info("End loading images from disk. Loaded " + cache.size() + " images");
+      }
+   }
+
+   /**
+    * Save cached images to local disk
+    */
+   public void stop() {
+      logger.info("Start storing missing images to disk. There are " + cache.size() + " images total");
+      AtomicInteger imagesCount = new AtomicInteger();
+      cache.forEach((imageName, image) -> {
+         File currImageFile = new File(imagesDir, imageName);
+         if (!currImageFile.exists()) {
+            try {
+               ImageIO.write((BufferedImage)image.getImage(), imageName.substring(imageName.indexOf('.') + 1), currImageFile);
+               imagesCount.incrementAndGet();
+            } catch (Exception e) {
+               logger.error("Error has occurred while saving image to local disk: " + currImageFile);
+            }
+         }
+      });
+      logger.info("End storing images to disk. Stored " + imagesCount.get() + " images");
+   }
+
+   /**
+    * Use this method when you need to load an image from file and cache it in the {@link ImagesCache}
+    * @param imageNameForCache What name should we map this image to in the cache
+    * @param file The image file to load.
+    * @return the loaded image or null in case we have failed to load it
+    */
+   public ImageIcon loadImageFromFile(String imageNameForCache, File file) {
+      ImageIcon result = null;
+
+      try (FileInputStream fileInput = new FileInputStream(file)) {
+         result = new ImageIcon(ImageIO.read(fileInput));
+         cache.put(imageNameForCache, result);
+      } catch (Exception e) {
+         logger.error("Error has occurred while loading image from local disk: " + file);
+      }
+
+      return result;
+   }
+
+   /**
+    * Use this method when you need to load an image from file and cache it in the {@link ImagesCache}
+    * @param imageNameForCache What name should we map this image to in the cache
+    * @param url The image url to download and load into cache.
+    * @return the loaded image or null in case we have failed to load it
+    */
+   public ImageIcon loadImageFromURL(String imageNameForCache, URL url) {
+      ImageIcon result = null;
+
+      try {
+         result = new ImageIcon(ImageIO.read(url));
+         cache.put(imageNameForCache, result);
+      } catch (Exception e) {
+         logger.error("Error has occurred while downloading image from URL: " + url);
+      }
+
+      return result;
    }
 }

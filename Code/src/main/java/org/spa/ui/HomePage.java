@@ -45,16 +45,19 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private AlertsView alerts;
     private JLabel lblUsername;
     private ImageIcon spaLogo;
+    private SpringLayout layout;
     private final UserManagementService userManagement;
     private ItemsWarehouse itemsWarehouse;
     private TableManager<ItemColumn, ItemViewInfo> tableManager;
     private ArrayList<String> itemsPick;
     private java.util.List<ItemViewInfo> tableModelList;
     public HomePage(JFrame parent) {
+        layout = new SpringLayout();
+        this.setLayout(layout);
         itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         userManagement = SPAApplication.getInstance().getUserManagementService();
         userManagement.registerObserver(this);
-        createItemsTable();
+
         final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
         mainForm = parent;
         spaLogo = new ImageIcon(path + "\\SPALOGO_transparent_Small.png", "The best electronic store money can buy");
@@ -97,6 +100,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             @Override
             public void actionPerformed(ActionEvent e) {
                 new LoginView(parent);
+                buildOrRebuildTable();
             }
 
         });
@@ -104,6 +108,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 SPAApplication.getInstance().getUserManagementService().logout();
+                buildOrRebuildTable();
                 logout.setVisible(false);
                 management.setVisible(false);
                 login.setVisible(true);
@@ -135,7 +140,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
         });
 
-        add(tableManager.getMainPanel());
+
         add(shoppingCart.getNavigatingComponent());
         add(alerts.getNavigatingComponent());
         add(searchBtn);
@@ -148,12 +153,11 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         alerts.getNavigatingComponent().setVisible(false);
         management.setVisible(false);
         add(imageContainer);
-        SpringLayout layout = new SpringLayout();
-        this.setLayout(layout);
+
         ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(),
                 alerts.getNavigatingComponent(),imageContainer);
-        int tableWidth = mainForm.getPreferredSize().width - 60 - 40 - categoryTree.getCategoryTree().getPreferredSize().width;
-        tableManager.getMainPanel().setPreferredSize(new Dimension(tableWidth,mainForm.getPreferredSize().height-250));
+        buildOrRebuildTable();
+        add(tableManager.getMainPanel());
     }
 
     @Override
@@ -225,8 +229,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         layout.putConstraint(SpringLayout.WEST,searchBar,500,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.NORTH,searchBtn,137,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,searchBtn,0,SpringLayout.EAST,searchBar);
-        layout.putConstraint(SpringLayout.NORTH, tableManager.getMainPanel(),200, SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST, tableManager.getMainPanel(),10, SpringLayout.EAST, categoryTree.getCategoryTree());
         layout.putConstraint(SpringLayout.NORTH, categoryTree.getCategoryTree(),200,SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, categoryTree.getCategoryTree(),10,SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.NORTH, imageContainer,40,SpringLayout.NORTH, contentPane);
@@ -236,11 +238,12 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     }
 
     private void createItemsTable() {
-        List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price, ItemColumn.Cart);
-/*        if(userManagement.getLoggedInUserType() == UserType.Admin || userManagement.getLoggedInUserType()==UserType.SysAdmin )
-             itemCols.add(ItemColumn.Delete);
+        List<ItemColumn> itemCols;
+        if(userManagement.getLoggedInUserType() == UserType.Admin || userManagement.getLoggedInUserType()==UserType.SysAdmin )
+             itemCols=(Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price, ItemColumn.Cart,ItemColumn.Delete));
         else
-            itemCols.remove(ItemColumn.Delete);*/
+            itemCols=(Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price, ItemColumn.Cart));
+
         tableModelList = new ArrayList<>();
         TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).build();
         tableManager = new TableManager<>(itemCols, tableModelList, tableConfig);
@@ -279,6 +282,19 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         }
     }
 
+    private void buildOrRebuildTable() {
+        if (tableManager == null)
+            createItemsTable();
+        else {
+            mainForm.remove(tableManager.getMainPanel());
+            createItemsTable();
+        }
+            mainForm.add(tableManager.getMainPanel());
+            layout.putConstraint(SpringLayout.NORTH, tableManager.getMainPanel(),200, SpringLayout.NORTH,mainForm);
+            layout.putConstraint(SpringLayout.WEST, tableManager.getMainPanel(),10, SpringLayout.EAST, categoryTree.getCategoryTree());
+            int tableWidth = mainForm.getPreferredSize().width - 60 - 40 - categoryTree.getCategoryTree().getPreferredSize().width;
+            tableManager.getMainPanel().setPreferredSize(new Dimension(tableWidth,mainForm.getPreferredSize().height-250));
+    }
 }
 
 

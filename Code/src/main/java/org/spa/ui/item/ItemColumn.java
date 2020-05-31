@@ -117,13 +117,7 @@ public enum ItemColumn implements TableColumnIfc {
          ((DefaultTableModel) table.getModel()).removeRow(modelRow);*/
       });
       public static final ButtonColumn CART_BUTTON = new ButtonColumn(table -> {
-         new Thread(() -> {
-            try {
-               Thread.sleep(100);
-            } catch (InterruptedException ignore) {
-            }
-
-            SwingUtilities.invokeLater(() -> {
+         SwingUtilities.invokeLater(() -> {
                WarehouseItem selection = SPAApplication.getInstance().getItemsWarehouse().getSelectionModel().getSelection();
                if (selection != null) {
                   String selectedItemId = selection.getId();
@@ -136,7 +130,6 @@ public enum ItemColumn implements TableColumnIfc {
                   }
                }
             });
-         }, "AddToCartThread").start();
       });
    }
 }

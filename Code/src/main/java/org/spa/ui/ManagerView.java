@@ -30,9 +30,7 @@ import static org.spa.ui.order.OrderCopying.orderViewInfoToOrder;
 public class ManagerView {
     private static final Logger logger = LoggerFactory.getLogger(ManagerView.class);
     JFrame frame;
-    public static void main(String[] args) {
-        new ManagerView();
-    }
+  
     public ManagerView() {
 
         frame = new JFrame("Management View");

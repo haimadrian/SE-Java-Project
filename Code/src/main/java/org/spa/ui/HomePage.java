@@ -3,9 +3,6 @@ package org.spa.ui;
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
-import org.spa.controller.UserType;
-import org.spa.ui.item.ItemViewInfoHome;
-import org.spa.ui.util.Dialogs;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.UserManagementService;
 import org.spa.controller.UserManagementServiceObserver;
@@ -19,17 +16,23 @@ import org.spa.ui.alert.AlertsView;
 import org.spa.ui.cart.ShoppingCartView;
 import org.spa.ui.item.ItemColumn;
 import org.spa.ui.item.ItemInfoDialog;
-import org.spa.ui.item.ItemViewInfo;
+import org.spa.ui.item.ItemViewInfoHome;
+import org.spa.ui.login.LoginView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
+import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.ImagesCache;
+
 import javax.swing.*;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 
@@ -56,9 +59,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         userManagement = SPAApplication.getInstance().getUserManagementService();
         userManagement.registerObserver(this);
         createItemsTable();
-        final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
         mainForm = parent;
-        spaLogo = new ImageIcon(path + "\\SPALOGO_transparent_Small.png", "The best electronic store money can buy");
+        spaLogo = ImagesCache.getInstance().getImage("SPALOGO_transparent_Small.png");
         JLabel imageContainer = new JLabel(spaLogo);
         imageContainer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         categoryTree = new CategoryTree(mainForm);
@@ -66,24 +68,27 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                categoryTree.getCategoryTree().clearSelection(); //TODO resolve null expression
+                categoryTree.clear();
                 refreshTable();
             }
         });
 
         categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                String node = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
-                //TODO filter table by node
-                List<WarehouseItem> selectedCategory = new ArrayList<>();
-                itemsWarehouse.getItems().stream().forEach(item -> {
-                    if (item.getCategory().matches(node)) {
-                        selectedCategory.add(item);
-                    }
-                });
-                tableModelList.clear();
-                selectedCategory.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
-                tableManager.refresh();
+                TreePath newLeadSelectionPath = evt.getNewLeadSelectionPath();
+                if (newLeadSelectionPath != null) {
+                    String node = newLeadSelectionPath.getLastPathComponent().toString();
+                    //TODO filter table by node
+                    List<WarehouseItem> selectedCategory = new ArrayList<>();
+                    itemsWarehouse.getItems().stream().forEach(item -> {
+                        if (item.getCategory().matches(node)) {
+                            selectedCategory.add(item);
+                        }
+                    });
+                    tableModelList.clear();
+                    selectedCategory.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
+                    tableManager.refresh();
+                }
             }
         });
 
@@ -101,6 +106,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
 
         });
+
         logout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -110,6 +116,14 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 login.setVisible(true);
             }
         });
+
+        management.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                new ManagerView();
+            }
+        });
+
         lblUsername = new JLabel("Hello guest.");
         searchBar = new JTextField("Search for product...", 40);
         searchBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));

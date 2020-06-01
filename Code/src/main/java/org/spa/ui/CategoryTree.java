@@ -43,6 +43,7 @@ public class CategoryTree
     public void clear()
     {
         categoryTree.clearSelection();
+        categoryTree.repaint();
     }
     public JTree getCategoryTree() {
         return categoryTree;

@@ -1,12 +1,25 @@
 package org.spa.model.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class Admin extends Customer{
+    @JsonProperty
     private double salary;
+
+    @JsonProperty
     private double positionPercentage;
 
-    public Admin(String userId, String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer, double salary, double positionPercentage) {
+    public Admin(@JsonProperty(value = "userId") String userId,
+                 @JsonProperty(value = "password") String password,
+                 @JsonProperty(value = "phoneNumber") String phoneNumber,
+                 @JsonProperty(value = "birthDate") Date birthDate,
+                 @JsonProperty(value = "registrationDate") Date registrationDate,
+                 @JsonProperty(value = "secretQuestion") String secretQuestion,
+                 @JsonProperty(value = "secretAnswer") String secretAnswer,
+                 @JsonProperty(value = "salary") double salary,
+                 @JsonProperty(value = "positionPercentage") double positionPercentage) {
         super(userId, password, phoneNumber, birthDate, registrationDate, secretQuestion, secretAnswer);
         this.salary = salary;
         this.positionPercentage = positionPercentage;

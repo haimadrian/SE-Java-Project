@@ -78,8 +78,8 @@ public class SPAApplication {
 
          orderSystem.stop();
          itemsWarehouse.stop();
-
          userManagementService.stop();
+
          // Save persistent images to disk
          ImagesCache.getInstance().stop();
 

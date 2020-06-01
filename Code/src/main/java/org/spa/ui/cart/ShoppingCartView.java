@@ -11,7 +11,7 @@ import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.ui.LoginView;
+import org.spa.ui.login.LoginView;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.control.ButtonWithBadge;
 import org.spa.ui.item.ItemColumn;
@@ -174,7 +174,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    private void createItemsTable() {
       List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price, ItemColumn.Count);
       tableModelList = new ArrayList<>();
-      TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(true).build();
+      TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(false).build();
 
       tableManager = new TableManager<>(itemCols, tableModelList, tableConfig);
       tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> shoppingCart.getSelectionModel().setSelection(itemViewInfoToWarehouseItem(selectedModel)));

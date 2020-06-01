@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -59,11 +57,6 @@ public class OrderRepository implements Repository<Order> {
         }
 
         return new ArrayList<>(orders.values());
-    }
-
-    @Override
-    public List<Order> select(Predicate<Order> filter) {
-        return orders.values().stream().filter(filter).collect(Collectors.toList());
     }
 
     @Override

@@ -60,9 +60,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         userManagement = SPAApplication.getInstance().getUserManagementService();
         userManagement.registerObserver(this);
         createItemsTable();
-        final String path = new File("src\\main\\resources\\org\\spa\\ui\\homepagestuff").getAbsolutePath();
         mainForm = parent;
-        spaLogo = new ImageIcon(path + "\\SPALOGO_transparent_Small.png", "The best electronic store money can buy");
+        spaLogo = ImagesCache.getInstance().getImage("SPALOGO_transparent_Small.png");
         JLabel imageContainer = new JLabel(spaLogo);
         imageContainer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         categoryTree = new CategoryTree(mainForm);
@@ -70,7 +69,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                categoryTree.getCategoryTree().clearSelection(); //TODO resolve null expression
+                categoryTree.clear();
                 refreshTable();
             }
         });
@@ -79,6 +78,20 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
                 String node = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
                 //TODO filter table by node
+                TreePath newLeadSelectionPath = evt.getNewLeadSelectionPath();
+                if (newLeadSelectionPath != null) {
+                    String node = newLeadSelectionPath.getLastPathComponent().toString();
+                    //TODO filter table by node
+                    List<WarehouseItem> selectedCategory = new ArrayList<>();
+                    itemsWarehouse.getItems().stream().forEach(item -> {
+                        if (item.getCategory().matches(node)) {
+                            selectedCategory.add(item);
+                        }
+                    });
+                    tableModelList.clear();
+                    selectedCategory.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
+                    tableManager.refresh();
+                }
                 List<WarehouseItem> selectedCategory = new ArrayList<>();
                 itemsWarehouse.getItems().stream().forEach(item -> {
                     if (item.getCategory().matches(node)) {
@@ -139,6 +152,15 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
         });
         itemsWarehouse.registerObserver(this);
+        add(tableManager.getMainPanel());
+        searchBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                searchBar.setText("");
+                refreshTable();
+            }
+        });
+
         add(tableManager.getMainPanel());
         add(shoppingCart.getNavigatingComponent());
         add(alerts.getNavigatingComponent());

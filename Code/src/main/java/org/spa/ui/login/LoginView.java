@@ -1,4 +1,4 @@
-package org.spa.ui;
+package org.spa.ui.login;
 
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
@@ -109,8 +109,9 @@ public class LoginView {
         {
             public void mouseClicked(MouseEvent e)
             {
-                ForgotPassword fp = new ForgotPassword();
-                fp.ForgotPassword();
+                frame.dispose();
+                frame = null;
+                new ForgotPassword(owner);
             }
         });
     }

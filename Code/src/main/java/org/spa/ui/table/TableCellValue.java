@@ -1,7 +1,6 @@
 package org.spa.ui.table;
 
 import org.spa.ui.item.ItemViewInfo;
-
 /**
  * This class created in order to get the ability to have a reference to the current table model (row)
  * from within the renderers and editors.<br/>

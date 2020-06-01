@@ -1,19 +1,38 @@
 package org.spa.model.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.spa.common.User;
 
 import java.util.Date;
 
 public class Customer extends AbstractUser implements User {
-
+    @JsonProperty
     private String password;
+
+    @JsonProperty
     private String phoneNumber;
+
+    @JsonProperty
     private Date birthDate;
+
+    @JsonProperty
     private Date registrationDate;
+
+    @JsonProperty
     private String secretQuestion;
+
+    @JsonProperty
     private String secretAnswer;
 
-    public Customer(String userId, String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer) {
+    @JsonCreator
+    public Customer(@JsonProperty(value = "userId") String userId,
+                    @JsonProperty(value = "password") String password,
+                    @JsonProperty(value = "phoneNumber") String phoneNumber,
+                    @JsonProperty(value = "birthDate") Date birthDate,
+                    @JsonProperty(value = "registrationDate") Date registrationDate,
+                    @JsonProperty(value = "secretQuestion") String secretQuestion,
+                    @JsonProperty(value = "secretAnswer") String secretAnswer) {
         this.userId = userId;
         this.password = password;
         this.phoneNumber = phoneNumber;

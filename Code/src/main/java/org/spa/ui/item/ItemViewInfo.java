@@ -17,7 +17,7 @@ public class ItemViewInfo implements TableModelIfc {
     * item column. We use this at ItemColumn.Image
     */
    public static final String ADS_ATTRIBUTE_NAME = "ads";
-   private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+   protected static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
    private final String id;
    private String category;
    private String name;

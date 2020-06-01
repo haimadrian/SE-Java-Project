@@ -1,4 +1,6 @@
-package org.spa.ui;
+package org.spa.ui.table.editor;
+
+import org.spa.ui.table.TableCellValue;
 
 import org.spa.ui.table.TableCellValue;
 
@@ -24,6 +26,7 @@ import java.util.function.Consumer;
  * button. When the button is invoked the provided Action is invoked. The
  * source of the Action will be the table. The action command will contain
  * the model row number of the button that was clicked.
+ * @author Lior Shor
  */
 
 public class ButtonColumn extends DefaultCellEditor implements TableCellRenderer, TableCellEditor {

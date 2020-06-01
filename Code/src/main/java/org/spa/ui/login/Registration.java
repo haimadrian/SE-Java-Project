@@ -1,12 +1,12 @@
-package org.spa.ui;
+package org.spa.ui.login;
 
-import org.spa.common.User;
-import org.spa.controller.UserManagementService;
 import org.spa.controller.UserType;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Admin;
 import org.spa.model.user.SystemAdmin;
 import org.spa.common.SPAApplication;
+import org.spa.ui.login.LoginView;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

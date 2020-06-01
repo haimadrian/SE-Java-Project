@@ -4,6 +4,7 @@ import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.item.WarehouseItem;
+import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.Order;
 import org.spa.model.dal.OrderRepository;
@@ -16,10 +17,15 @@ public class OrderSystem {
     private static final Logger logger = LoggerFactory.getLogger(OrderSystem.class);
     private final Map<String, Order> ordersMap;
     private final Repository<Order> orderRepository;
+    private final SelectionModelManager<Order> selectionModel;
 
     public OrderSystem() {
         ordersMap = new HashMap<>(1000);
         orderRepository = new OrderRepository();
+        selectionModel = new SelectionModelManager<>();
+    }
+    public SelectionModelManager<Order> getSelectionModel() {
+        return selectionModel;
     }
 
     public void start() throws FileNotFoundException {

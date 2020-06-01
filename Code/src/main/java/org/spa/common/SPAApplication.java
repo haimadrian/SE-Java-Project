@@ -10,6 +10,7 @@ import org.spa.controller.order.OrderSystem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.util.ImagesCache;
+
 /**
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
  * Everybody can access this class in order to get to the different services in the project. The

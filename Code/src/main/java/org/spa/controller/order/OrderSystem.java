@@ -4,12 +4,10 @@ import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.item.WarehouseItem;
-import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.Order;
 import org.spa.model.dal.OrderRepository;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,7 @@ public class OrderSystem {
         return selectionModel;
     }
 
-    public void start() throws FileNotFoundException {
+    public void start() {
         logger.info("Starting OrderSystem - Select orders from repository");
 
         // Load data into memory

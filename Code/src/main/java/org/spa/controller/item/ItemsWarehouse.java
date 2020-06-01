@@ -7,8 +7,10 @@ import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
 
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +35,7 @@ public class ItemsWarehouse {
    /**
     * Call this method to read data from storage
     */
-   public void start() throws FileNotFoundException {
+   public void start() {
       logger.info("Starting ItemsWarehouse - Select items from repository");
 
       // Load data into memory

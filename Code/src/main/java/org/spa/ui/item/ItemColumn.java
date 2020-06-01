@@ -3,9 +3,8 @@ package org.spa.ui.item;
 import org.spa.common.SPAApplication;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartException;
-import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
-import org.spa.ui.ButtonColumn;
+import org.spa.ui.table.editor.ButtonColumn;
 import org.spa.ui.table.TableColumnIfc;
 import org.spa.ui.table.editor.CountCellEditor;
 import org.spa.ui.table.editor.TextCellEditor;
@@ -17,7 +16,6 @@ import org.spa.ui.util.Dialogs;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import java.util.List;
 
 /**
  * @author Haim Adrian

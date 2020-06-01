@@ -2,8 +2,6 @@ package org.spa.ui.table.editor;
 
 import org.spa.ui.table.TableCellValue;
 
-import org.spa.ui.table.TableCellValue;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;

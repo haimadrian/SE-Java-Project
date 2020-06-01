@@ -106,6 +106,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
 
       table.setAutoCreateColumnsFromModel(false);
       tableModel = new EditTableModel();
+
       table.setModel(tableModel);
 
       if (tableConfig.isTooltipAllowed()) {

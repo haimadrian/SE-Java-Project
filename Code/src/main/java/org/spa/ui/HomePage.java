@@ -22,17 +22,20 @@ import org.spa.ui.alert.AlertsView;
 import org.spa.ui.cart.ShoppingCartView;
 import org.spa.ui.item.ItemColumn;
 import org.spa.ui.item.ItemInfoDialog;
-import org.spa.ui.item.ItemViewInfo;
+import org.spa.ui.item.ItemViewInfoHome;
+import org.spa.ui.login.LoginView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
-import org.spa.ui.util.Fonts;
+import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.ImagesCache;
 import javax.swing.*;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
@@ -76,8 +79,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
 
         categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                String node = evt.getNewLeadSelectionPath().getLastPathComponent().toString();
-                //TODO filter table by node
                 TreePath newLeadSelectionPath = evt.getNewLeadSelectionPath();
                 if (newLeadSelectionPath != null) {
                     String node = newLeadSelectionPath.getLastPathComponent().toString();
@@ -92,15 +93,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     selectedCategory.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
                     tableManager.refresh();
                 }
-                List<WarehouseItem> selectedCategory = new ArrayList<>();
-                itemsWarehouse.getItems().stream().forEach(item -> {
-                    if (item.getCategory().matches(node)) {
-                        selectedCategory.add(item);
-                    }
-                });
-                tableModelList.clear();
-                selectedCategory.forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
-                tableManager.refresh();
             }
         });
         management = new JButton("Management");
@@ -126,6 +118,14 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 login.setVisible(true);
             }
         });
+
+        management.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                new ManagerView();
+            }
+        });
+
         lblUsername = new JLabel("Hello guest.");
         searchBar = new JTextField("Search for product...", 40);
         searchBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
@@ -140,7 +140,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     }
                 });
                 tableModelList.clear();
-                searchedItems.forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
+                searchedItems.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
                 tableManager.refresh();
             }
         });
@@ -153,15 +153,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         });
         itemsWarehouse.registerObserver(this);
         add(tableManager.getMainPanel());
-        searchBar.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                searchBar.setText("");
-                refreshTable();
-            }
-        });
-
-        add(tableManager.getMainPanel());
         add(shoppingCart.getNavigatingComponent());
         add(alerts.getNavigatingComponent());
         add(searchBtn);
@@ -169,7 +160,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(logout);
         add(categoryTree.getCategoryTree());
         add(searchBar);
-        add(lblUsername);
         add(lblUsername);
         add(management);
         alerts.getNavigatingComponent().setVisible(false);
@@ -295,7 +285,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
                     SwingUtilities.invokeLater(() -> {
                         if (selection != null) {
-                            new ItemInfoDialog(warehouseItemToItemViewInfo(selection)).init().setVisible(true);
+                            new ItemInfoDialog(new ItemViewInfoHome(warehouseItemToItemViewInfo(selection))).init().setVisible(true);
                         } else {
                             Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to show.\nPlease select a row first.", "No selection");
                         }
@@ -329,7 +319,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
 
     private void refreshTable() {
         tableModelList.clear();
-        itemsWarehouse.getItems().forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
+        itemsWarehouse.getItems().forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
         try {
             tableManager.refresh();
         } catch (Throwable t) {

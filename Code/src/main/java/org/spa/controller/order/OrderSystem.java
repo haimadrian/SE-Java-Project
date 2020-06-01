@@ -4,6 +4,7 @@ import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.item.WarehouseItem;
+import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.Order;
 import org.spa.model.dal.OrderRepository;

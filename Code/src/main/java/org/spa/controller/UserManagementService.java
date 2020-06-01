@@ -17,130 +17,133 @@ import java.util.Set;
 
 public class UserManagementService {
 
-   private static final Logger logger = LoggerFactory.getLogger(UserManagementService.class);
-   private final Map<String, User> userMap;
-   private final Repository<User> userRepository;
-   // private User user;
-   //  private dbAccess;
-   private User loggedInUser;
-   private final Set<UserManagementServiceObserver> observers;
+    private static final Logger logger = LoggerFactory.getLogger(UserManagementService.class);
+    private final Map<String, User> userMap;
+    private final Repository<User> userRepository;
+    // private User user;
+    //  private dbAccess;
+    private User loggedInUser;
+    private final Set<UserManagementServiceObserver> observers;
 
-   public UserManagementService() {
+    public UserManagementService() {
 
-      userMap = new HashMap<>(1000); // Yeah sure...
-      userRepository = new UserRepository();
-      observers = new HashSet<>();
-   }
+        userMap = new HashMap<>(1000); // Yeah sure...
+        userRepository = new UserRepository();
+        observers = new HashSet<>();
+    }
 
-   /**
-    * Call this method to read data from storage
-    */
-   public void start() {
-      loggedInUser = new Guest();
-      // Load data into memory
-        userRepository.selectAll().forEach(user -> userMap.put(user.getUserId(),user));
-   }
+    /**
+     * Call this method to read data from storage
+     */
+    public void start() {
+        loggedInUser = new Guest();
 
-   public void stop() {
-      //save data to storage
-      userRepository.saveAll(userMap.values());
-   }
+        // Load data into memory
+        userRepository.selectAll().forEach(user -> userMap.put(user.getUserId().toLowerCase(), user));
+    }
 
-   public Map<String, User> getUserMap(){
-      return userMap;
-   }
+    public void stop() {
+        //save data to storage
+        userRepository.saveAll(userMap.values());
+    }
 
-   public User login(String userId, String pass) {
-      User u = userMap.get(userId);
-      if (u instanceof Customer) {
-         if (((Customer) u).getPassword().equals(pass)) {
-            this.loggedInUser = u;
-            notifyUserLogin();
-            logger.info(u.getUserId() + " Logged in");
-            return u;
-         }
-      } else if (u instanceof SystemAdmin) {
-         if(((SystemAdmin) u).getKey().equals(pass)) {
-            this.loggedInUser = u;
-            notifyUserLogin();
-            logger.info(u.getUserId() + " Logged in");
-            return u;
-         }
-      }
-      return null;
-   }
-   public void logout(){
-      loggedInUser = new Guest();
-      notifyUserLogin();
-   }
-   public User getLoggedInUser() {
-      return loggedInUser;
-   }
+    public Map<String, User> getUserMap() {
+        return userMap;
+    }
 
-   public UserType getLoggedInUserType() {
-      if(loggedInUser instanceof SystemAdmin)
-         return UserType.SysAdmin;
-      else if (loggedInUser instanceof Admin)
-         return UserType.Admin;
-      else if (loggedInUser instanceof Customer)
-         return UserType.Customer;
-      else
-         return UserType.Guest;
-   }
+    public User login(String userId, String pass) {
+        User u = userMap.get(userId.toLowerCase());
+        if (u instanceof Customer) {
+            if (((Customer) u).getPassword().equals(pass)) {
+                this.loggedInUser = u;
+                notifyUserLogin();
+                logger.info(u.getUserId() + " Logged in");
+                return u;
+            }
+        } else if (u instanceof SystemAdmin) {
+            if (((SystemAdmin) u).getKey().equals(pass)) {
+                this.loggedInUser = u;
+                notifyUserLogin();
+                logger.info(u.getUserId() + " Logged in");
+                return u;
+            }
+        }
+        return null;
+    }
 
-   public void createUser(User user) {
-      User u = userMap.get(user.getUserId());
-      if (u != null) {
-         logger.warn("UserId Already Exist");
-      } else {
-         userMap.put(user.getUserId(), user);
-         userRepository.create(user);
-         logger.info("User added to Users DB: " + user.getUserId());
-      }
-   }
+    public void logout() {
+        loggedInUser = new Guest();
+        notifyUserLogin();
+    }
 
-   public void updateUser(User user, String pass) {
-      User u = userMap.get(user.getUserId());
-      if (u instanceof Customer) {
-         ((Customer) u).setPassword(pass);
-      } else if (u instanceof SystemAdmin) {
-         ((SystemAdmin) u).setKey(pass);
-      }
-      //TODO update in Repository
-   }
+    public User getLoggedInUser() {
+        return loggedInUser;
+    }
 
-   public User findUser(User user) {
-      User u = userMap.get(user.getUserId());
-      if (u == null)
-         logger.warn("User does not exist");
-      return u;
-   }
+    public UserType getLoggedInUserType() {
+        if (loggedInUser instanceof SystemAdmin)
+            return UserType.SysAdmin;
+        else if (loggedInUser instanceof Admin)
+            return UserType.Admin;
+        else if (loggedInUser instanceof Customer)
+            return UserType.Customer;
+        else
+            return UserType.Guest;
+    }
 
-   public boolean isExist(String str) {
-      return (userMap.containsKey(str));
-   }
+    public void createUser(User user) {
+        User u = userMap.get(user.getUserId().toLowerCase());
+        if (u != null) {
+            logger.warn("UserId Already Exist");
+        } else {
+            userMap.put(user.getUserId().toLowerCase(), user);
+            userRepository.create(user);
+            logger.info("User added to Users DB: " + user.getUserId());
+        }
+    }
 
-   public void deleteUser(User user) {
-      userMap.remove(user.getUserId());
-      // TODO delete in Repository
-   }
+    public void updateUser(User user, String pass) {
+        User u = userMap.get(user.getUserId().toLowerCase());
+        if (u instanceof Customer) {
+            ((Customer) u).setPassword(pass);
+        } else if (u instanceof SystemAdmin) {
+            ((SystemAdmin) u).setKey(pass);
+        }
 
-   public User getUser(String userId) {
-      User u = userMap.get(userId);
-      return u;
-   }
+        userRepository.update(u);
+    }
 
-   public void registerObserver(UserManagementServiceObserver observer) {
-      observers.add(observer);
-   }
+    public User findUser(User user) {
+        User u = userMap.get(user.getUserId().toLowerCase());
+        if (u == null)
+            logger.warn("User does not exist");
+        return u;
+    }
 
-   public void unregisterObserver(UserManagementServiceObserver observer) {
-      observers.remove(observer);
-   }
+    public boolean isExist(String str) {
+        return (userMap.containsKey(str.toLowerCase()));
+    }
 
-   private void notifyUserLogin() {
-      for (UserManagementServiceObserver observer : observers) {
-         observer.userLogin(loggedInUser);
-      }
-   }
+    public void deleteUser(User user) {
+        userMap.remove(user.getUserId().toLowerCase());
+        userRepository.delete(user);
+    }
+
+    public User getUser(String userId) {
+        return userMap.get(userId.toLowerCase());
+    }
+
+    public void registerObserver(UserManagementServiceObserver observer) {
+        observers.add(observer);
+    }
+
+    public void unregisterObserver(UserManagementServiceObserver observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyUserLogin() {
+        for (UserManagementServiceObserver observer : observers) {
+            observer.userLogin(loggedInUser);
+        }
+    }
 }

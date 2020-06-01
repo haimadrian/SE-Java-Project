@@ -1,14 +1,18 @@
 package org.spa.model.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.spa.common.User;
 
 import java.util.Date;
 
 public class SystemAdmin extends AbstractUser implements User {
 
+    @JsonProperty
     private String key;
 
-    public SystemAdmin(String userId, String key ) {
+    @JsonCreator()
+    public SystemAdmin(@JsonProperty(value = "userId") String userId, @JsonProperty(value = "key") String key ) {
         this.userId = userId;
         this.key = key;
     }

@@ -6,11 +6,7 @@ import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -22,10 +18,12 @@ public class ItemsWarehouse {
    private final Map<String, WarehouseItem> idToItem;
    private final Repository<Item> itemRepository;
    private final SelectionModelManager<WarehouseItem> selectionModel;
+   private final Set<ItemsWarehouseObserver> observers;
    public ItemsWarehouse() {
       idToItem = new HashMap<>(1000);
       itemRepository = new ItemRepository();
       selectionModel = new SelectionModelManager<>();
+      observers = new HashSet<>();
    }
    public SelectionModelManager<WarehouseItem> getSelectionModel() {
       return selectionModel;
@@ -75,6 +73,7 @@ public class ItemsWarehouse {
    public void addItem(String id,String category, String name, String description, double price, double profitPercent, double discountPercent, int amount) {
       WarehouseItem item = new WarehouseItem(id,category, name, description, price, profitPercent, discountPercent, amount);
       idToItem.put(item.getId(), item);
+      notifyItemAdded(item);
       logger.info("Item added to warehouse: " + item);
    }
 
@@ -87,8 +86,8 @@ public class ItemsWarehouse {
       WarehouseItem item =  idToItem.remove(id);
       if (item != null) {
          logger.info("Removed item from warehouse: " + item);
+         notifyItemDeleted(item);
       }
-
       return item;
    }
 
@@ -128,4 +127,27 @@ public class ItemsWarehouse {
    private static Item warehouseItemToItem(WarehouseItem item) {
       return new Item(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
+   public void registerObserver(ItemsWarehouseObserver observer) {observers.add(observer);
+   }
+
+   public void unregisterObserver(ItemsWarehouseObserver observer) {
+      observers.remove(observer);
+   }
+
+   private void notifyItemDeleted(WarehouseItem item) {
+      for (ItemsWarehouseObserver observer : observers) {
+         observer.deleteItem(item);
+      }
+   }
+   private void notifyItemUpdated(WarehouseItem item) {
+      for (ItemsWarehouseObserver observer : observers) {
+         observer.updateItem(item);
+      }
+   }
+   private void notifyItemAdded(WarehouseItem item) {
+      for (ItemsWarehouseObserver observer : observers) {
+         observer.addItem(item);
+      }
+   }
+
 }

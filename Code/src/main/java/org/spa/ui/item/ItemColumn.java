@@ -27,8 +27,7 @@ public enum ItemColumn implements TableColumnIfc {
    Description("Description", 0.46, String.class, new TextCellRenderer(), null, false, 2),
    Price("Price", 0.1, Double.class, new TextCellRenderer(), null, false, 3),
    Count("Count", 0.06, Integer.class, new SpinnerCellRenderer(), new CountCellEditor(), true,4),
-   Cart("Cart", 0.07, String.class, Constants.CART_BUTTON, Constants.CART_BUTTON, true, 4),
-   Delete("Delete", 0.07, String.class, Constants.DELETE_BUTTON, Constants.DELETE_BUTTON, true, 5);
+   Cart("Cart", 0.07, String.class, Constants.CART_BUTTON, Constants.CART_BUTTON, true, 4);
 
    private final String header;
    private final double cellWidth;
@@ -96,32 +95,8 @@ public enum ItemColumn implements TableColumnIfc {
 
 
    private static class Constants {
-      public static final ButtonColumn DELETE_BUTTON = new ButtonColumn(table -> {
-         // TODO: Implement RemoveFromWarehouseAction
-         WarehouseItem selection = SPAApplication.getInstance().getItemsWarehouse().getSelectionModel().getSelection();
-         if (selection != null) {
-            SPAApplication.getInstance().getItemsWarehouse().removeItem(selection.getId());
-            //            refreshTable();
-
-         }
-         /*ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();
-         int modelRow = table.getSelectedRow();
-         String itemId = String.valueOf(table.getModel().getValueAt(modelRow, 0));
-         try {
-            shoppingCart.add(itemId, 0);
-         } catch (ShoppingCartException ex) {
-            SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(null, ex.getMessage(), "Error"));
-         }
-         ((DefaultTableModel) table.getModel()).removeRow(modelRow);*/
-      });
       public static final ButtonColumn CART_BUTTON = new ButtonColumn(table -> {
-         new Thread(() -> {
-            try {
-               Thread.sleep(100);
-            } catch (InterruptedException ignore) {
-            }
-
-            SwingUtilities.invokeLater(() -> {
+         SwingUtilities.invokeLater(() -> {
                WarehouseItem selection = SPAApplication.getInstance().getItemsWarehouse().getSelectionModel().getSelection();
                if (selection != null) {
                   String selectedItemId = selection.getId();
@@ -134,7 +109,6 @@ public enum ItemColumn implements TableColumnIfc {
                   }
                }
             });
-         }, "AddToCartThread").start();
       });
    }
 }

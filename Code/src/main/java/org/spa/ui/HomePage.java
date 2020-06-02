@@ -3,6 +3,9 @@ package org.spa.ui;
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
+import org.spa.controller.UserType;
+import org.spa.controller.item.ItemsWarehouseObserver;
+import org.spa.ui.util.Dialogs;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.UserManagementService;
 import org.spa.controller.UserManagementServiceObserver;
@@ -21,22 +24,19 @@ import org.spa.ui.login.LoginView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
-import org.spa.ui.util.Dialogs;
+import org.spa.ui.util.Fonts;
 import org.spa.ui.util.ImagesCache;
-
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 
-public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver {
+public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver , ItemsWarehouseObserver {
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     private JButton management;
     private JButton login;
@@ -91,7 +91,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 }
             }
         });
-
         management = new JButton("Management");
         shoppingCart = new ShoppingCartView(mainForm);
         alerts = new AlertsView(mainForm);
@@ -106,7 +105,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
 
         });
-
         logout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -149,7 +147,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 refreshTable();
             }
         });
-
+        itemsWarehouse.registerObserver(this);
         add(tableManager.getMainPanel());
         add(shoppingCart.getNavigatingComponent());
         add(alerts.getNavigatingComponent());
@@ -211,7 +209,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 || (loggedInUser instanceof Admin)) {
             alerts.getNavigatingComponent().setVisible(true);
             management.setVisible(true);
-            createItemsTable();
         }
         if((loggedInUser instanceof SystemAdmin)
                 || (loggedInUser instanceof Admin)
@@ -225,7 +222,23 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             lblUsername.setText("Hello guest.");
         }
     }
-    public void ComponentLocation(SpringLayout layout,Container contentPane,Component cart,Component alerts,Component imageContainer)    {
+
+    @Override
+    public void deleteItem(WarehouseItem item) {
+        refreshTable();
+    }
+
+    @Override
+    public void updateItem(WarehouseItem item) {
+        refreshTable();
+    }
+
+    @Override
+    public void addItem(WarehouseItem item) {
+        refreshTable();
+    }
+
+    public void ComponentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer)    {
         layout.putConstraint(SpringLayout.NORTH,management,70,SpringLayout.NORTH,contentPane);
         layout.putConstraint(SpringLayout.WEST,management,150,SpringLayout.EAST,searchBar);
         layout.putConstraint(SpringLayout.NORTH,alerts,5,SpringLayout.SOUTH, management);
@@ -252,10 +265,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
 
     private void createItemsTable() {
         List<ItemColumn> itemCols = Arrays.asList(ItemColumn.Image, ItemColumn.Name, ItemColumn.Description, ItemColumn.Price, ItemColumn.Cart);
-/*        if(userManagement.getLoggedInUserType() == UserType.Admin || userManagement.getLoggedInUserType()==UserType.SysAdmin )
-             itemCols.add(ItemColumn.Delete);
-        else
-            itemCols.remove(ItemColumn.Delete);*/
         tableModelList = new ArrayList<>();
         TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).build();
         tableManager = new TableManager<>(itemCols, tableModelList, tableConfig);
@@ -278,7 +287,27 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                         }
                     });
                 });
-                return Collections.singletonList(item);
+                if(userManagement.getLoggedInUserType() == UserType.Admin || userManagement.getLoggedInUserType()==UserType.SysAdmin ) {
+                    JMenuItem item2 = new JMenuItem("Remove item");
+                    item2.setDisplayedMnemonicIndex(1);
+                    item2.setFont(Fonts.PLAIN_FONT);
+                    item2.addActionListener(e -> {
+                        WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
+                        SwingUtilities.invokeLater(() -> {
+                            if (selection != null) {
+                                if (Dialogs.showQuestionDialog(getParentDialog(), "Are you sure you want to remove item from shop?", "Confirmation")) {
+                                    logger.info("Removing item from itemswarehouse. Item: " + selection);
+                                    itemsWarehouse.removeItem(selection.getId());
+                                }
+                            } else {
+                                Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
+                            }
+                        });
+                    });
+                    return Arrays.asList(item, item2);
+                }
+                else
+                    return Arrays.asList(item);
             }
         });
         refreshTable();
@@ -293,7 +322,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             logger.error("Error has occurred while trying to refresh table.", t);
         }
     }
-
 }
 
 

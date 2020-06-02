@@ -72,8 +72,8 @@ public class ItemsWarehouse {
     */
    public void addItem(String id,String category, String name, String description, double price, double profitPercent, double discountPercent, int amount) {
       WarehouseItem item = new WarehouseItem(id,category, name, description, price, profitPercent, discountPercent, amount);
-      notifyItemAdded(item);
       idToItem.put(item.getId(), item);
+      notifyItemAdded(item);
       logger.info("Item added to warehouse: " + item);
    }
 

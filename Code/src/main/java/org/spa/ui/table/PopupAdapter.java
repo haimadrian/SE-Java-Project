@@ -3,6 +3,7 @@ package org.spa.ui.table;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 /**
  * A class used to manage popup triggering over a component.<br/>
@@ -59,15 +60,35 @@ public abstract class PopupAdapter extends MouseAdapter {
 
    private void possiblyShowPopupMenu(MouseEvent mouseEvent) {
       if (!mouseEvent.isConsumed() && mouseEvent.isPopupTrigger()) {
-         JPopupMenu popup = new JPopupMenu();
-         int displayIndex = 0;
-         for (JMenuItem menuItem : getMenuItemsForPopup()) {
-            menuItem.setDisplayedMnemonicIndex(displayIndex++);
-            popup.add(menuItem);
+         List<JMenuItem> menuItemsForPopup = null;
+         if (mouseEvent.getComponent().equals(component)) {
+            menuItemsForPopup = getMenuItemsForPopup();
+         } else {
+            menuItemsForPopup = getBlankAreaMenuItemsForPopup();
          }
-         popup.show(component, mouseEvent.getX(), mouseEvent.getY());
-         mouseEvent.consume();
+
+         if ((menuItemsForPopup != null) && (!menuItemsForPopup.isEmpty())) {
+            JPopupMenu popup = new JPopupMenu();
+            int displayIndex = 0;
+
+            for (JMenuItem menuItem : menuItemsForPopup) {
+               menuItem.setDisplayedMnemonicIndex(displayIndex++);
+               popup.add(menuItem);
+            }
+
+            popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+            mouseEvent.consume();
+         }
       }
+   }
+
+   /**
+    * Override this method to return items to display when right clicking a blank area
+    * over the table
+    * @return Items for blank area. e.g. Create
+    */
+   protected List<JMenuItem> getBlankAreaMenuItemsForPopup() {
+      return null;
    }
 
    /**

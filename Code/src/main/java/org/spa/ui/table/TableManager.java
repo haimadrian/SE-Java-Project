@@ -172,6 +172,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
       if (popupAdapter != null) {
          popupAdapter.setComponent(table);
          table.addMouseListener(popupAdapter);
+         scrollPane.addMouseListener(popupAdapter);
       }
    }
 

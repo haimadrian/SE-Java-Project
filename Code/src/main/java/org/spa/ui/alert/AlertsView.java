@@ -76,6 +76,7 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
       buttonsPanel.add(clearButton);
 
       workArea = new JPanel();
+      workArea.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
       workArea.setLayout(new BoxLayout(workArea, BoxLayout.PAGE_AXIS));
       workArea.add(title);
       workArea.add(Box.createRigidArea(new Dimension(0,5)));

@@ -70,11 +70,12 @@ public class ItemsWarehouse {
     * @param discountPercent
     * @param amount
     */
-   public void addItem(String id,String category, String name, String description, double price, double profitPercent, double discountPercent, int amount) {
-      WarehouseItem item = new WarehouseItem(id,category, name, description, price, profitPercent, discountPercent, amount);
-      idToItem.put(item.getId(), item);
-      notifyItemAdded(item);
-      logger.info("Item added to warehouse: " + item);
+   public void addItem(String user, Item item) {
+      WarehouseItem warehouseItem = itemToWarehouseItem(item);
+      idToItem.put(warehouseItem.getId(), warehouseItem);
+      itemRepository.create(warehouseItemToItem(warehouseItem));
+      logger.info("Item added to warehouse: " + warehouseItem +" by user: " + user);
+      notifyItemAdded(warehouseItem);
    }
 
    /**
@@ -82,10 +83,11 @@ public class ItemsWarehouse {
     * @param id The id of the item to remove
     * @return The removed item or <code>null</code> in case there is no item with the specified id
     */
-   public WarehouseItem removeItem(String id) {
+   public WarehouseItem removeItem(String user, String id) {
       WarehouseItem item =  idToItem.remove(id);
       if (item != null) {
-         logger.info("Removed item from warehouse: " + item);
+         itemRepository.delete(warehouseItemToItem(item));
+         logger.info("Removed item from warehouse: " + item + " by user " + user);
          notifyItemDeleted(item);
       }
       return item;
@@ -104,11 +106,28 @@ public class ItemsWarehouse {
             logger.debug(() -> "Tried to update amount of an item with the same value. oldCount=" + oldCount + ", newCount=" + amount);
          } else {
             item.setCount(amount);
+            itemRepository.update(warehouseItemToItem(item));
+            notifyItemUpdated(item);
             logger.info("Item count updated: " + item + ", old count was " + oldCount);
          }
       } else {
          logger.warn("Tried to update amount for item that does not exist in the warehouse.. id=" + id);
       }
+   }
+   public WarehouseItem updateItem(String user, Item item) {
+      WarehouseItem warehouseItem =  idToItem.get(item.getId());
+      if (item != null) {
+         warehouseItem.setCategory(item.getCategory());
+         warehouseItem.setDescription(item.getDescription());
+         warehouseItem.setPrice(item.getPrice());
+         warehouseItem.setProfitPercent(item.getProfitPercent());
+         warehouseItem.setDiscountPercent(item.getDiscountPercent());
+         warehouseItem.setCount(item.getCount());
+         itemRepository.update(warehouseItemToItem(warehouseItem));
+         logger.info("item Updated in warehouse: " + item +" by user: " + user);
+         notifyItemUpdated(warehouseItem);
+      }
+      return warehouseItem;
    }
 
    /**

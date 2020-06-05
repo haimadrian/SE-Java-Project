@@ -20,6 +20,7 @@ import java.util.function.BiConsumer;
 public class AlertSystem {
    private static final Logger logger = LoggerFactory.getLogger(AlertSystem.class);
    private static final long ALERT_SYSTEM_CHECK_RATE_MINUTES = 5;
+   static final int INITIAL_DELAY_SECONDS = 2;
 
    private AlertConfig alertConfig;
 
@@ -59,7 +60,7 @@ public class AlertSystem {
 
       // Schedule our job to run within 2 seconds and then every 5 minutes
       logger.info("Scheduling AlertSystemCheckJob to run every " + ALERT_SYSTEM_CHECK_RATE_MINUTES + " minutes");
-      alertSystemCheck.scheduleAtFixedRate(new AlertSystemCheckJob(), 2, ALERT_SYSTEM_CHECK_RATE_MINUTES*60, TimeUnit.SECONDS);
+      alertSystemCheck.scheduleAtFixedRate(new AlertSystemCheckJob(), INITIAL_DELAY_SECONDS, ALERT_SYSTEM_CHECK_RATE_MINUTES*60, TimeUnit.SECONDS);
    }
 
    /**

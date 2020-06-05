@@ -101,7 +101,7 @@ public interface Logger {
      * Logs a message which is only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level.
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      */
-    default void debug(Supplier<CharSequence> messageSupplier) { log(Level.TRACE, messageSupplier); }
+    default void debug(Supplier<CharSequence> messageSupplier) { log(Level.DEBUG, messageSupplier); }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#DEBUG DEBUG} level) including the
@@ -109,13 +109,13 @@ public interface Logger {
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void debug(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.TRACE, messageSupplier, thrown); }
+    default void debug(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.DEBUG, messageSupplier, thrown); }
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level.
      * @param message the message CharSequence to log.
      */
-    default void debug(CharSequence message) { log(Level.TRACE, message); }
+    default void debug(CharSequence message) { log(Level.DEBUG, message); }
 
     /**
      * Logs a message at the {@link Level#DEBUG DEBUG} level including the stack trace of the {@link Throwable}
@@ -123,13 +123,13 @@ public interface Logger {
      * @param message the message object to log.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void debug(CharSequence message, Throwable thrown) { log(Level.TRACE, message, thrown); }
+    default void debug(CharSequence message, Throwable thrown) { log(Level.DEBUG, message, thrown); }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#INFO INFO} level.
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      */
-    default void info(Supplier<CharSequence> messageSupplier) { log(Level.TRACE, messageSupplier); }
+    default void info(Supplier<CharSequence> messageSupplier) { log(Level.INFO, messageSupplier); }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#INFO INFO} level) including the
@@ -137,13 +137,13 @@ public interface Logger {
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void info(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.TRACE, messageSupplier, thrown); }
+    default void info(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.INFO, messageSupplier, thrown); }
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level.
      * @param message the message CharSequence to log.
      */
-    default void info(CharSequence message) { log(Level.TRACE, message); }
+    default void info(CharSequence message) { log(Level.INFO, message); }
 
     /**
      * Logs a message at the {@link Level#INFO INFO} level including the stack trace of the {@link Throwable}
@@ -151,13 +151,13 @@ public interface Logger {
      * @param message the message object to log.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void info(CharSequence message, Throwable thrown) { log(Level.TRACE, message, thrown); }
+    default void info(CharSequence message, Throwable thrown) { log(Level.INFO, message, thrown); }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#WARN WARN} level.
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      */
-    default void warn(Supplier<CharSequence> messageSupplier) { log(Level.TRACE, messageSupplier); }
+    default void warn(Supplier<CharSequence> messageSupplier) { log(Level.WARN, messageSupplier); }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#WARN WARN} level) including the
@@ -165,13 +165,13 @@ public interface Logger {
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void warn(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.TRACE, messageSupplier, thrown); }
+    default void warn(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.WARN, messageSupplier, thrown); }
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level.
      * @param message the message CharSequence to log.
      */
-    default void warn(CharSequence message) { log(Level.TRACE, message); }
+    default void warn(CharSequence message) { log(Level.WARN, message); }
 
     /**
      * Logs a message at the {@link Level#WARN WARN} level including the stack trace of the {@link Throwable}
@@ -179,13 +179,13 @@ public interface Logger {
      * @param message the message object to log.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void warn(CharSequence message, Throwable thrown) { log(Level.TRACE, message, thrown); }
+    default void warn(CharSequence message, Throwable thrown) { log(Level.WARN, message, thrown); }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#ERROR ERROR} level.
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      */
-    default void error(Supplier<CharSequence> messageSupplier) { log(Level.TRACE, messageSupplier); }
+    default void error(Supplier<CharSequence> messageSupplier) { log(Level.ERROR, messageSupplier); }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#ERROR ERROR} level) including the
@@ -193,13 +193,13 @@ public interface Logger {
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void error(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.TRACE, messageSupplier, thrown); }
+    default void error(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.ERROR, messageSupplier, thrown); }
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level.
      * @param message the message CharSequence to log.
      */
-    default void error(CharSequence message) { log(Level.TRACE, message); }
+    default void error(CharSequence message) { log(Level.ERROR, message); }
 
     /**
      * Logs a message at the {@link Level#ERROR ERROR} level including the stack trace of the {@link Throwable}
@@ -207,13 +207,13 @@ public interface Logger {
      * @param message the message object to log.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void error(CharSequence message, Throwable thrown) { log(Level.TRACE, message, thrown); }
+    default void error(CharSequence message, Throwable thrown) { log(Level.ERROR, message, thrown); }
 
     /**
      * Logs a message which is only to be constructed if the logging level is the {@link Level#FATAL FATAL} level.
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      */
-    default void fatal(Supplier<CharSequence> messageSupplier) { log(Level.TRACE, messageSupplier); }
+    default void fatal(Supplier<CharSequence> messageSupplier) { log(Level.FATAL, messageSupplier); }
 
     /**
      * Logs a message (only to be constructed if the logging level is the {@link Level#FATAL FATAL} level) including the
@@ -221,13 +221,13 @@ public interface Logger {
      * @param messageSupplier A function, which when called, produces the desired log message; the format depends on the message factory.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void fatal(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.TRACE, messageSupplier, thrown); }
+    default void fatal(Supplier<CharSequence> messageSupplier, Throwable thrown) { log(Level.FATAL, messageSupplier, thrown); }
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level.
      * @param message the message CharSequence to log.
      */
-    default void fatal(CharSequence message) { log(Level.TRACE, message); }
+    default void fatal(CharSequence message) { log(Level.FATAL, message); }
 
     /**
      * Logs a message at the {@link Level#FATAL FATAL} level including the stack trace of the {@link Throwable}
@@ -235,6 +235,6 @@ public interface Logger {
      * @param message the message object to log.
      * @param thrown the exception to log, including its stack trace.
      */
-    default void fatal(CharSequence message, Throwable thrown) { log(Level.TRACE, message, thrown); }
+    default void fatal(CharSequence message, Throwable thrown) { log(Level.FATAL, message, thrown); }
 }
 

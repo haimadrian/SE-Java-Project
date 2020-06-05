@@ -3,6 +3,7 @@ package org.spa.controller.order;
 import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.Service;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
@@ -12,7 +13,7 @@ import org.spa.model.dal.OrderRepository;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class OrderSystem {
+public class OrderSystem implements Service {
     private static final Logger logger = LoggerFactory.getLogger(OrderSystem.class);
     private final Map<String, Order> ordersMap;
     private final Repository<Order> orderRepository;
@@ -27,6 +28,7 @@ public class OrderSystem {
         return selectionModel;
     }
 
+    @Override
     public void start() {
         logger.info("Starting OrderSystem - Select orders from repository");
 
@@ -34,6 +36,7 @@ public class OrderSystem {
         orderRepository.selectAll().forEach(order -> ordersMap.put(order.getOrderId(), order));
     }
 
+    @Override
     public void stop() {
         logger.info("Stopping OrderSystem - Save orders to repository");
 

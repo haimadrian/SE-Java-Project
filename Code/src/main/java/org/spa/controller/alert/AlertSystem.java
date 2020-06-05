@@ -3,6 +3,8 @@ package org.spa.controller.alert;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.Service;
+import org.spa.controller.item.ItemsWarehouseObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.model.Alert;
 import org.spa.model.Severity;
@@ -17,7 +19,7 @@ import java.util.function.BiConsumer;
  * @author Haim Adrian
  * @since 16-May-20
  */
-public class AlertSystem {
+public class AlertSystem implements Service, ItemsWarehouseObserver {
    private static final Logger logger = LoggerFactory.getLogger(AlertSystem.class);
    private static final long ALERT_SYSTEM_CHECK_RATE_MINUTES = 5;
    static final int INITIAL_DELAY_SECONDS = 2;
@@ -28,6 +30,9 @@ public class AlertSystem {
    private ScheduledExecutorService alertSystemCheck;
    private ExecutorService notifier;
 
+   /**
+    * Map between alert's key (The Item ID) to the alert
+    */
    private final Map<String, Alert> alerts;
 
    /**
@@ -42,6 +47,7 @@ public class AlertSystem {
    /**
     * Call this method to start the scheduler
     */
+   @Override
    public void start() {
       logger.info("Starting AlertSystem");
 
@@ -61,13 +67,19 @@ public class AlertSystem {
       // Schedule our job to run within 2 seconds and then every 5 minutes
       logger.info("Scheduling AlertSystemCheckJob to run every " + ALERT_SYSTEM_CHECK_RATE_MINUTES + " minutes");
       alertSystemCheck.scheduleAtFixedRate(new AlertSystemCheckJob(), INITIAL_DELAY_SECONDS, ALERT_SYSTEM_CHECK_RATE_MINUTES*60, TimeUnit.SECONDS);
+
+      // Register for events about items, to get notified if they are deleted or added
+      SPAApplication.getInstance().getItemsWarehouse().registerObserver(this);
    }
 
    /**
     * Call this method to stop the scheduler
     */
+   @Override
    public void stop() {
       logger.info("Stopping AlertSystem");
+
+      SPAApplication.getInstance().getItemsWarehouse().unregisterObserver(this);
 
       if (alertSystemCheck != null) {
          try {
@@ -182,6 +194,28 @@ public class AlertSystem {
       }
    }
 
+   @Override
+   public void deleteItem(WarehouseItem item) {
+      acknowledge(item.getId());
+   }
+
+   @Override
+   public void updateItem(WarehouseItem item) {
+      // Won't do
+   }
+
+   @Override
+   public void addItem(WarehouseItem item) {
+      raiseAlertIfNeeded(item);
+   }
+
+   private void raiseAlertIfNeeded(WarehouseItem item) {
+      Threshold matchingThreshold = alertConfig.findMatchingThreshold(item.getCount());
+      if (matchingThreshold.getSeverity() != Severity.DISABLED) {
+         raiseAlert(item, matchingThreshold);
+      }
+   }
+
    /**
     * The job that we schedule to run in background every some minutes, to check the stock
     */
@@ -192,10 +226,7 @@ public class AlertSystem {
          List<WarehouseItem> items = SPAApplication.getInstance().getItemsWarehouse().getItems();
 
          for (WarehouseItem item : items) {
-            Threshold matchingThreshold = alertConfig.findMatchingThreshold(item.getCount());
-            if (matchingThreshold.getSeverity() != Severity.DISABLED) {
-               raiseAlert(item, matchingThreshold);
-            }
+            raiseAlertIfNeeded(item);
          }
       }
    }

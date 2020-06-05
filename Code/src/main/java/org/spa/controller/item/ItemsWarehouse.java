@@ -3,6 +3,7 @@ package org.spa.controller.item;
 import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.Service;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
@@ -13,24 +14,28 @@ import java.util.stream.Collectors;
  * @author Haim Adrian
  * @since 16-May-20
  */
-public class ItemsWarehouse {
+public class ItemsWarehouse implements Service {
    private static final Logger logger = LoggerFactory.getLogger(ItemsWarehouse.class);
    private final Map<String, WarehouseItem> idToItem;
    private final Repository<Item> itemRepository;
    private final SelectionModelManager<WarehouseItem> selectionModel;
    private final Set<ItemsWarehouseObserver> observers;
+
    public ItemsWarehouse() {
       idToItem = new HashMap<>(1000);
       itemRepository = new ItemRepository();
       selectionModel = new SelectionModelManager<>();
       observers = new HashSet<>();
    }
+
    public SelectionModelManager<WarehouseItem> getSelectionModel() {
       return selectionModel;
    }
+
    /**
     * Call this method to read data from storage
     */
+   @Override
    public void start() {
       logger.info("Starting ItemsWarehouse - Select items from repository");
 
@@ -41,6 +46,7 @@ public class ItemsWarehouse {
    /**
     * Call this method when exiting the application, to save the in memory data to disk
     */
+   @Override
    public void stop() {
       logger.info("Stopping ItemsWarehouse - Save items to repository");
 

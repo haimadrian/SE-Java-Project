@@ -31,6 +31,7 @@ public class ItemManagement extends JFrame implements ActionListener {
     private ItemsWarehouse itemsWarehouse;
     private String itemId;
     private Map<String, Object> params;
+    private File imageFile;
     private Container container;
     private JLabel title;
     private JLabel name;
@@ -51,6 +52,7 @@ public class ItemManagement extends JFrame implements ActionListener {
     private JTextField textCount;
     private JButton add;
     private JButton searchBtn;
+    private JButton urlBtn;
     private JLabel output;
 
     public ItemManagement(WarehouseItem itemSelected, actionType actionType) {
@@ -185,6 +187,13 @@ public class ItemManagement extends JFrame implements ActionListener {
         searchBtn.addActionListener(this);
         container.add(searchBtn);
 
+        urlBtn= new JButton(ImagesCache.getInstance().getImage("DefaultBrowser.png"));
+        urlBtn.setFont(new Font("Arial", Font.PLAIN, 15));
+        urlBtn.setSize(40, 25);
+        urlBtn.setLocation(420, 75);
+        urlBtn.addActionListener(this);
+        container.add(urlBtn);
+
         output = new JLabel("");
         output.setFont(new Font("Arial", Font.PLAIN, 20));
         output.setSize(500, 20);
@@ -211,34 +220,55 @@ public class ItemManagement extends JFrame implements ActionListener {
         }
     }
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        boolean isNameExist = false;
-        if (e.getSource() == add)
-        {
+    public void actionPerformed(ActionEvent e) {
+        boolean isItemNameAlreadyExist = false;
+        if (e.getSource() == add) {
             itemId = UUID.randomUUID().toString();
             if (areExistEmptyFields()) {
                 output.setText("Please fill the empty fields");
-            }
-            else if(actionType == actionType.Add) {
+            } else if (actionType == actionType.Add) {
 
-                if(!textUrl.getText().equals("")){
+                if (!textUrl.getText().isEmpty()) {
                     try {
                         URL url = new URL(textUrl.getText());
                         ImagesCache.getInstance().loadImageFromURL(textName.getText() + ".png", url);
-                    }catch (MalformedURLException malformedURLException) {
+                    } catch (MalformedURLException malformedURLException) {
                         malformedURLException.printStackTrace();
-                    }}
+                    }
+                }
 
                 for (WarehouseItem item : itemsWarehouse.getItems()) {
-                    if(textName.getText().equals(item.getName())) {
+                    if (textName.getText().equals(item.getName())) {
                         output.setText("Name Already Exist");
-                        isNameExist = true;
+                        isItemNameAlreadyExist = true;
                         break;
                     }
                 }
-                if(!isNameExist){
-                  Item item = new Item(itemId,
+                if (!isItemNameAlreadyExist) {
+
+                    if (!textName.getText().isEmpty()) {
+                        ImagesCache.getInstance().loadImageFromFile(textName.getText() + ".png", imageFile);
+
+                        Item item = new Item(itemId,
+                                textCategory.getText(),
+                                textName.getText(),
+                                textDescription.getText(),
+                                Double.parseDouble(textPrice.getText()),
+                                Double.parseDouble(textProfit.getText()),
+                                Double.parseDouble(textDiscount.getText()),
+                                Integer.parseInt(textCount.getText()));
+                        params.put("itemId", item);
+                        try {
+                            ActionManager.executeAction(ActionType.CreateItemInWarehouse, params);
+                        } catch (ActionException actionException) {
+                            actionException.printStackTrace();
+                        }
+                        showMessageDialog(null, "Item added successfully");
+                        dispose();
+                    }
+                } else if (actionType == actionType.Update)
+                {
+                    Item item = new Item(textUrl.getText(),
                             textCategory.getText(),
                             textName.getText(),
                             textDescription.getText(),
@@ -246,62 +276,50 @@ public class ItemManagement extends JFrame implements ActionListener {
                             Double.parseDouble(textProfit.getText()),
                             Double.parseDouble(textDiscount.getText()),
                             Integer.parseInt(textCount.getText()));
-
                     params.put("itemId", item);
                     try {
-                        ActionManager.executeAction(ActionType.CreateItemInWarehouse, params);
+                        ActionManager.executeAction(ActionType.UpdateItemInWarehouseAction, params);
                     } catch (ActionException actionException) {
                         actionException.printStackTrace();
                     }
-                    showMessageDialog(null, "Item added successfully");
+                    showMessageDialog(null, "Item updated successfully");
                     dispose();
                 }
             }
-            else if(actionType == actionType.Update) {
-                Item item = new Item(textUrl.getText(),
-                        textCategory.getText(),
-                        textName.getText(),
-                        textDescription.getText(),
-                        Double.parseDouble(textPrice.getText()),
-                        Double.parseDouble(textProfit.getText()),
-                        Double.parseDouble(textDiscount.getText()),
-                        Integer.parseInt(textCount.getText()));
-                params.put("itemId", item);
-                try {
-                    ActionManager.executeAction(ActionType.UpdateItemInWarehouseAction, params);
-                } catch (ActionException actionException) {
-                    actionException.printStackTrace();
-                }
-                showMessageDialog(null, "Item updated successfully");
-                dispose();
-            }
         }
-       if (e.getSource() == searchBtn){
+        if (e.getSource() == searchBtn)
+        {
             // create an object of JFileChooser class
             JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
             // invoke the showsSaveDialog function to show the save dialog
-            int r = fileChooser.showSaveDialog(null);
+            int r = fileChooser.showOpenDialog(null);
 
             // if the user selects a file
             if (r == JFileChooser.APPROVE_OPTION) {
                 // set the label to the path of the selected file
-
-                ImagesCache.getInstance().loadImageFromFile(fileChooser.getSelectedFile().getName(), new File(fileChooser.getSelectedFile().getAbsolutePath()));
-                String picture = fileChooser.getSelectedFile().getName();
-                picture = picture.replace(".png", "");
-                textName.setText(picture);
+                imageFile = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                output.setText("Image have been choose successfully!");
             }
             // if the user cancelled the operation
             else
                 output.setText("the user cancelled the operation");
         }
+        if (e.getSource() == urlBtn)
+        {
+            String googleImagesPath = "https://www.google.co.il/imghp?hl=iw&tab=wi&authuser=0&ogbl";
+            try {
+                Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + googleImagesPath);
+                p.waitFor();
+            } catch (Exception err) {
+                err.printStackTrace();
+            }
+        }
     }
-
     public boolean areExistEmptyFields() {
-        return (textName.getText().equals("") || textCategory.getText().equals("")
-                || textDescription.getText().equals("") ||
-                textPrice.getText().equals("") || textProfit.getText().equals("")
-                || textDiscount.getText().equals("") || textCount.getText().equals(""));
+        return (textName.getText().isEmpty() || textCategory.getText().isEmpty()
+                || textDescription.getText().isEmpty() ||
+                textPrice.getText().isEmpty() || textProfit.getText().isEmpty()
+                || textDiscount.getText().isEmpty() || textCount.getText().isEmpty());
     }
 }

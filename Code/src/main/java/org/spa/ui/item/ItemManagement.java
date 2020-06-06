@@ -8,7 +8,6 @@ import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.model.Item;
 import org.spa.ui.util.ImagesCache;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
@@ -217,6 +216,7 @@ public class ItemManagement extends JFrame implements ActionListener {
             textName.setEnabled(false);
             add.setText("Update");
             searchBtn.setVisible(false);
+            urlBtn.setVisible(false);
         }
     }
     @Override
@@ -266,6 +266,7 @@ public class ItemManagement extends JFrame implements ActionListener {
                         showMessageDialog(null, "Item added successfully");
                         dispose();
                     }
+                }
                 } else if (actionType == actionType.Update)
                 {
                     Item item = new Item(textUrl.getText(),
@@ -286,8 +287,8 @@ public class ItemManagement extends JFrame implements ActionListener {
                     dispose();
                 }
             }
-        }
-        if (e.getSource() == searchBtn)
+
+        else if (e.getSource() == searchBtn)
         {
             // create an object of JFileChooser class
             JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -299,13 +300,13 @@ public class ItemManagement extends JFrame implements ActionListener {
             if (r == JFileChooser.APPROVE_OPTION) {
                 // set the label to the path of the selected file
                 imageFile = new File(fileChooser.getSelectedFile().getAbsolutePath());
-                output.setText("Image have been choose successfully!");
+                output.setText("Image selected successfully!");
             }
             // if the user cancelled the operation
             else
                 output.setText("the user cancelled the operation");
         }
-        if (e.getSource() == urlBtn)
+        else if (e.getSource() == urlBtn)
         {
             String googleImagesPath = "https://www.google.co.il/imghp?hl=iw&tab=wi&authuser=0&ogbl";
             try {

@@ -5,15 +5,19 @@ import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.order.OrderSystem;
 import org.spa.model.Order;
+import org.spa.ui.login.Registration;
 import org.spa.ui.order.OrderColumn;
 import org.spa.ui.order.OrderInfoDialog;
 import org.spa.ui.order.OrderViewInfo;
+import org.spa.ui.report.ReportView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
 import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.ImagesCache;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -32,7 +36,6 @@ public class ManagerView {
     JFrame frame;
   
     public ManagerView() {
-
         frame = new JFrame("Management View");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(1300,800);
@@ -119,10 +122,19 @@ public class ManagerView {
             gbc.gridy++;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             add((stockReport = new JButton("Stock Report")), gbc);
+            stockReport.addActionListener(actionEvent -> {
+                new ReportView("Stock");
+            });
             gbc.gridx++;
             add((orderReport = new JButton("Order Report")), gbc);
+            orderReport.addActionListener(actionEvent -> {
+                new ReportView("Order");
+            });
             gbc.gridx++;
             add((economicReport = new JButton("Economic Report")), gbc);
+            economicReport.addActionListener(actionEvent -> {
+                new ReportView("Economic");
+            });
         }
     }
 

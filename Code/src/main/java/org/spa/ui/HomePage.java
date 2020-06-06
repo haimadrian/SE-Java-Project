@@ -284,8 +284,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                     addItem.setDisplayedMnemonicIndex(0);
                     addItem.setFont(Fonts.PLAIN_FONT);
                     addItem.addActionListener(e -> {
-                        new ItemManagement(null, ItemManagement.actionType.Add);
-                        logger.info("Adding item from itemswarehouse. Item: ");
+                        new ItemManagement();
+                        logger.info("Adding item to itemswarehouse. Item: ");
                     });
                     return Arrays.asList(addItem);
                 }
@@ -338,7 +338,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                         WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
                         SwingUtilities.invokeLater(() -> {
                             if (selection != null) {
-                                new ItemManagement(selection, ItemManagement.actionType.Update);
+                                new ItemManagement(selection);
                                 logger.info("Updating item in itemswarehouse. Item: " + selection);
                             }else {
                                 Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
@@ -349,7 +349,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                         WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
                         SwingUtilities.invokeLater(() -> {
                             if (selection != null) {
-                                new ItemManagement(selection, ItemManagement.actionType.Add);
+                                new ItemManagement();
                                 logger.info("Adding item from itemswarehouse. Item: " + selection);
 
                             } else {

@@ -25,8 +25,6 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class ItemManagement extends JFrame implements ActionListener {
 
     private WarehouseItem warehouseItem;
-    public enum actionType{Add,Update};
-    actionType actionType = null;
     private ItemsWarehouse itemsWarehouse;
     private String itemId;
     private Map<String, Object> params;
@@ -55,14 +53,17 @@ public class ItemManagement extends JFrame implements ActionListener {
     private JLabel output;
     private JLabel id;
 
-    public ItemManagement(WarehouseItem itemSelected, actionType actionType) {
+    public ItemManagement(){
+        this(null);
+    }
+
+    public ItemManagement(WarehouseItem itemSelected) {
         warehouseItem = itemSelected;
-        this.actionType = actionType;
         itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         itemId = "";
         params = new HashMap<>();
 
-        if(actionType == actionType.Update) {
+        if(itemSelected != null) {
             y = 120;
         }
         else{
@@ -215,7 +216,7 @@ public class ItemManagement extends JFrame implements ActionListener {
 
         setVisible(true);
 
-        if(actionType == actionType.Update){
+        if(itemSelected != null){
             id.setText("ID: " + itemSelected.getId());
             textName.setText(itemSelected.getName());
             textCategory.setText(itemSelected.getCategory());
@@ -241,7 +242,7 @@ public class ItemManagement extends JFrame implements ActionListener {
             itemId = UUID.randomUUID().toString();
             if (areExistEmptyFields()) {
                 output.setText("Please fill the empty fields");
-            } else if (actionType == actionType.Add) {
+            } else if (warehouseItem == null) {
 
                 for (WarehouseItem item : itemsWarehouse.getItems()) {
                     if (textName.getText().equals(item.getName())) {
@@ -284,8 +285,10 @@ public class ItemManagement extends JFrame implements ActionListener {
                     showMessageDialog(null, "Item added successfully");
                     dispose();
                 }
-            } else if (actionType == actionType.Update) {
-                WarehouseItem warehouseItem = new WarehouseItem(textImage.getText(),
+            } else if (warehouseItem != null) {
+                String convertedId="";
+                convertedId = id.getText().replace("ID: ","");
+                WarehouseItem warehouseItem = new WarehouseItem(convertedId,
                         textCategory.getText(),
                         textName.getText(),
                         textDescription.getText(),

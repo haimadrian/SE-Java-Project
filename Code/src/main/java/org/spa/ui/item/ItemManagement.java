@@ -30,6 +30,7 @@ public class ItemManagement extends JFrame implements ActionListener {
     private ItemsWarehouse itemsWarehouse;
     private String itemId;
     private Map<String, Object> params;
+    private int y;
     private Container container;
     private JLabel title;
     private JLabel name;
@@ -52,6 +53,7 @@ public class ItemManagement extends JFrame implements ActionListener {
     private JButton searchBtn;
     private JButton imageBtn;
     private JLabel output;
+    private JLabel id;
 
     public ItemManagement(WarehouseItem itemSelected, actionType actionType) {
         warehouseItem = itemSelected;
@@ -59,6 +61,13 @@ public class ItemManagement extends JFrame implements ActionListener {
         itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         itemId = "";
         params = new HashMap<>();
+
+        if(actionType == actionType.Update) {
+            y = 120;
+        }
+        else{
+            y=75;
+        }
 
         setTitle("Item Management");
         setBounds(600, 200, 500, 650);
@@ -77,118 +86,118 @@ public class ItemManagement extends JFrame implements ActionListener {
         name = new JLabel("Name");
         name.setFont(new Font("Arial", Font.PLAIN, 20));
         name.setSize(100, 25);
-        name.setLocation(60, 75);
+        name.setLocation(60, y);
         container.add(name);
 
         textName = new JTextField();
         textName.setFont(new Font("Arial", Font.PLAIN, 15));
         textName.setSize(250, 25);
-        textName.setLocation(160, 75);
+        textName.setLocation(160, y);
         container.add(textName);
 
         category = new JLabel("Category");
         category.setFont(new Font("Arial", Font.PLAIN, 20));
         category.setSize(100, 25);
-        category.setLocation(60, 125);
+        category.setLocation(60, y+50);
         container.add(category);
 
         textCategory = new JTextField();
         textCategory.setFont(new Font("Arial", Font.PLAIN, 15));
         textCategory.setSize(250, 25);
-        textCategory.setLocation(160, 125);
+        textCategory.setLocation(160, y+50);
         container.add(textCategory);
 
         description = new JLabel("Description");
         description.setFont(new Font("Arial", Font.PLAIN, 20));
         description.setSize(100, 25);
-        description.setLocation(60, 175);
+        description.setLocation(60, y+100);
         container.add(description);
 
         textDescription = new JTextArea();
         textDescription.setFont(new Font("Arial", Font.PLAIN, 15));
         textDescription.setSize(300, 125);
-        textDescription.setLocation(160, 175);
+        textDescription.setLocation(160, y+100);
         textDescription.setLineWrap(true);
         container.add(textDescription);
 
         price = new JLabel("Price");
         price.setFont(new Font("Arial", Font.PLAIN, 20));
         price.setSize(100, 25);
-        price.setLocation(60, 325);
+        price.setLocation(60, y+250);
         container.add(price);
 
         textPrice = new JTextField();
         textPrice.setFont(new Font("Arial", Font.PLAIN, 15));
         textPrice.setSize(250, 25);
-        textPrice.setLocation(160, 325);
+        textPrice.setLocation(160, y+250);
         container.add(textPrice);
 
         profit = new JLabel("Profit%");
         profit.setFont(new Font("Arial", Font.PLAIN, 20));
         profit.setSize(100, 25);
-        profit.setLocation(60, 375);
+        profit.setLocation(60, y+300);
         container.add(profit);
 
         textProfit = new JTextField();
         textProfit.setFont(new Font("Arial", Font.PLAIN, 15));
         textProfit.setSize(250, 25);
-        textProfit.setLocation(160, 375);
+        textProfit.setLocation(160, y+300);
         container.add(textProfit);
 
         discount = new JLabel("Discount%");
         discount.setFont(new Font("Arial", Font.PLAIN, 20));
         discount.setSize(100, 25);
-        discount.setLocation(60, 425);
+        discount.setLocation(60, y+350);
         container.add(discount);
 
         textDiscount = new JTextField();
         textDiscount.setFont(new Font("Arial", Font.PLAIN, 15));
         textDiscount.setSize(250, 25);
-        textDiscount.setLocation(160, 425);
+        textDiscount.setLocation(160, y+350);
         container.add(textDiscount);
 
         count = new JLabel("Count");
         count.setFont(new Font("Arial", Font.PLAIN, 20));
         count.setSize(100, 25);
-        count.setLocation(60, 475);
+        count.setLocation(60, y+400);
         container.add(count);
 
         textCount = new JTextField();
         textCount.setFont(new Font("Arial", Font.PLAIN, 15));
         textCount.setSize(250, 25);
-        textCount.setLocation(160, 475);
+        textCount.setLocation(160, y+400);
         container.add(textCount);
 
         image = new JLabel("Image");
         image.setFont(new Font("Arial", Font.PLAIN, 20));
         image.setSize(100, 25);
-        image.setLocation(60, 525);
+        image.setLocation(60, y+450);
         container.add(image);
 
         textImage = new JTextField();
         textImage.setFont(new Font("Arial", Font.PLAIN, 15));
         textImage.setSize(250, 25);
-        textImage.setLocation(160, 525);
+        textImage.setLocation(160, y+450);
         container.add(textImage);
 
         add = new JButton("Add");
         add.setFont(new Font("Arial", Font.PLAIN, 15));
         add.setSize(100, 30);
-        add.setLocation(200, 570);
+        add.setLocation(200, y+495);
         add.addActionListener(this);
         container.add(add);
 
         searchBtn= new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
         searchBtn.setFont(new Font("Arial", Font.PLAIN, 15));
         searchBtn.setSize(35, 25);
-        searchBtn.setLocation(415, 525);
+        searchBtn.setLocation(415, y+450);
         searchBtn.addActionListener(this);
         container.add(searchBtn);
 
         imageBtn = new JButton(ImagesCache.getInstance().getImage("DefaultBrowser.png"));
         imageBtn.setFont(new Font("Arial", Font.PLAIN, 15));
         imageBtn.setSize(35, 25);
-        imageBtn.setLocation(455, 525);
+        imageBtn.setLocation(455, y+450);
         imageBtn.addActionListener(this);
         container.add(imageBtn);
 
@@ -198,10 +207,16 @@ public class ItemManagement extends JFrame implements ActionListener {
         output.setLocation(60, 50);
         container.add(output);
 
+        id = new JLabel("");
+        id.setFont(new Font("Arial", Font.PLAIN, 20));
+        id.setSize(500, 20);
+        id.setLocation(60, 85);
+        container.add(id);
+
         setVisible(true);
 
         if(actionType == actionType.Update){
-            textImage.setText(itemSelected.getId());
+            id.setText("ID: " + itemSelected.getId());
             textName.setText(itemSelected.getName());
             textCategory.setText(itemSelected.getCategory());
             textDescription.setText(itemSelected.getDescription());
@@ -210,10 +225,11 @@ public class ItemManagement extends JFrame implements ActionListener {
             textDiscount.setText(String.valueOf(itemSelected.getDiscountPercent()));
             textCount.setText(String.valueOf(itemSelected.getCount()));
 
-            textImage.setEnabled(false);
+            image.setVisible(false);
+            textImage.setVisible(false);
             textName.setEnabled(false);
             add.setText("Update");
-            image.setText("ID");
+            add.setLocation(200,570);
             searchBtn.setVisible(false);
             imageBtn.setVisible(false);
         }

@@ -70,11 +70,10 @@ public class ItemsWarehouse {
     * @param discountPercent
     * @param amount
     */
-   public void addItem(String user, Item item) {
-      WarehouseItem warehouseItem = itemToWarehouseItem(item);
+   public void addItem(WarehouseItem warehouseItem) {
       idToItem.put(warehouseItem.getId(), warehouseItem);
       itemRepository.create(warehouseItemToItem(warehouseItem));
-      logger.info("Item added to warehouse: " + warehouseItem +" by user: " + user);
+      logger.info("Item added to warehouse: " + warehouseItem);
       notifyItemAdded(warehouseItem);
    }
 
@@ -83,11 +82,11 @@ public class ItemsWarehouse {
     * @param id The id of the item to remove
     * @return The removed item or <code>null</code> in case there is no item with the specified id
     */
-   public WarehouseItem removeItem(String user, String id) {
+   public WarehouseItem removeItem(String id) {
       WarehouseItem item =  idToItem.remove(id);
       if (item != null) {
          itemRepository.delete(warehouseItemToItem(item));
-         logger.info("Removed item from warehouse: " + item + " by user " + user);
+         logger.info("Removed item from warehouse: " + item);
          notifyItemDeleted(item);
       }
       return item;
@@ -114,18 +113,22 @@ public class ItemsWarehouse {
          logger.warn("Tried to update amount for item that does not exist in the warehouse.. id=" + id);
       }
    }
-   public WarehouseItem updateItem(String user, Item item) {
-      WarehouseItem warehouseItem =  idToItem.get(item.getId());
+   public WarehouseItem updateItem(WarehouseItem warehouseItem) {
+      WarehouseItem item =  idToItem.get(warehouseItem.getId());
       if (item != null) {
-         warehouseItem.setCategory(item.getCategory());
-         warehouseItem.setDescription(item.getDescription());
-         warehouseItem.setPrice(item.getPrice());
-         warehouseItem.setProfitPercent(item.getProfitPercent());
-         warehouseItem.setDiscountPercent(item.getDiscountPercent());
-         warehouseItem.setCount(item.getCount());
-         itemRepository.update(warehouseItemToItem(warehouseItem));
-         logger.info("item Updated in warehouse: " + item +" by user: " + user);
-         notifyItemUpdated(warehouseItem);
+         item.setCategory(warehouseItem.getCategory());
+         item.setDescription(warehouseItem.getDescription());
+         item.setPrice(warehouseItem.getPrice());
+         item.setProfitPercent(warehouseItem.getProfitPercent());
+         item.setDiscountPercent(warehouseItem.getDiscountPercent());
+         item.setCount(warehouseItem.getCount());
+         itemRepository.update(warehouseItemToItem(item));
+         logger.info("item Updated in warehouse: " + item);
+         notifyItemUpdated(item);
+      }
+      // else - if item doesn't exist - create a new item
+      else{
+         addItem(warehouseItem);
       }
       return warehouseItem;
    }

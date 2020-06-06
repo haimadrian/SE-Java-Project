@@ -324,7 +324,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                                     try {
                                         Map<String, Object> params = new HashMap<>();
                                         params.put("itemId", selection.getId());
-                                        ActionManager.executeAction(ActionType.DeleteItemFromWarehouseAction, params);
+                                        ActionManager.executeAction(ActionType.DeleteItemFromWarehouse, params);
                                     } catch (ActionException actionException) {
                                         SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
                                     }

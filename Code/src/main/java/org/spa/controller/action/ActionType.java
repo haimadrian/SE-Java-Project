@@ -11,8 +11,8 @@ public enum ActionType {
    RemoveFromCart(RemoveFromCartAction.class),
    Purchase(PurchaseAction.class),
    CreateItemInWarehouse(CreateItemInWarehouseAction.class),
-   DeleteItemFromWarehouseAction(DeleteItemFromWarehouseAction.class),
-   UpdateItemInWarehouseAction(UpdateItemInWarehouseAction.class);
+   DeleteItemFromWarehouse(DeleteItemFromWarehouseAction.class),
+   UpdateItemInWarehouse(UpdateItemInWarehouseAction.class);
 
 
    final Class<? extends Action<?>> clazz;

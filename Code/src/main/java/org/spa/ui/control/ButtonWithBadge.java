@@ -47,7 +47,7 @@ public class ButtonWithBadge extends JButton {
 
       if (countForBadge > 0) {
          String countStr = String.valueOf(countForBadge);
-         int badgeDiameter = (int)(getWidth() / 3.33333333);
+         int badgeDiameter = (int)(getWidth() / 2.5);
 
          Color colorBackup = g.getColor();
          Font fontBackup = g.getFont();

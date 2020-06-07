@@ -3,11 +3,14 @@ package org.spa.ui.login;
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
 import org.spa.model.user.Customer;
+import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 
 public class ForgotPassword {
 
@@ -17,6 +20,7 @@ public class ForgotPassword {
    public ForgotPassword(Window owner) {
       this.owner = owner;
       frame = new JFrame("Forgot Password");
+      frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
       frame.setSize(300, 200);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setLocationRelativeTo(null);

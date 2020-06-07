@@ -7,6 +7,7 @@ import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.alert.AlertSystemObserver;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Alert;
+import org.spa.ui.HomePage;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.control.ButtonWithBadge;
 import org.spa.ui.table.PopupAdapter;
@@ -55,8 +56,10 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
       this.parent = parent;
       alertSystem = SPAApplication.getInstance().getAlertSystem();
 
-      alertsButton = new ButtonWithBadge(ImagesCache.getInstance().getImage("alert-icon.png"));
-      alertsButton.setSize(70, 70);
+      ImageIcon image = ImagesCache.getInstance().getImage("alert-icon.png");
+      Image scaledImage = image.getImage().getScaledInstance(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
+      alertsButton = new ButtonWithBadge(new ImageIcon(scaledImage));
+      alertsButton.setSize(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE);
       alertsButton.setCountForBadge(alertSystem.count());
       alertsButton.addActionListener(e -> {
          logger.info("Opening Alerts Dialog");

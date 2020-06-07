@@ -6,6 +6,7 @@ import org.spa.common.util.log.factory.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 import static org.spa.ui.util.Controls.centerDialog;
 import static org.spa.ui.util.Controls.setFontToComponents;
 
@@ -49,6 +50,7 @@ public class Dialogs {
          waitingDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
          waitingDialog.setPreferredSize(new Dimension(owner.getPreferredSize().width / 2, 130));
          waitingDialog.getContentPane().setLayout(new BorderLayout());
+         waitingDialog.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
          JLabel waitingDialogLabel = new JLabel(text);
          waitingDialogLabel.setFont(Fonts.PANEL_HEADING_FONT);
          waitingDialogLabel.setHorizontalAlignment(SwingConstants.CENTER);

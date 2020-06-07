@@ -4,13 +4,14 @@ import org.spa.ui.control.CustomGridBagConstraints;
 import org.spa.ui.control.ImageViewer;
 import org.spa.ui.util.Controls;
 import org.spa.ui.util.Fonts;
+import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.text.DecimalFormat;
 
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 import static org.spa.ui.util.Controls.*;
 
 /**
@@ -27,6 +28,7 @@ public class ItemInfoDialog extends JFrame {
 
    public ItemInfoDialog init() {
       setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
 
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       setPreferredSize(new Dimension((int)(screenSize.width / 1.5), (int)(screenSize.height / 2)));
@@ -124,6 +126,18 @@ public class ItemInfoDialog extends JFrame {
 
       pack();
       Controls.centerDialog(this);
+
+      addComponentListener(new ComponentAdapter() {
+         @Override
+         public void componentResized(ComponentEvent e) {
+            // Seems like running this later is the only fucking way of making the window repaint the image with
+            // its new size... FUCK! I wasted so much time on this crap!!
+            SwingUtilities.invokeLater(() -> {
+               revalidate();
+               repaint();
+            });
+         }
+      });
 
       return this;
    }

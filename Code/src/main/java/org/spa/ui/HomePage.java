@@ -3,13 +3,12 @@ package org.spa.ui;
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
 import org.spa.common.util.log.Logger;
-import org.spa.controller.UserType;
-import org.spa.controller.item.ItemsWarehouseObserver;
-import org.spa.ui.util.Dialogs;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.UserManagementService;
 import org.spa.controller.UserManagementServiceObserver;
+import org.spa.controller.UserType;
 import org.spa.controller.item.ItemsWarehouse;
+import org.spa.controller.item.ItemsWarehouseObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.user.Admin;
@@ -24,24 +23,34 @@ import org.spa.ui.login.LoginView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
+import org.spa.ui.util.Controls;
+import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.Fonts;
 import org.spa.ui.util.ImagesCache;
+
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver , ItemsWarehouseObserver {
+    public static final int PAD = 10;
+    public static final int HOME_PAGE_BUTTON_IMAGE_SIZE = 60;
+    public static final int HOME_PAGE_BUTTON_SIZE = 64;
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     private JButton management;
     private JButton login;
     private JButton logout;
     private JButton searchBtn;
+    private JCheckBox darkMode;
     private CategoryTree categoryTree;
     private JTextField searchBar;
     private JFrame mainForm;
@@ -63,7 +72,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         spaLogo = ImagesCache.getInstance().getImage("SPALOGO_transparent_Small.png");
         JLabel imageContainer = new JLabel(spaLogo);
         imageContainer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        categoryTree = new CategoryTree(mainForm);
+        categoryTree = new CategoryTree();
+        categoryTree.getCategoryTree().setBorder(((JComponent)tableManager.getMainPanel().getComponent(0)).getBorder());
         imageContainer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -91,12 +101,20 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 }
             }
         });
-        management = new JButton("Management");
-        shoppingCart = new ShoppingCartView(mainForm);
-        alerts = new AlertsView(mainForm);
-        logout = new JButton("Logout");
+
+        ImageIcon image = ImagesCache.getInstance().getImage("management-icon.png");
+        Image scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
+        management = new JButton(new ImageIcon(scaledImage));
+        Controls.setComponentSize(management, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+        image = ImagesCache.getInstance().getImage("logout-icon.png");
+        scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
+        logout = new JButton(new ImageIcon(scaledImage));
+        Controls.setComponentSize(logout, HOME_PAGE_BUTTON_SIZE + 2, HOME_PAGE_BUTTON_SIZE);
         logout.setVisible(false);
-        login = new JButton("Login");
+        image = ImagesCache.getInstance().getImage("login-icon.png");
+        scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
+        login = new JButton(new ImageIcon(scaledImage));
+        Controls.setComponentSize(login, HOME_PAGE_BUTTON_SIZE + 2, HOME_PAGE_BUTTON_SIZE);
         itemsPick= new ArrayList<>();
         login.addActionListener(new ActionListener() {
             @Override
@@ -122,15 +140,22 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
         });
 
-        lblUsername = new JLabel("Hello guest.");
+        shoppingCart = new ShoppingCartView(mainForm);
+        alerts = new AlertsView(mainForm);
+        Controls.setComponentSize(shoppingCart.getNavigatingComponent(), HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+        Controls.setComponentSize(alerts.getNavigatingComponent(), HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+
+        lblUsername = Controls.createLabel("Hello guest     ", Fonts.PANEL_HEADING_FONT);
         searchBar = new JTextField("Search for product...", 40);
+        searchBar.setFont(Fonts.PLAIN_FONT);
+        searchBar.setPreferredSize(new Dimension(40, 40));
         searchBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
-        searchBtn.addMouseListener(new MouseAdapter() {
+        ActionListener searchActionListener = new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 String searchString = "(?i).*" + searchBar.getText() + ".*";
                 List<WarehouseItem> searchedItems = new ArrayList<>();
-                itemsWarehouse.getItems().stream().forEach(item -> {
+                itemsWarehouse.getItems().forEach(item -> {
                     if ((item.getName().matches(searchString)) || (item.getDescription().matches(searchString))) {
                         searchedItems.add(item);
                     }
@@ -139,7 +164,9 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 searchedItems.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
                 tableManager.refresh();
             }
-        });
+        };
+        searchBtn.addActionListener(searchActionListener);
+        searchBar.addActionListener(searchActionListener);
         searchBar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -147,17 +174,35 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                 refreshTable();
             }
         });
+
+        darkMode = new JCheckBox("Dark Mode");
+        darkMode.setSelected(new File(SPAApplication.getWorkingDirectory(), "dark.flag").exists());
+        darkMode.setToolTipText("You must restart the application so changes will take effect");
+        darkMode.addChangeListener(e -> {
+            File darkModeFile = new File(SPAApplication.getWorkingDirectory(), "dark.flag");
+            if (darkMode.isSelected()) {
+                try {
+                    darkModeFile.createNewFile();
+                } catch (IOException ioException) {
+                    logger.error("Failed saving file", ioException);
+                }
+            } else {
+                darkModeFile.delete();
+            }
+        });
+
         itemsWarehouse.registerObserver(this);
-        add(tableManager.getMainPanel());
-        add(shoppingCart.getNavigatingComponent());
-        add(alerts.getNavigatingComponent());
-        add(searchBtn);
         add(login);
         add(logout);
-        add(categoryTree.getCategoryTree());
-        add(searchBar);
         add(lblUsername);
+        add(darkMode);
         add(management);
+        add(shoppingCart.getNavigatingComponent());
+        add(alerts.getNavigatingComponent());
+        add(categoryTree.getCategoryTree());
+        add(tableManager.getMainPanel());
+        add(searchBtn);
+        add(searchBar);
         alerts.getNavigatingComponent().setVisible(false);
         management.setVisible(false);
         add(imageContainer);
@@ -165,8 +210,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         this.setLayout(layout);
         ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(),
                 alerts.getNavigatingComponent(),imageContainer);
-        int tableWidth = mainForm.getPreferredSize().width - 60 - 40 - categoryTree.getCategoryTree().getPreferredSize().width;
-        tableManager.getMainPanel().setPreferredSize(new Dimension(tableWidth,mainForm.getPreferredSize().height-250));
     }
 
     @Override
@@ -213,13 +256,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         if((loggedInUser instanceof SystemAdmin)
                 || (loggedInUser instanceof Admin)
                 || (loggedInUser instanceof Customer)) {
-            lblUsername.setText("Hello " + loggedInUser.getUserId() + ".");
+            lblUsername.setText("Hello " + loggedInUser.getUserId());
             login.setVisible(false);
             logout.setVisible(true);
         }
         else {
             alerts.getNavigatingComponent().setVisible(false);
-            lblUsername.setText("Hello guest.");
+            lblUsername.setText("Hello guest     ");
         }
     }
 
@@ -238,29 +281,37 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         refreshTable();
     }
 
-    public void ComponentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer)    {
-        layout.putConstraint(SpringLayout.NORTH,management,70,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,management,150,SpringLayout.EAST,searchBar);
-        layout.putConstraint(SpringLayout.NORTH,alerts,5,SpringLayout.SOUTH, management);
-        layout.putConstraint(SpringLayout.WEST,alerts,0, SpringLayout.WEST, management);
-        layout.putConstraint(SpringLayout.NORTH,login,40,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,login,200,SpringLayout.EAST,searchBar);
-        layout.putConstraint(SpringLayout.NORTH,logout,40,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,logout,195,SpringLayout.EAST,searchBar);
-        layout.putConstraint(SpringLayout.NORTH,cart,80,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,cart,360,SpringLayout.WEST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH,searchBar,135,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,searchBar,500,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.NORTH,searchBtn,137,SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST,searchBtn,0,SpringLayout.EAST,searchBar);
-        layout.putConstraint(SpringLayout.NORTH, tableManager.getMainPanel(),200, SpringLayout.NORTH,contentPane);
-        layout.putConstraint(SpringLayout.WEST, tableManager.getMainPanel(),10, SpringLayout.EAST, categoryTree.getCategoryTree());
-        layout.putConstraint(SpringLayout.NORTH, categoryTree.getCategoryTree(),200,SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, categoryTree.getCategoryTree(),10,SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, imageContainer,40,SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, imageContainer,60,SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, lblUsername,45,SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, lblUsername,890,SpringLayout.NORTH, searchBar);
+    public void ComponentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer) {
+        layout.putConstraint(SpringLayout.NORTH, imageContainer, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, imageContainer, PAD, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, login, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, login, -login.getPreferredSize().width - PAD, SpringLayout.EAST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, logout, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, logout, -logout.getPreferredSize().width - PAD, SpringLayout.EAST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, cart, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, cart, -cart.getPreferredSize().width - PAD, SpringLayout.WEST, login);
+        layout.putConstraint(SpringLayout.NORTH, management, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, management, -management.getPreferredSize().width - PAD, SpringLayout.WEST, cart);
+        layout.putConstraint(SpringLayout.NORTH, alerts, 10, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, alerts, -alerts.getPreferredSize().width - PAD, SpringLayout.WEST, management);
+        layout.putConstraint(SpringLayout.NORTH, lblUsername, 5, SpringLayout.SOUTH, login);
+        layout.putConstraint(SpringLayout.WEST, lblUsername, -lblUsername.getPreferredSize().width, SpringLayout.EAST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, darkMode, 5, SpringLayout.SOUTH, lblUsername);
+        layout.putConstraint(SpringLayout.WEST, darkMode, 0, SpringLayout.WEST, lblUsername);
+        layout.putConstraint(SpringLayout.NORTH, categoryTree.getCategoryTree(), PAD, SpringLayout.SOUTH, imageContainer);
+        layout.putConstraint(SpringLayout.WEST, categoryTree.getCategoryTree(), 0, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.EAST, categoryTree.getCategoryTree(), 250, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.SOUTH, categoryTree.getCategoryTree(), 0, SpringLayout.SOUTH, contentPane);
+        layout.putConstraint(SpringLayout.SOUTH, searchBar, 0, SpringLayout.SOUTH, imageContainer);
+        layout.putConstraint(SpringLayout.WEST, searchBar, 0, SpringLayout.EAST, categoryTree.getCategoryTree());
+        layout.putConstraint(SpringLayout.EAST, searchBar, 0, SpringLayout.WEST, alerts);
+        layout.putConstraint(SpringLayout.NORTH, searchBtn, 0, SpringLayout.NORTH, searchBar);
+        layout.putConstraint(SpringLayout.WEST, searchBtn, -searchBtn.getPreferredSize().width, SpringLayout.EAST, searchBar);
+        layout.putConstraint(SpringLayout.SOUTH, searchBtn, 0, SpringLayout.SOUTH, searchBar);
+        layout.putConstraint(SpringLayout.NORTH, tableManager.getMainPanel(), PAD, SpringLayout.SOUTH, imageContainer);
+        layout.putConstraint(SpringLayout.WEST, tableManager.getMainPanel(), 0, SpringLayout.EAST, categoryTree.getCategoryTree());
+        layout.putConstraint(SpringLayout.EAST, tableManager.getMainPanel(), 0, SpringLayout.EAST, contentPane);
+        layout.putConstraint(SpringLayout.SOUTH, tableManager.getMainPanel(), 0, SpringLayout.SOUTH, contentPane);
     }
 
     private void createItemsTable() {

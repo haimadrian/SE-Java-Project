@@ -11,35 +11,27 @@ import java.util.Map;
 public class EconomicReport extends Report {
     private double incoming;
     private double expenses;
-    private Date dateStart;
-    private Date dateEnd;
 
-    public EconomicReport(String reportID, Date dateStart, Date dateEnd) {
+    public EconomicReport(String reportID) {
         super(reportID);
-        this.dateStart = dateStart;
-        this.dateEnd = dateEnd;
     }
 
     public double getIncoming() {
 
-        int sum = 0;
-        Map<String, Order> ordersMap =SPAApplication.getInstance().getOrderSystem().getOrdersMap();
-         /*       for(Map.E<String, Order> order : ordersMap)
-                {
-                    for(Item item : order.getItems())
-                        sum += item.getPrice();
-                    });
-                    return sum;
-                }
-
-        }*/return incoming;
+        Map<String, Order> ordersMap = SPAApplication.getInstance().getOrderSystem().getOrdersMap();
+        incoming = ordersMap.values().stream().flatMap(order -> order.getItems().stream()).mapToInt(item -> (int) item.getPrice()).sum();
+        return incoming;
     }
 
     public double getExpenses() {
+        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(warehouseItem ->
+                expenses+=warehouseItem.getPrice());
         return expenses;
     }
 
     public double calculateTotalProfit(){
-        return incoming - expenses;
+        if(incoming > 0 && expenses > 0)
+            return incoming - expenses;
+        return 1;
     }
 }

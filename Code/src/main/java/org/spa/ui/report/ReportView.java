@@ -43,7 +43,7 @@ public class ReportView {
         this.kindOfReport = kindOfReport;
         frame = new JFrame("Report View");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(850, 600);
+        frame.setSize(860, 600);
         frame.setLocationRelativeTo(null);
         panel = new JPanel();
         frame.add(panel);
@@ -61,6 +61,7 @@ public class ReportView {
         title.setBounds(20, 1, 300, 70);
         panel.add(title);
         reportText = new JTextArea();
+        JScrollPane scrollBar = new JScrollPane(reportText);
         selectStartDateLbl = new JLabel("Select starting day:");
         selectDayEndLbl = new JLabel("Select ending day:");
         reportText.setEditable(false);
@@ -75,7 +76,8 @@ public class ReportView {
         panel.add(printBtn = new JButton(ImagesCache.getInstance().getImage("Printer.png")));
         printBtn.setBounds(160, 500, 60, 50);
         panel.add(reportText);
-        reportText.setBounds(310, 5, 510, 550);
+        panel.add(scrollBar);
+        reportText.setBounds(310, 5, 520, 550);
         UtilDateModel model = new UtilDateModel();
         model.setSelected(true);
         Properties p = new Properties();
@@ -90,9 +92,7 @@ public class ReportView {
         p.put("text.year", "Year");
         datePanel1 = new JDatePanelImpl(model, p);
         datePanel2 = new JDatePanelImpl(model2, p2);
-
         dateStart = new JDatePickerImpl(datePanel1, new DateLabelFormatter());
-
         dateEnd = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
         panel.add(datePanel1);
         datePanel1.setBounds(20, 91, 260, 170);
@@ -118,26 +118,37 @@ public class ReportView {
         });
         //Print
         printBtn.addActionListener(e -> PrintSupport.printComponent(reportText));
-      /*  //Calander change
-
-        */
     }
 
+    private void stockReportrelocation()
+    {
+        datePanel1.setVisible(false);
+        datePanel2.setVisible(false);
+        selectStartDateLbl.setVisible(false);
+        selectDayEndLbl.setVisible(false);
+        reportText.setBounds(20, 55, 520, 440);
+        closeBtn.setBounds(220, 500, 60, 50);
+        printBtn.setBounds(280, 500, 60, 50);
+        frame.setSize(565,600);
+    }
     private void generateReport() {
         Random rand = new Random();
         if (kindOfReport.equals("Stock")){
+            stockReportrelocation();
             int randomID = rand.nextInt(9999999);
             StockReport stockReport = new StockReport(String.valueOf(randomID));
             List<WarehouseItem> items = stockReport.getItems();
             items.forEach(item -> {
-                reportText.setText(reportText.getText() + "Item name:\t" + item.getName() + "\n" + "Quantity:\t" + item.getCount() + "\t\t\t\n\n");
+                reportText.setText(reportText.getText() + "Item name:\t" + item.getName() + "\n" + "Quantity:\t" + item.getCount() + "\n");
             });
             return;
         }
+        datePanel1.setVisible(true);
+        datePanel2.setVisible(true);
         datePanel1.getModel().addChangeListener(changeEvent -> {
             reportText.setText("");
-            Date dateStart = new Date(datePanel1.getModel().getYear(), datePanel1.getModel().getMonth()+1, datePanel1.getModel().getDay());
-            Date dateEnd = new Date(datePanel2.getModel().getYear(), datePanel2.getModel().getMonth()+1, datePanel2.getModel().getDay());
+            Date dateStart = new Date(datePanel1.getModel().getYear()-1900, datePanel1.getModel().getMonth(), datePanel1.getModel().getDay());
+            Date dateEnd = new Date(datePanel2.getModel().getYear()-1900, datePanel2.getModel().getMonth(), datePanel2.getModel().getDay());
             if (!dateStart.after(dateEnd)) {
                 switch (kindOfReport) {
                     case "Order": {
@@ -150,15 +161,18 @@ public class ReportView {
                             reportText.setText(reportText.getText() + "Order ID: " + order.getOrderId() + "\tOrder date: " + sdf.format(convertedDate) + "\n");
                             order.getItems().forEach(item -> {
                                 double discountPrice = item.getPrice() * item.getDiscountPercent() / 100;
-                                reportText.setText(reportText.getText() + "\tItem name: " + item.getName() + "\tQuantity:\t" + item.getCount() + (item.getPrice() - discountPrice) + "\n");
+                                reportText.setText(reportText.getText() + "\tItem name: " + item.getName() + "\tQuantity:\t" + item.getCount()+ "\tTotal Price:\t" + (item.getPrice() - discountPrice) + "\n");
                             });
+                            reportText.setText(reportText.getText()+"\n\n");
                         });
                         break;
                     }
                     case "Economic": {
                         int randomID = rand.nextInt(9999999);
-                        EconomicReport economicReport = new EconomicReport(String.valueOf(randomID), dateStart, dateEnd);
-
+                        EconomicReport economicReport = new EconomicReport(String.valueOf(randomID));
+                        reportText.setText("Total expenses:\t" +economicReport.getExpenses()+"\n"+
+                                "Total incoming:\t" +economicReport.getIncoming()+"\n"+
+                                "Total profit:\t" +economicReport.calculateTotalProfit());
                         break;
                     }
                     default:
@@ -167,12 +181,14 @@ public class ReportView {
             }
         });
         datePanel2.getModel().addChangeListener(changeEvent -> {
-        Date dateStart = new Date(datePanel1.getModel().getYear(), datePanel1.getModel().getMonth()+1, datePanel1.getModel().getDay());
-        Date dateEnd = new Date(datePanel2.getModel().getYear(), datePanel2.getModel().getMonth()+1, datePanel2.getModel().getDay());
+        Date dateStart = new Date(datePanel1.getModel().getYear()-1900, datePanel1.getModel().getMonth(), datePanel1.getModel().getDay());
+        Date dateEnd = new Date(datePanel2.getModel().getYear()-1900, datePanel2.getModel().getMonth(), datePanel2.getModel().getDay());
         reportText.setText("");
         if (!dateStart.after(dateEnd)) {
             switch (kindOfReport) {
                 case "Order": {
+                    logger.info(""+dateStart);
+                    logger.info(""+dateEnd);
                     int randomID = rand.nextInt(9999999);
                     OrderReport stockReport = new OrderReport(String.valueOf(randomID), dateStart, dateEnd);
                     Map<String, Order> orders = stockReport.getOrders();
@@ -182,14 +198,18 @@ public class ReportView {
                         reportText.setText(reportText.getText() + "Order ID: " + order.getOrderId() + "\tOrder date: " + sdf.format(convertedDate) + "\n");
                         order.getItems().forEach(item -> {
                             double discountPrice = item.getPrice() * item.getDiscountPercent() / 100;
-                            reportText.setText(reportText.getText() + "\tItem name: " + item.getName() + "\tQuantity:\t" + item.getCount() + (item.getPrice() - discountPrice) + "\n");
+                            reportText.setText(reportText.getText() + "\tItem name: " + item.getName() + "\tQuantity:\t" + item.getCount()+ "\tTotal Price:\t" + (item.getPrice() - discountPrice) + "\n");
                         });
+                        reportText.setText(reportText.getText()+"\n\n");
                     });
                     break;
                 }
                 case "Economic": {
                     int randomID = rand.nextInt(9999999);
-//                    EconomicReport economicReport = new EconomicReport(String.valueOf(randomID), dateStart, dateEnd);
+                    EconomicReport economicReport = new EconomicReport(String.valueOf(randomID));
+                    reportText.setText("Total expenses:\t" +economicReport.getExpenses()+"\n"+
+                            "Total incoming:\t" +economicReport.getIncoming()+"\n"+
+                            "Total profit:\t" +economicReport.calculateTotalProfit());
                     break;
                 }
                 default:

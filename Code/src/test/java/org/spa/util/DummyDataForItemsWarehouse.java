@@ -111,7 +111,7 @@ public class DummyDataForItemsWarehouse {
             2));
 
       dummy.forEach(item ->
-            itemsWarehouse.addItem(item.getId(), item.getCategory(), item.getName(), item.getDescription(),
-                                   item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount()));
+            itemsWarehouse.addItem(new WarehouseItem(item.getId(), item.getCategory(), item.getName(), item.getDescription(),
+                                   item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount())));
    }
 }

@@ -7,6 +7,9 @@ import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.UserManagementService;
 import org.spa.controller.UserManagementServiceObserver;
 import org.spa.controller.UserType;
+import org.spa.controller.action.ActionException;
+import org.spa.controller.action.ActionManager;
+import org.spa.controller.action.ActionType;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.ItemsWarehouseObserver;
 import org.spa.controller.item.WarehouseItem;
@@ -18,6 +21,7 @@ import org.spa.ui.alert.AlertsView;
 import org.spa.ui.cart.ShoppingCartView;
 import org.spa.ui.item.ItemColumn;
 import org.spa.ui.item.ItemInfoDialog;
+import org.spa.ui.item.ItemManagement;
 import org.spa.ui.item.ItemViewInfoHome;
 import org.spa.ui.login.LoginView;
 import org.spa.ui.table.PopupAdapter;
@@ -32,11 +36,8 @@ import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.*;
 
 import static org.spa.main.SPAMain.getMainLogo;
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
@@ -318,6 +319,20 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         });
         tableManager.setPopupAdapter(new PopupAdapter() {
             @Override
+            protected List<JMenuItem> getBlankAreaMenuItemsForPopup() {
+                if(isManager()) {
+                    JMenuItem addItem = new JMenuItem("Add Item");
+                    addItem.setDisplayedMnemonicIndex(0);
+                    addItem.setFont(Fonts.PLAIN_FONT);
+                    addItem.addActionListener(e -> {
+                        new ItemManagement();
+                        logger.info("Adding item to itemswarehouse. Item: ");
+                    });
+                    return Arrays.asList(addItem);
+                }
+                return null;
+            }
+            @Override
             protected java.util.List<JMenuItem> getMenuItemsForPopup() {
                 JMenuItem item = new JMenuItem("View More...");
                 item.setDisplayedMnemonicIndex(0);
@@ -331,24 +346,59 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
                         }
                     });
                 });
-                if(userManagement.getLoggedInUserType() == UserType.Admin || userManagement.getLoggedInUserType()==UserType.SysAdmin ) {
+                if(isManager()) {
                     JMenuItem item2 = new JMenuItem("Remove item");
+                    JMenuItem item3 = new JMenuItem("Update item");
+                    JMenuItem item4 = new JMenuItem("Add item");
                     item2.setDisplayedMnemonicIndex(1);
+                    item3.setDisplayedMnemonicIndex(2);
+                    item4.setDisplayedMnemonicIndex(3);
                     item2.setFont(Fonts.PLAIN_FONT);
+                    item3.setFont(Fonts.PLAIN_FONT);
+                    item4.setFont(Fonts.PLAIN_FONT);
                     item2.addActionListener(e -> {
                         WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
                         SwingUtilities.invokeLater(() -> {
                             if (selection != null) {
                                 if (Dialogs.showQuestionDialog(getParentDialog(), "Are you sure you want to remove item from shop?", "Confirmation")) {
                                     logger.info("Removing item from itemswarehouse. Item: " + selection);
-                                    itemsWarehouse.removeItem(selection.getId());
+                                    try {
+                                        Map<String, Object> params = new HashMap<>();
+                                        params.put("itemId", selection.getId());
+                                        ActionManager.executeAction(ActionType.DeleteItemFromWarehouse, params);
+                                    } catch (ActionException actionException) {
+                                        SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
+                                }
                                 }
                             } else {
                                 Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
                             }
                         });
                     });
-                    return Arrays.asList(item, item2);
+                    item3.addActionListener(e -> {
+                        WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
+                        SwingUtilities.invokeLater(() -> {
+                            if (selection != null) {
+                                new ItemManagement(selection);
+                                logger.info("Updating item in itemswarehouse. Item: " + selection);
+                            }else {
+                                Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
+                }
+                        });
+                    });
+                    item4.addActionListener(e -> {
+                        WarehouseItem selection = itemsWarehouse.getSelectionModel().getSelection();
+                        SwingUtilities.invokeLater(() -> {
+                            if (selection != null) {
+                                new ItemManagement();
+                                logger.info("Adding item from itemswarehouse. Item: " + selection);
+
+                            } else {
+                                Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
+                            }
+                        });
+                    });
+                    return Arrays.asList(item, item2, item3, item4);
                 }
                 else
                     return Arrays.asList(item);
@@ -365,6 +415,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         } catch (Throwable t) {
             logger.error("Error has occurred while trying to refresh table.", t);
         }
+    }
+
+    public boolean isManager(){
+        return (userManagement.getLoggedInUserType() == UserType.Admin || userManagement.getLoggedInUserType()==UserType.SysAdmin );
     }
 }
 

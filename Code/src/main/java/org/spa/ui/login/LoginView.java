@@ -2,10 +2,13 @@ package org.spa.ui.login;
 
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
+import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 
 public class LoginView {
 
@@ -18,6 +21,7 @@ public class LoginView {
         frame.setSize(350, 200);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
         JPanel panel = new JPanel();
         frame.add(panel);
         placeComponents(panel);
@@ -67,23 +71,29 @@ public class LoginView {
         panel.add(forgotPassword);
 
 
-        loginButton.addActionListener(new ActionListener() {
+        ActionListener loginActionListener = new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                User loggedInUser = SPAApplication.getInstance().getUserManagementService().login(userText.getText(),new String(passwordText.getPassword()));
-                if(loggedInUser != null) {
+                User loggedInUser = SPAApplication.getInstance().getUserManagementService().login(userText.getText(), new String(passwordText.getPassword()));
+                if (loggedInUser != null) {
                     // close login form
                     frame.dispose();
                     frame = null;
-                }
-                else {
+                } else {
                     res.setText("Invalid Username or password!");
-                    userText.setText("");;
-                    passwordText.setText("");;
+                    userText.setText("");
+                    ;
+                    passwordText.setText("");
+                    ;
                 }
             }
-        });
+        };
+
+        // Use the same action listener so we can run the login operation when pressing enter.
+        loginButton.addActionListener(loginActionListener);
+        userText.addActionListener(loginActionListener);
+        passwordText.addActionListener(loginActionListener);
 
         cancelButton.addActionListener(new ActionListener() {
 

@@ -11,12 +11,13 @@ import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.ui.login.LoginView;
+import org.spa.ui.HomePage;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.control.ButtonWithBadge;
 import org.spa.ui.item.ItemColumn;
 import org.spa.ui.item.ItemInfoDialog;
 import org.spa.ui.item.ItemViewInfo;
+import org.spa.ui.login.LoginView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
@@ -30,6 +31,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.*;
 
@@ -46,6 +48,8 @@ import static org.spa.ui.util.Controls.createButton;
  */
 public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, ShoppingCartObserver {
    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartView.class);
+   private static final String TOTAL = "Total: ";
+   private static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
    private JDialog shoppingCartDialog;
    private final Window parent;
@@ -54,6 +58,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
    private JPanel workArea;
    private JLabel title;
+   private JLabel totalPriceLabel;
    private JButton continueButton;
    private JButton clearCartButton;
 
@@ -75,8 +80,10 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       shoppingCart = SPAApplication.getInstance().getShoppingCart();
       shoppingCart.registerObserver(this);
 
-      shoppingCartButton = new ButtonWithBadge(ImagesCache.getInstance().getImage("shopping-cart-icon.png"));
-      shoppingCartButton.setSize(70, 70);
+      ImageIcon image = ImagesCache.getInstance().getImage("shopping-cart-icon.png");
+      Image scaledImage = image.getImage().getScaledInstance(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
+      shoppingCartButton = new ButtonWithBadge(new ImageIcon(scaledImage));
+      shoppingCartButton.setSize(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE);
       shoppingCartButton.setCountForBadge(shoppingCart.count());
       shoppingCartButton.addActionListener(e -> {
          logger.info("Opening Shopping Cart");
@@ -126,10 +133,11 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
    private void initUI() {
       title = Controls.createTitle("Shopping Cart");
-      createItemsTable();
       JPanel buttons = createWorkAreaButtons();
+      createItemsTable();
 
       workArea = new JPanel();
+      workArea.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
       workArea.setLayout(new BoxLayout(workArea, BoxLayout.PAGE_AXIS));
       workArea.add(title);
       workArea.add(Box.createRigidArea(new Dimension(0,10)));
@@ -139,6 +147,8 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    }
 
    private JPanel createWorkAreaButtons() {
+      totalPriceLabel = Controls.createLabel(TOTAL, Fonts.PANEL_HEADING_FONT);
+
       if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Guest) {
          continueButton = createButton("Login", loginActionListener, true);
       } else {
@@ -164,6 +174,8 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
       buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       buttonsPanel.add(Box.createHorizontalGlue());
+      buttonsPanel.add(totalPriceLabel);
+      buttonsPanel.add(Box.createRigidArea(new Dimension(10,0)));
       buttonsPanel.add(clearCartButton);
       buttonsPanel.add(Box.createRigidArea(new Dimension(10,0)));
       buttonsPanel.add(continueButton);
@@ -226,14 +238,38 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    }
 
    private void refreshTable() {
+      DoubleCounter totalPrice = new DoubleCounter();
+
       // First clear the list and then add all items from shopping cart as view info models
       tableModelList.clear();
-      shoppingCart.getItems().forEach(item -> tableModelList.add(warehouseItemToItemViewInfo(item)));
+      shoppingCart.getItems().forEach(item -> {
+         ItemViewInfo itemViewInfo = warehouseItemToItemViewInfo(item);
+         totalPrice.add(itemViewInfo.getActualPrice() * itemViewInfo.getCount());
+         tableModelList.add(itemViewInfo);
+      });
 
       try {
          tableManager.refresh();
       } catch (Throwable t) {
          logger.error("Error has occurred while trying to refresh table.", t);
+      }
+
+      totalPriceLabel.setText(TOTAL + decimalFormat.format(totalPrice.getValue()) + "$");
+   }
+
+   private static class DoubleCounter {
+      private double value;
+
+      public DoubleCounter() {
+         value = 0;
+      }
+
+      public void add(double value) {
+         this.value += value;
+      }
+
+      public double getValue() {
+         return value;
       }
    }
 
@@ -242,10 +278,12 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       SPAApplication.getInstance().getSelectionModel().setSelection(this);
       if (shoppingCartDialog == null) {
          shoppingCartDialog = new JDialog(parent, "Shopping Cart");
+         shoppingCartDialog.setUndecorated(true);
          shoppingCartDialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
          Dimension parentSize = parent.getPreferredSize();
          shoppingCartDialog.setPreferredSize(new Dimension(parentSize.width - 200, parentSize.height - 100));
-         SwingUtilities.invokeLater(() -> shoppingCartDialog.setPreferredSize(new Dimension(parentSize.width - 150, parentSize.height - 100)));
+         Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+         shoppingCartDialog.setLocation(mouseLocation.x - parentSize.width + 200, mouseLocation.y);
 
          shoppingCartDialog.setContentPane(getMainContainer());
          shoppingCartDialog.addWindowListener(new WindowAdapter() {
@@ -255,9 +293,20 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                shoppingCartDialog.remove(getMainContainer());
                shoppingCartDialog = null;
             }
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+               close();
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+               close();
+            }
          });
+
          shoppingCartDialog.pack();
-         Controls.centerDialog(shoppingCartDialog);
+         //Controls.centerDialog(shoppingCartDialog);
          shoppingCartDialog.setVisible(true);
       }
    }

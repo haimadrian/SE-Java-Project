@@ -3,7 +3,9 @@ package org.spa.controller.cart;
 import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.Service;
 import org.spa.controller.item.ItemsWarehouse;
+import org.spa.controller.item.ItemsWarehouseObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.selection.SelectionModelManager;
 
@@ -13,7 +15,7 @@ import java.util.*;
  * @author Haim Adrian
  * @since 22-May-20
  */
-public class ShoppingCart {
+public class ShoppingCart implements Service, ItemsWarehouseObserver {
    private static final Logger logger = LoggerFactory.getLogger(ShoppingCart.class);
 
    /**
@@ -38,10 +40,19 @@ public class ShoppingCart {
       observers = new HashSet<>();
    }
 
+   @Override
+   public void start() {
+      SPAApplication.getInstance().getItemsWarehouse().registerObserver(this);
+   }
+
    /**
     * Stop the shopping cart system and revert everything in it back to the warehouse.
     */
+   @Override
    public void stop() {
+      // Avoid of getting updates during shutdown.
+      SPAApplication.getInstance().getItemsWarehouse().unregisterObserver(this);
+
       clear(true);
    }
 
@@ -144,10 +155,12 @@ public class ShoppingCart {
          int index = items.indexOf(item.get());
          items.remove(item.get());
 
-         // Add the count back to warehouse
+         // Add the count back to warehouse in case the item was not removed from warehouse
          ItemsWarehouse itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
          WarehouseItem warehouseItem = itemsWarehouse.getItem(itemId);
-         itemsWarehouse.updateAmountIfPresent(itemId, warehouseItem.getCount() + item.get().getCount());
+         if (warehouseItem != null) {
+            itemsWarehouse.updateAmountIfPresent(itemId, warehouseItem.getCount() + item.get().getCount());
+         }
 
          // Update the selection if the removed item was in focus.
          if (item.get().equals(selectionModel.getSelection())) {
@@ -244,5 +257,20 @@ public class ShoppingCart {
       for (ShoppingCartObserver observer : observers) {
          observer.itemCountUpdated(this, item, oldCount, item.getCount());
       }
+   }
+
+   @Override
+   public void deleteItem(WarehouseItem item) {
+      remove(item.getId());
+   }
+
+   @Override
+   public void updateItem(WarehouseItem item) {
+      // Won't do
+   }
+
+   @Override
+   public void addItem(WarehouseItem item) {
+      // Irrelevant for shopping cart
    }
 }

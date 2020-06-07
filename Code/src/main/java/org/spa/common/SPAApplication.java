@@ -60,6 +60,7 @@ public class SPAApplication {
       alertSystem.start();
       userManagementService.start();
       orderSystem.start();
+      shoppingCart.start();
       isStarted = true;
    }
 

@@ -1,18 +1,21 @@
 package org.spa.ui.login;
 
-import org.spa.controller.UserType;
-import org.spa.model.user.Customer;
-import org.spa.model.user.Admin;
-import org.spa.model.user.SystemAdmin;
 import org.spa.common.SPAApplication;
-import org.spa.ui.login.LoginView;
+import org.spa.controller.UserType;
+import org.spa.model.user.Admin;
+import org.spa.model.user.Customer;
+import org.spa.model.user.SystemAdmin;
+import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import static javax.swing.JOptionPane.showMessageDialog;
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 
 public class Registration
         extends JFrame
@@ -93,6 +96,7 @@ public class Registration
         setBounds(600, 200, 600, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
+        setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
 
         c = getContentPane();
         c.setLayout(null);
@@ -334,7 +338,10 @@ public class Registration
             month.setSelectedIndex(0);
             year.setSelectedIndex(0);
             tquestion.setSelectedIndex(0);
-            tusertype.setSelectedIndex(0);
+
+            if (tusertype != null) {
+                tusertype.setSelectedIndex(0);
+            }
         }
     }
 

@@ -26,6 +26,7 @@ public class SPAMain {
     private static final String STDOUT_LOGGER_NAME = "stdout";
     private static final String STDERR_LOGGER_NAME = "stderr";
     private static final String IGNORED_NEWLINE = System.lineSeparator();
+    public static final String FRAME_ICON_NAME = "FrameIcon2.gif";
 
     static {
         redirectStreams();
@@ -38,6 +39,7 @@ public class SPAMain {
         showSplashScreen(() -> {
             JFrame mainForm = new JFrame("SPA Store");
             mainForm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mainForm.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             mainForm.setPreferredSize(new Dimension(screenSize.width - 200, screenSize.height - 200));
 
@@ -63,6 +65,15 @@ public class SPAMain {
         });
     }
 
+    public static ImageIcon getMainLogo() {
+        return ImagesCache.getInstance().getImage("Logo2.png");
+        /*if (Controls.isDarkMode()) {
+            return ImagesCache.getInstance().getImage("Logo2-White.png");
+        } else {
+            return ImagesCache.getInstance().getImage("Logo2.png");
+        }*/
+    }
+
     /**
      * We first display a splash screen to have an animation while loading all data from storage.<br/>
      * When start tasks (SPAApplication.start) finished, we execute the specified action (to display home page)<br/>
@@ -79,8 +90,7 @@ public class SPAMain {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         splashForm.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
 
-        ImageIcon logo = ImagesCache.getInstance().getImage("LOGO.png");
-        ImageViewer imageViewer = new ImageViewer(logo.getImage());
+        ImageViewer imageViewer = new ImageViewer(getMainLogo().getImage());
         JProgressBar waitBar = new JProgressBar();
         waitBar.setIndeterminate(true);
 
@@ -104,6 +114,7 @@ public class SPAMain {
 
     private static void executeWithWaitingDialog(Runnable runnable, JFrame splashForm, Runnable taskToRunWhenFinish) {
         splashForm.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        splashForm.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
         new Thread(() -> {
             try {
                 // ensure show dialog was executed before hide dialog

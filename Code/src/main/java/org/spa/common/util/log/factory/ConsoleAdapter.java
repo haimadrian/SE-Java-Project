@@ -50,7 +50,7 @@ class ConsoleAdapter implements Logger {
 
    private void doLog(LogRecord logRecord) {
       try {
-         CharSequence line = formatMessage(logRecord) + System.lineSeparator();
+         CharSequence line = formatMessage(logRecord) + (System.out.equals(getOutStream()) ? System.lineSeparator() : "");
          if (logRecord.getLevel().ordinal() < Level.WARN.ordinal()) {
             getOutStream().append(line);
          } else {

@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class UserManagementService {
+public class UserManagementService implements Service {
 
     private static final Logger logger = LoggerFactory.getLogger(UserManagementService.class);
     private final Map<String, User> userMap;
@@ -35,6 +35,7 @@ public class UserManagementService {
     /**
      * Call this method to read data from storage
      */
+    @Override
     public void start() {
         loggedInUser = new Guest();
 
@@ -42,6 +43,7 @@ public class UserManagementService {
         userRepository.selectAll().forEach(user -> userMap.put(user.getUserId().toLowerCase(), user));
     }
 
+    @Override
     public void stop() {
         //save data to storage
         userRepository.saveAll(userMap.values());

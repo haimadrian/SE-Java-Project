@@ -15,6 +15,11 @@ import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
 import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.ImagesCache;
+
+import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,10 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
+
 import static org.spa.ui.order.OrderCopying.orderToOrderViewInfo;
 import static org.spa.ui.order.OrderCopying.orderViewInfoToOrder;
 
@@ -38,7 +40,10 @@ public class ManagerView {
     public ManagerView() {
         frame = new JFrame("Management View");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(1300,800);
+        frame.setSize(new Dimension(1300, 800));
+        SwingUtilities.invokeLater(() -> {
+            frame.setSize(new Dimension(1350, 850));
+        });
         frame.add(new ManagementViewPane());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

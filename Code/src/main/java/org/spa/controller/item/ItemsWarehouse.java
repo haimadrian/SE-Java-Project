@@ -3,6 +3,7 @@ package org.spa.controller.item;
 import org.spa.common.Repository;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.Service;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
@@ -13,24 +14,28 @@ import java.util.stream.Collectors;
  * @author Haim Adrian
  * @since 16-May-20
  */
-public class ItemsWarehouse {
+public class ItemsWarehouse implements Service {
    private static final Logger logger = LoggerFactory.getLogger(ItemsWarehouse.class);
    private final Map<String, WarehouseItem> idToItem;
    private final Repository<Item> itemRepository;
    private final SelectionModelManager<WarehouseItem> selectionModel;
    private final Set<ItemsWarehouseObserver> observers;
+
    public ItemsWarehouse() {
       idToItem = new HashMap<>(1000);
       itemRepository = new ItemRepository();
       selectionModel = new SelectionModelManager<>();
       observers = new HashSet<>();
    }
+
    public SelectionModelManager<WarehouseItem> getSelectionModel() {
       return selectionModel;
    }
+
    /**
     * Call this method to read data from storage
     */
+   @Override
    public void start() {
       logger.info("Starting ItemsWarehouse - Select items from repository");
 
@@ -41,6 +46,7 @@ public class ItemsWarehouse {
    /**
     * Call this method when exiting the application, to save the in memory data to disk
     */
+   @Override
    public void stop() {
       logger.info("Stopping ItemsWarehouse - Save items to repository");
 
@@ -70,11 +76,11 @@ public class ItemsWarehouse {
     * @param discountPercent
     * @param amount
     */
-   public void addItem(String id,String category, String name, String description, double price, double profitPercent, double discountPercent, int amount) {
-      WarehouseItem item = new WarehouseItem(id,category, name, description, price, profitPercent, discountPercent, amount);
-      idToItem.put(item.getId(), item);
-      notifyItemAdded(item);
-      logger.info("Item added to warehouse: " + item);
+   public void addItem(WarehouseItem warehouseItem) {
+      idToItem.put(warehouseItem.getId(), warehouseItem);
+      itemRepository.create(warehouseItemToItem(warehouseItem));
+      logger.info("Item added to warehouse: " + warehouseItem);
+      notifyItemAdded(warehouseItem);
    }
 
    /**
@@ -85,6 +91,7 @@ public class ItemsWarehouse {
    public WarehouseItem removeItem(String id) {
       WarehouseItem item =  idToItem.remove(id);
       if (item != null) {
+         itemRepository.delete(warehouseItemToItem(item));
          logger.info("Removed item from warehouse: " + item);
          notifyItemDeleted(item);
       }
@@ -104,11 +111,32 @@ public class ItemsWarehouse {
             logger.debug(() -> "Tried to update amount of an item with the same value. oldCount=" + oldCount + ", newCount=" + amount);
          } else {
             item.setCount(amount);
+            itemRepository.update(warehouseItemToItem(item));
+            notifyItemUpdated(item);
             logger.info("Item count updated: " + item + ", old count was " + oldCount);
          }
       } else {
          logger.warn("Tried to update amount for item that does not exist in the warehouse.. id=" + id);
       }
+   }
+   public WarehouseItem updateItem(WarehouseItem warehouseItem) {
+      WarehouseItem item =  idToItem.get(warehouseItem.getId());
+      if (item != null) {
+         item.setCategory(warehouseItem.getCategory());
+         item.setDescription(warehouseItem.getDescription());
+         item.setPrice(warehouseItem.getPrice());
+         item.setProfitPercent(warehouseItem.getProfitPercent());
+         item.setDiscountPercent(warehouseItem.getDiscountPercent());
+         item.setCount(warehouseItem.getCount());
+         itemRepository.update(warehouseItemToItem(item));
+         logger.info("item Updated in warehouse: " + item);
+         notifyItemUpdated(item);
+      }
+      // else - if item doesn't exist - create a new item
+      else{
+         addItem(warehouseItem);
+      }
+      return warehouseItem;
    }
 
    /**

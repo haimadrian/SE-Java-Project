@@ -11,6 +11,7 @@ import org.spa.ui.order.OrderViewInfo;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
+import org.spa.ui.util.Controls;
 import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.ImagesCache;
 
@@ -33,16 +34,14 @@ public class ManagerView {
     private static final Logger logger = LoggerFactory.getLogger(ManagerView.class);
     JFrame frame;
   
-    public ManagerView() {
+    public ManagerView(Window parent) {
 
         frame = new JFrame("Management View");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(new Dimension(1300, 800));
-        SwingUtilities.invokeLater(() -> {
-            frame.setSize(new Dimension(1350, 850));
-        });
+        frame.setPreferredSize(new Dimension(parent.getPreferredSize().width - 200, parent.getPreferredSize().height - 100));
         frame.add(new ManagementViewPane());
-        frame.setLocationRelativeTo(null);
+        frame.pack();
+        Controls.centerDialog(parent, frame);
         frame.setVisible(true);
     }
 
@@ -59,7 +58,7 @@ public class ManagerView {
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.weightx = 1;
-            gbc.weighty = 0.33;
+            gbc.weighty = 0.04;
             gbc.anchor = GridBagConstraints.WEST;
             gbc.fill = GridBagConstraints.BOTH;
             gbc.insets = new Insets(4, 4, 4, 4);
@@ -68,6 +67,7 @@ public class ManagerView {
             gbc.gridy++;
             add((reportsPane = new ReportsPane()), gbc);
             gbc.gridy++;
+            gbc.weighty = 0.92;
             add((ordersPane = new OrdersPane()), gbc);
         }
     }
@@ -83,10 +83,8 @@ public class ManagerView {
 
             JLabel managerActions = new JLabel("Admin Actions");
             managerActions.setFont(new Font("Arial", Font.PLAIN, 30));
-            add(managerActions, gbc);
-
             gbc.fill = GridBagConstraints.HORIZONTAL;
-
+            add(managerActions, gbc);
         }
 
     }
@@ -142,24 +140,36 @@ public class ManagerView {
             setLayout(new GridBagLayout());
             setBorder(new CompoundBorder(new TitledBorder("Orders"), new EmptyBorder(8, 0, 0, 0)));
             GridBagConstraints gbc = new GridBagConstraints();
-            JPanel panel = new JPanel(new GridBagLayout());
-            add(panel, gbc);
 
             // OrderPanel Layout
+            JPanel inner = new JPanel();
+            inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
+            searchBar = new JTextField("Search by User/Order Id...");
+            findOrderBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
+            inner.add(searchBar);
+            inner.add(findOrderBtn);
+
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            gbc.anchor = GridBagConstraints.WEST;
             gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.insets = new Insets(4, 650, 15, 400);
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            findOrderBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
-            add(findOrderBtn,gbc);
-            gbc.insets = new Insets(4, 300, 15, 600);
-            add((searchBar = new JTextField("Search by User/Order Id...")), gbc);
+            gbc.weightx = 1000;
+            gbc.weighty = 1;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            add(inner, gbc);
 
             // add Orders table
             createTable();
-            add(tableManager.getMainPanel());
+
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.weightx = 1000;
+            gbc.weighty = 1000;
+            gbc.gridwidth = 1;
+            gbc.gridheight = 1;
+            gbc.gridy++;
+            add(tableManager.getMainPanel(), gbc);
 
             searchBar.addMouseListener(new MouseAdapter() {
                 @Override
@@ -200,7 +210,6 @@ public class ManagerView {
             TableConfig tableConfig = TableConfig.create().withLinesInRow(4).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(false).build();
             tableModelList = new ArrayList<>();
             tableManager = new TableManager<>(orderCols, tableModelList, tableConfig);
-            tableManager.getMainPanel().setPreferredSize(new Dimension(frame.getWidth() - 100, frame.getHeight() - 300));
             tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> {
                 logger.info("Selected model is: " + selectedModel);
                 orderSystem.getSelectionModel().setSelection(orderViewInfoToOrder(selectedModel));

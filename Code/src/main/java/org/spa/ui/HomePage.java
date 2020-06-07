@@ -141,7 +141,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         management.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                new ManagerView();
+                new ManagerView(mainForm);
             }
         });
 

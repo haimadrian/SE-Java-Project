@@ -24,6 +24,7 @@ hs_err_pid*
 
 # Intellij and Gradle
 Code/out
+Code/build
 Code/lib
 Code/gradle
 .idea

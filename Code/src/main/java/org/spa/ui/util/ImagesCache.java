@@ -24,10 +24,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ImagesCache {
    private static final ImagesCache instance = new ImagesCache();
-   private static final Logger logger = LoggerFactory.getLogger(ImagesCache.class);
+   private static Logger logger = LoggerFactory.getLogger(ImagesCache.class);
 
    private final Map<String, ImageIcon> cache;
-   private final File imagesDir;
+   private File imagesDir;
 
    private ImagesCache() {
       cache = new ConcurrentHashMap<>();
@@ -165,5 +165,30 @@ public class ImagesCache {
       }
 
       return result;
+   }
+
+   /**
+    * @return A reference for unit tests to let them modify this singleton such that we can execute several tests
+    */
+   ImagesCacheTestAccessor getTestAccessor() {
+      return new ImagesCacheTestAccessor();
+   }
+
+   class ImagesCacheTestAccessor {
+      public void setImagesDir(File imagesDir) {
+         ImagesCache.this.imagesDir = imagesDir;
+      }
+
+      public void setLogger(Logger logger) {
+         ImagesCache.logger = logger;
+      }
+
+      public void clearCache() {
+         cache.clear();
+      }
+
+      public int cacheCount() {
+         return cache.size();
+      }
    }
 }

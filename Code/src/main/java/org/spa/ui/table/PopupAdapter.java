@@ -1,5 +1,7 @@
 package org.spa.ui.table;
 
+import org.spa.ui.util.Controls;
+
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -69,9 +71,11 @@ public abstract class PopupAdapter extends MouseAdapter {
 
          if ((menuItemsForPopup != null) && (!menuItemsForPopup.isEmpty())) {
             JPopupMenu popup = new JPopupMenu();
+            popup.setBackground(Controls.background);
             int displayIndex = 0;
 
             for (JMenuItem menuItem : menuItemsForPopup) {
+               menuItem.setBackground(Controls.background);
                menuItem.setDisplayedMnemonicIndex(displayIndex++);
                popup.add(menuItem);
             }

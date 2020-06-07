@@ -1,5 +1,6 @@
 package org.spa.ui.util;
 
+import org.spa.common.SPAApplication;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.ui.control.LabeledField;
@@ -10,6 +11,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +32,9 @@ public class Controls {
    public static final int SEPARATOR_THICKNESS = 2;
 
    private static final Logger logger = LoggerFactory.getLogger(Controls.class);
+   public static Color background;
+   private static Color tooltipBack;
+   public static Color textColor;
 
    private Controls() {
       // Disallow instantiation of this class
@@ -532,9 +538,78 @@ public class Controls {
       }
 
       // Override info because tooltip uses "info" background instead of tooltip.background.. WTF dude?
-      UIManager.put("info", UIManager.get("ToolTip.background"));
+      tooltipBack = UIManager.getColor("ToolTip.background");
+      background = UIManager.getColor("background");
+      UIManager.put("info", tooltipBack);
       UIManager.put("ToolTip.font", PLAIN_FONT);
-      UIManager.put("Tree.background", UIManager.get("ToolTip.background"));
+      UIManager.put("Tree.background", tooltipBack);
       // See all options here: https://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/_nimbusDefaults.html
+
+      if (isDarkMode()) {
+         darkness();
+      }
+   }
+
+   public static void setIsDarkMode(boolean isDarkMode) {
+      if (isDarkMode) {
+         try {
+            new File(SPAApplication.getWorkingDirectory(), "dark.flag").createNewFile();
+         } catch (IOException e) {
+            logger.error("Failed to store dark mode state", e);
+         }
+      } else {
+         new File(SPAApplication.getWorkingDirectory(), "dark.flag").delete();
+      }
+   }
+
+   public static boolean isDarkMode() {
+      return new File(SPAApplication.getWorkingDirectory(), "dark.flag").exists();
+   }
+
+   private static void darkness() {
+      background = new Color(60, 63, 65);
+      Color editorBackground = new Color(43, 43, 43);
+      UIManager.put("ToolTip.font", PLAIN_FONT);
+      UIManager.put("background", background);
+      UIManager.put("nimbusBlueGrey", editorBackground);
+      UIManager.put("nimbusLightBackground", editorBackground);
+      UIManager.put("nimbusSelectedText", Color.white);
+      UIManager.put("nimbusBorder", editorBackground);
+      UIManager.put("scrollbar", editorBackground);
+      UIManager.put("DesktopIcon.background", editorBackground);
+      UIManager.put("control", background);
+      textColor = Color.white.darker();
+      UIManager.put("text", textColor);
+      UIManager.put("activeCaption", background);
+      UIManager.put("inactiveCaption", background);
+      UIManager.put("menu", background);
+      UIManager.put("controlLHighlight", background);
+      UIManager.put("controlHighlight", background);
+      UIManager.put("controlDkShadow", background);
+      UIManager.put("textHighlightText", new Color(169, 169, 169));
+      UIManager.put("Button.background", editorBackground);
+      UIManager.put("MenuBar.background", background);
+      UIManager.put("ComboBox.background", background);
+      UIManager.put("EditorPane.background", background);
+      UIManager.put("CheckBox.background", background);
+      UIManager.put("ToggleButton.background", background);
+      UIManager.put("TabbedPane.background", background);
+      UIManager.put("TableHeader.background", background);
+      UIManager.put("PopupMenu.background", background);
+      UIManager.put("Separator.background", background);
+      UIManager.put("ToolTip.background", background);
+      UIManager.put("ToolBar.background", background);
+      UIManager.put("ScrollPane.background", background);
+      UIManager.put("CheckBoxMenuItem.background", background);
+      UIManager.put("Viewport.background", background);
+      UIManager.put("SplitPane.background", background);
+      UIManager.put("Spinner.background", background);
+      UIManager.put("MenuItem.background", background);
+      UIManager.put("ScrollBar.background", background);
+      UIManager.put("ScrollBarThumb.background", background);
+      UIManager.put("ScrollBarTrack.background", background);
+      UIManager.put("SliderThumb.background", background);
+      UIManager.put("SliderTrack.background", background);
+      UIManager.put("info", UIManager.get("ToolTip.background"));
    }
 }

@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import java.awt.*;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,16 +21,14 @@ public class CategoryTree implements ItemsWarehouseObserver
     private ItemsWarehouse itemsWarehouse;
     private Set<String> itemsCategories;
 
-    public CategoryTree(Window owner) {
+    public CategoryTree() {
         itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         itemsWarehouse.registerObserver(this);
         categoryTree = new JTree();
         createCategoryTree();
         categoryTree.setShowsRootHandles(true);
         categoryTree.setRootVisible(false);
-        categoryTree.setPreferredSize(new Dimension(200, owner.getPreferredSize().height - 250));
         categoryTree.setFont(Fonts.BIG_FONT);
-        categoryTree.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) categoryTree.getCellRenderer();
         renderer.setLeafIcon(null);

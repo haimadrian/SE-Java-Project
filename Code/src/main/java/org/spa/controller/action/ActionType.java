@@ -1,8 +1,6 @@
 package org.spa.controller.action;
 
-import org.spa.controller.action.impl.ClearCartAction;
-import org.spa.controller.action.impl.PurchaseAction;
-import org.spa.controller.action.impl.RemoveFromCartAction;
+import org.spa.controller.action.impl.*;
 
 /**
  * @author Haim Adrian, Lior Shor, Idan Pollak
@@ -11,7 +9,11 @@ import org.spa.controller.action.impl.RemoveFromCartAction;
 public enum ActionType {
    ClearCart(ClearCartAction.class),
    RemoveFromCart(RemoveFromCartAction.class),
-   Purchase(PurchaseAction.class);
+   Purchase(PurchaseAction.class),
+   CreateItemInWarehouse(CreateItemInWarehouseAction.class),
+   DeleteItemFromWarehouse(DeleteItemFromWarehouseAction.class),
+   UpdateItemInWarehouse(UpdateItemInWarehouseAction.class);
+
 
    final Class<? extends Action<?>> clazz;
 

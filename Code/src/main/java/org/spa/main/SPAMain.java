@@ -65,6 +65,15 @@ public class SPAMain {
         });
     }
 
+    public static ImageIcon getMainLogo() {
+        return ImagesCache.getInstance().getImage("Logo2.png");
+        /*if (Controls.isDarkMode()) {
+            return ImagesCache.getInstance().getImage("Logo2-White.png");
+        } else {
+            return ImagesCache.getInstance().getImage("Logo2.png");
+        }*/
+    }
+
     /**
      * We first display a splash screen to have an animation while loading all data from storage.<br/>
      * When start tasks (SPAApplication.start) finished, we execute the specified action (to display home page)<br/>
@@ -81,8 +90,7 @@ public class SPAMain {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         splashForm.setPreferredSize(new Dimension(screenSize.width / 3, screenSize.height / 3));
 
-        ImageIcon logo = ImagesCache.getInstance().getImage("LOGO.png");
-        ImageViewer imageViewer = new ImageViewer(logo.getImage());
+        ImageViewer imageViewer = new ImageViewer(getMainLogo().getImage());
         JProgressBar waitBar = new JProgressBar();
         waitBar.setIndeterminate(true);
 

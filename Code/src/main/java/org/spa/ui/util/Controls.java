@@ -12,6 +12,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -544,9 +545,25 @@ public class Controls {
       UIManager.put("Tree.background", tooltipBack);
       // See all options here: https://docs.oracle.com/javase/tutorial/uiswing/lookandfeel/_nimbusDefaults.html
 
-      if (new File(SPAApplication.getWorkingDirectory(), "dark.flag").exists()) {
+      if (isDarkMode()) {
          darkness();
       }
+   }
+
+   public static void setIsDarkMode(boolean isDarkMode) {
+      if (isDarkMode) {
+         try {
+            new File(SPAApplication.getWorkingDirectory(), "dark.flag").createNewFile();
+         } catch (IOException e) {
+            logger.error("Failed to store dark mode state", e);
+         }
+      } else {
+         new File(SPAApplication.getWorkingDirectory(), "dark.flag").delete();
+      }
+   }
+
+   public static boolean isDarkMode() {
+      return new File(SPAApplication.getWorkingDirectory(), "dark.flag").exists();
    }
 
    private static void darkness() {

@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.spa.main.SPAMain.getMainLogo;
 import static org.spa.ui.item.ItemCopying.itemViewInfoToWarehouseItem;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 
@@ -63,13 +64,16 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private TableManager<ItemColumn, ItemViewInfoHome> tableManager;
     private ArrayList<String> itemsPick;
     private java.util.List<ItemViewInfoHome> tableModelList;
+
     public HomePage(JFrame parent) {
         itemsWarehouse = SPAApplication.getInstance().getItemsWarehouse();
         userManagement = SPAApplication.getInstance().getUserManagementService();
         userManagement.registerObserver(this);
         createItemsTable();
         mainForm = parent;
-        spaLogo = ImagesCache.getInstance().getImage("SPALOGO_transparent_Small.png");
+        ImageIcon image = getMainLogo();
+        Image scaledImage = image.getImage().getScaledInstance(225, 102, Image.SCALE_SMOOTH);
+        spaLogo = new ImageIcon(scaledImage);
         JLabel imageContainer = new JLabel(spaLogo);
         imageContainer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         categoryTree = new CategoryTree();
@@ -102,8 +106,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
         });
 
-        ImageIcon image = ImagesCache.getInstance().getImage("management-icon.png");
-        Image scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
+        image = ImagesCache.getInstance().getImage("management-icon.png");
+        scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         management = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(management, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
         image = ImagesCache.getInstance().getImage("logout-icon.png");
@@ -176,20 +180,9 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         });
 
         darkMode = new JCheckBox("Dark Mode");
-        darkMode.setSelected(new File(SPAApplication.getWorkingDirectory(), "dark.flag").exists());
+        darkMode.setSelected(Controls.isDarkMode());
         darkMode.setToolTipText("You must restart the application so changes will take effect");
-        darkMode.addChangeListener(e -> {
-            File darkModeFile = new File(SPAApplication.getWorkingDirectory(), "dark.flag");
-            if (darkMode.isSelected()) {
-                try {
-                    darkModeFile.createNewFile();
-                } catch (IOException ioException) {
-                    logger.error("Failed saving file", ioException);
-                }
-            } else {
-                darkModeFile.delete();
-            }
-        });
+        darkMode.addChangeListener(e -> Controls.setIsDarkMode(darkMode.isSelected()));
 
         itemsWarehouse.registerObserver(this);
         add(login);

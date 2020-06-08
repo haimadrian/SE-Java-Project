@@ -93,7 +93,12 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       loginActionListener = e -> new LoginView(this.parent);
       placeOrderActionListener = e -> {
          if (shoppingCart.count() == 0) {
-            Dialogs.showInfoDialog(getParentDialog(), "Cart is empty. Please go to home page and select some items", "Empty Cart");
+            try {
+               shoppingCart.setIsEditing(true);
+               Dialogs.showInfoDialog(getParentDialog(), "Cart is empty. Please go to home page and select some items", "Empty Cart");
+            } finally {
+               shoppingCart.setIsEditing(false);
+            }
             return;
          }
 
@@ -102,12 +107,23 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                   try {
                      ActionManager.executeAction(ActionType.Purchase);
                      SwingUtilities.invokeLater(() -> {
-                        Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
+                        try {
+                           shoppingCart.setIsEditing(true);
+                           Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
+                        } finally {
+                           shoppingCart.setIsEditing(false);
+                        }
+
                         SwingUtilities.invokeLater(this::close);
                      });
                   } catch (Exception e1) {
                      logger.error("Error has occurred while saving order.", e1);
-                     SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), "Error has occurred while placing order: " + e1.getMessage(), "Error"));
+                     try {
+                        shoppingCart.setIsEditing(true);
+                        Dialogs.showErrorDialog(getParentDialog(), "Error has occurred while placing order: " + e1.getMessage(), "Error");
+                     } finally {
+                        shoppingCart.setIsEditing(false);
+                     }
                   }
                },
                getParentDialog(),
@@ -160,12 +176,17 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                   return;
                }
 
-               if (Dialogs.showQuestionDialog(getParentDialog(), "This action will remove all items from cart.\nContinue?.", "Clear Cart")) {
-                  try {
-                     ActionManager.executeAction(ActionType.ClearCart);
-                  } catch (ActionException actionException) {
-                     SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
+               try {
+                  shoppingCart.setIsEditing(true);
+                  if (Dialogs.showQuestionDialog(getParentDialog(), "This action will remove all items from cart.\nContinue?.", "Clear Cart")) {
+                     try {
+                        ActionManager.executeAction(ActionType.ClearCart);
+                     } catch (ActionException actionException) {
+                        Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error");
+                     }
                   }
+               } finally {
+                  shoppingCart.setIsEditing(false);
                }
             },
             false);
@@ -199,10 +220,15 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
             item.addActionListener(e -> {
                WarehouseItem selection = shoppingCart.getSelectionModel().getSelection();
                SwingUtilities.invokeLater(() -> {
-                  if (selection != null) {
-                     new ItemInfoDialog(warehouseItemToItemViewInfo(selection)).init().setVisible(true);
-                  } else {
-                     Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to show.\nPlease select a row first.", "No selection");
+                  try {
+                     shoppingCart.setIsEditing(true);
+                     if (selection != null) {
+                        new ItemInfoDialog(warehouseItemToItemViewInfo(selection)).init().setVisible(true);
+                     } else {
+                        Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to show.\nPlease select a row first.", "No selection");
+                     }
+                  } finally {
+                     shoppingCart.setIsEditing(false);
                   }
                });
             });
@@ -212,7 +238,8 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
             item2.setFont(Fonts.PLAIN_FONT);
             item2.addActionListener(e -> {
                WarehouseItem selection = shoppingCart.getSelectionModel().getSelection();
-               SwingUtilities.invokeLater(() -> {
+               shoppingCart.setIsEditing(true);
+               try {
                   if (selection != null) {
                      if (Dialogs.showQuestionDialog(getParentDialog(), "Are you sure you want to remove item from cart?", "Confirmation")) {
                         logger.info("Removing item from cart. Item: " + selection);
@@ -221,13 +248,15 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                            params.put("itemId", selection.getId());
                            ActionManager.executeAction(ActionType.RemoveFromCart, params);
                         } catch (ActionException actionException) {
-                           SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error"));
+                           Dialogs.showErrorDialog(getParentDialog(), actionException.getMessage(), "Error");
                         }
                      }
                   } else {
                      Dialogs.showInfoDialog(getParentDialog(), "No selection. Nothing to remove.\nPlease select a row first.", "No selection");
                   }
-               });
+               } finally {
+                  shoppingCart.setIsEditing(false);
+               }
             });
 
             return Arrays.asList(item, item2);
@@ -296,7 +325,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-               close();
+              close();
             }
 
             @Override
@@ -306,17 +335,19 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
          });
 
          shoppingCartDialog.pack();
-         //Controls.centerDialog(shoppingCartDialog);
          shoppingCartDialog.setVisible(true);
       }
    }
 
    @Override
    public void close() {
-      if (shoppingCartDialog != null) {
-         shoppingCartDialog.dispatchEvent(new WindowEvent(shoppingCartDialog, WindowEvent.WINDOW_CLOSING));
+      if (!shoppingCart.isEditing()) {
+         if (shoppingCartDialog != null) {
+            shoppingCartDialog.dispatchEvent(new WindowEvent(shoppingCartDialog, WindowEvent.WINDOW_CLOSING));
+         }
+
+         SPAApplication.getInstance().getSelectionModel().setSelection(null);
       }
-      SPAApplication.getInstance().getSelectionModel().setSelection(null);
    }
 
    @Override

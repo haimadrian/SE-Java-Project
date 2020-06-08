@@ -89,8 +89,30 @@ public class CountCellEditor extends DefaultCellEditor {
          stopCellEditing();
 
          ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();
-         if (newCount <= 0) {
-            if (!Dialogs.showQuestionDialog(null, "Count has been updated to zero.\nThis action will remove item from cart.\nContinue?", "Confirmation")) {
+         shoppingCart.setIsEditing(true);
+         try {
+            if (newCount <= 0) {
+               if (!Dialogs.showQuestionDialog(null, "Count has been updated to zero.\nThis action will remove item from cart.\nContinue?", "Confirmation")) {
+                  isChangingValue = true;
+                  ignoredValue = newCount;
+
+                  // This might raise state change event again
+                  editor.setText(prevValue);
+                  spinner.setValue(Integer.valueOf(prevValue));
+
+                  SwingUtilities.invokeLater(() -> {
+                     // Update it after the fire state changed caused by our change
+                     isChangingValue = false;
+                  });
+
+                  return;
+               }
+            }
+
+            try {
+               shoppingCart.updateCount(shoppingCart.getIdByRowIndex(selectedRow), Math.max(0, newCount));
+            } catch (ShoppingCartException ex) {
+               // Reset to previous value
                isChangingValue = true;
                ignoredValue = newCount;
 
@@ -98,31 +120,14 @@ public class CountCellEditor extends DefaultCellEditor {
                editor.setText(prevValue);
                spinner.setValue(Integer.valueOf(prevValue));
 
+               Dialogs.showErrorDialog(null, "Error has occurred while updating shopping cart item's count:\n" + ex.getMessage(), "Error");
                SwingUtilities.invokeLater(() -> {
                   // Update it after the fire state changed caused by our change
                   isChangingValue = false;
                });
-
-               return;
             }
-         }
-
-         try {
-            shoppingCart.updateCount(shoppingCart.getIdByRowIndex(selectedRow), Math.max(0, newCount));
-         } catch (ShoppingCartException ex) {
-            // Reset to previous value
-            isChangingValue = true;
-            ignoredValue = newCount;
-
-            // This might raise state change event again
-            editor.setText(prevValue);
-            spinner.setValue(Integer.valueOf(prevValue));
-
-            Dialogs.showErrorDialog(null, "Error has occurred while updating shopping cart item's count:\n" + ex.getMessage(), "Error");
-            SwingUtilities.invokeLater(() -> {
-               // Update it after the fire state changed caused by our change
-               isChangingValue = false;
-            });
+         } finally {
+            shoppingCart.setIsEditing(false);
          }
       }
    }

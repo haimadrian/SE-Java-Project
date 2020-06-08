@@ -32,6 +32,15 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
    private final Set<ShoppingCartObserver> observers;
 
    /**
+    * A flag used to mark that the cart is being edited at the moment.<br/>
+    * The reason we use this flag is that we want to avoid of closing the shopping cart popup when we display a
+    * dialog (info/error) to the user. Displaying another dialog causes the cart to get deactivated, so it
+    * tries to close itself although it should not. That's why we need some sign to use so we can
+    * distinguish between the scenarios.
+    */
+   private boolean isEditing;
+
+   /**
     * Constructs a new {@link ShoppingCart}
     */
    public ShoppingCart() {
@@ -272,5 +281,25 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
    @Override
    public void addItem(WarehouseItem item) {
       // Irrelevant for shopping cart
+   }
+
+   /**
+    * See {@link #isEditing()}
+    * @param isEditing Whether the cart is being edited right now or not
+    */
+   public void setIsEditing(boolean isEditing) {
+      this.isEditing = isEditing;
+   }
+
+   /**
+    * A flag used to mark that the cart is being edited at the moment.<br/>
+    * The reason we use this flag is that we want to avoid of closing the shopping cart popup when we display a
+    * dialog (info/error) to the user. Displaying another dialog causes the cart to get deactivated, so it
+    * tries to close itself although it should not. That's why we need some sign to use so we can
+    * distinguish between the scenarios.
+    * @return Whether the cart is being edited right now or not
+    */
+   public boolean isEditing() {
+      return isEditing;
    }
 }

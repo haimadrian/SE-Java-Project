@@ -36,7 +36,7 @@ import static org.spa.ui.order.OrderCopying.orderViewInfoToOrder;
 public class ManagerView {
     private static final Logger logger = LoggerFactory.getLogger(ManagerView.class);
     JFrame frame;
-  
+
     public ManagerView() {
         frame = new JFrame("Management View");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

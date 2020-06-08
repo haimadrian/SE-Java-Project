@@ -196,7 +196,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(searchBtn);
         add(searchBar);
         alerts.getNavigatingComponent().setVisible(false);
-        management.setVisible(false);
+        management.setVisible(true);
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);

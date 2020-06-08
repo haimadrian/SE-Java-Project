@@ -63,7 +63,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private final UserManagementService userManagement;
     private ItemsWarehouse itemsWarehouse;
     private TableManager<ItemColumn, ItemViewInfoHome> tableManager;
-    private ArrayList<String> itemsPick;
     private java.util.List<ItemViewInfoHome> tableModelList;
 
     public HomePage(JFrame parent) {
@@ -120,7 +119,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         login = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(login, HOME_PAGE_BUTTON_SIZE + 2, HOME_PAGE_BUTTON_SIZE);
-        itemsPick= new ArrayList<>();
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -202,7 +200,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(),
+        componentLocation(layout, this, shoppingCart.getNavigatingComponent(),
                 alerts.getNavigatingComponent(),imageContainer);
     }
 
@@ -275,7 +273,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         refreshTable();
     }
 
-    public void ComponentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer) {
+    public void componentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer) {
         layout.putConstraint(SpringLayout.NORTH, imageContainer, PAD, SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, imageContainer, PAD, SpringLayout.WEST, contentPane);
         layout.putConstraint(SpringLayout.NORTH, login, PAD, SpringLayout.NORTH, contentPane);

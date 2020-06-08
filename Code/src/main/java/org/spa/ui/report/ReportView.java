@@ -24,6 +24,7 @@ import static java.time.LocalDate.now;
 
 
 public class ReportView {
+    public static final int PAD = 10;
     private static final Logger logger = LoggerFactory.getLogger(ReportView.class);
     JFrame frame;
     String kindOfReport;
@@ -34,6 +35,7 @@ public class ReportView {
     JLabel selectStartDateLbl;
     JLabel selectDayEndLbl;
     JPanel panel;
+    JScrollPane scrollBar;
     JDatePickerImpl dateStart;
     JDatePickerImpl dateEnd;
     JDatePanelImpl datePanel1;
@@ -42,42 +44,23 @@ public class ReportView {
     public ReportView(String kindOfReport) {
         this.kindOfReport = kindOfReport;
         frame = new JFrame("Report View");
+        SpringLayout layout = new SpringLayout();
+        frame.setLayout(layout);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(860, 600);
+        frame.setSize(865, 600);
         frame.setLocationRelativeTo(null);
         panel = new JPanel();
-        frame.add(panel);
-        placeComponents();
-        generateReport();
+        Container contentPane = frame.getContentPane();
+        creatingComponents(layout,contentPane);
+        generateReport( layout, contentPane);
+        frame.getContentPane().add(panel);
+        frame.setResizable(false);
         frame.setVisible(true);
     }
 
-
-    private void placeComponents() {
-        boolean alreadyInUse = false;
-        panel.setLayout(null);
-        title = new JLabel();
-        title.setFont(new Font("Arial", Font.PLAIN, 30));
-        title.setBounds(20, 1, 300, 70);
-        panel.add(title);
-        reportText = new JTextArea();
-        JScrollPane scrollBar = new JScrollPane(reportText);
-        selectStartDateLbl = new JLabel("Select starting day:");
-        selectDayEndLbl = new JLabel("Select ending day:");
-        reportText.setEditable(false);
-        panel.add(selectStartDateLbl);
-        selectStartDateLbl.setBounds(20, 50, 200, 50);
-        selectStartDateLbl.setFont(new Font("Arial", Font.PLAIN, 20));
-        panel.add(selectDayEndLbl);
-        selectDayEndLbl.setBounds(20,275,200,50);
-        selectDayEndLbl.setFont(new Font("Arial", Font.PLAIN, 20));
-        panel.add((closeBtn = new JButton("Close")));
-        closeBtn.setBounds(80, 500, 60, 50);
-        panel.add(printBtn = new JButton(ImagesCache.getInstance().getImage("Printer.png")));
-        printBtn.setBounds(160, 500, 60, 50);
-        panel.add(reportText);
-        panel.add(scrollBar);
-        reportText.setBounds(310, 5, 520, 550);
+    private void creatingComponents(SpringLayout layout,Container contentPane) {
+        panel.setLayout(layout);
+        panel.setVisible(true);
         UtilDateModel model = new UtilDateModel();
         model.setSelected(true);
         Properties p = new Properties();
@@ -94,10 +77,23 @@ public class ReportView {
         datePanel2 = new JDatePanelImpl(model2, p2);
         dateStart = new JDatePickerImpl(datePanel1, new DateLabelFormatter());
         dateEnd = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
-        panel.add(datePanel1);
-        datePanel1.setBounds(20, 91, 260, 170);
-        panel.add(datePanel2);
-        datePanel2.setBounds(20, 315 , 260, 170);
+        title = new JLabel();
+        reportText = new JTextArea();
+        reportText.setEditable(false);
+        scrollBar = new JScrollPane(reportText);
+        selectStartDateLbl = new JLabel("Select starting day:");
+        selectDayEndLbl = new JLabel("Select ending day:");
+        title.setFont(new Font("Arial", Font.PLAIN, 30));
+        selectStartDateLbl.setFont(new Font("Arial", Font.PLAIN, 20));
+        selectDayEndLbl.setFont(new Font("Arial", Font.PLAIN, 20));
+        contentPane.add(title);
+        //contentPane.add(reportText);
+        contentPane.add(scrollBar);
+        contentPane.add(selectStartDateLbl);
+        contentPane.add((closeBtn = new JButton("Close")));
+        contentPane.add(selectDayEndLbl);
+        contentPane.add(printBtn = new JButton(ImagesCache.getInstance().getImage("Printer.png")));
+        contentPane.add(datePanel1);
         switch (kindOfReport) {
             case "Economic": {
                 title.setText("Economic Report");
@@ -111,30 +107,54 @@ public class ReportView {
                 title.setText("Stock Report");
             default:
                 break;
-        }//Close form
+        }
         closeBtn.addActionListener(e -> {
             frame.dispose();
             frame = null;
         });
-        //Print
         printBtn.addActionListener(e -> PrintSupport.printComponent(reportText));
+        componentLocation(layout,contentPane);
+        contentPane.add(datePanel2);
     }
-
-    private void stockReportrelocation()
+    private void componentLocation(SpringLayout layout,Container contentPane){
+        closeBtn.setPreferredSize(printBtn.getPreferredSize());
+        scrollBar.setPreferredSize(new Dimension(615,540));
+        layout.putConstraint(SpringLayout.NORTH, title, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, title, PAD, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, selectStartDateLbl, title.getPreferredSize().height+PAD, SpringLayout.NORTH, title);
+        layout.putConstraint(SpringLayout.WEST, selectStartDateLbl, PAD, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, datePanel1, 25, SpringLayout.NORTH, selectStartDateLbl);
+        layout.putConstraint(SpringLayout.WEST, datePanel1, PAD, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, selectDayEndLbl, datePanel1.getPreferredSize().height+75, SpringLayout.NORTH, title);
+        layout.putConstraint(SpringLayout.WEST, selectDayEndLbl, PAD, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, datePanel2,25, SpringLayout.NORTH, selectDayEndLbl);
+        layout.putConstraint(SpringLayout.WEST, datePanel2, PAD, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, scrollBar, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, scrollBar, PAD, SpringLayout.EAST, datePanel1);
+        layout.putConstraint(SpringLayout.NORTH, printBtn,datePanel1.getPreferredSize().height+30 , SpringLayout.NORTH, datePanel2);
+        layout.putConstraint(SpringLayout.WEST, printBtn, 40, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, closeBtn,datePanel1.getPreferredSize().height+30 , SpringLayout.NORTH, datePanel2);
+        layout.putConstraint(SpringLayout.WEST, closeBtn, PAD, SpringLayout.EAST, printBtn);
+    }
+    private void stockReportRelocation(SpringLayout layout,Container contentPane)
     {
         datePanel1.setVisible(false);
         datePanel2.setVisible(false);
         selectStartDateLbl.setVisible(false);
         selectDayEndLbl.setVisible(false);
-        reportText.setBounds(20, 55, 520, 440);
-        closeBtn.setBounds(220, 500, 60, 50);
-        printBtn.setBounds(280, 500, 60, 50);
-        frame.setSize(565,600);
+        scrollBar.setPreferredSize(new Dimension(630,485));
+        layout.putConstraint(SpringLayout.NORTH, scrollBar,title.getPreferredSize().height, SpringLayout.SOUTH, title);
+        layout.putConstraint(SpringLayout.WEST, scrollBar, PAD, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, printBtn,20, SpringLayout.SOUTH, scrollBar);
+        layout.putConstraint(SpringLayout.WEST, printBtn, 242, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, closeBtn,20 , SpringLayout.SOUTH, scrollBar);
+        layout.putConstraint(SpringLayout.WEST, closeBtn, PAD, SpringLayout.EAST, printBtn);
+        frame.setSize(660,700);
     }
-    private void generateReport() {
+    private void generateReport(SpringLayout layout,Container contentPane) {
         Random rand = new Random();
         if (kindOfReport.equals("Stock")){
-            stockReportrelocation();
+            stockReportRelocation( layout, contentPane);
             int randomID = rand.nextInt(9999999);
             StockReport stockReport = new StockReport(String.valueOf(randomID));
             List<WarehouseItem> items = stockReport.getItems();

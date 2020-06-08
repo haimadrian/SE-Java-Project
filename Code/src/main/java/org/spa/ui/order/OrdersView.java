@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 import static org.spa.ui.order.OrderCopying.orderToOrderViewInfo;
 import static org.spa.ui.order.OrderCopying.orderViewInfoToOrder;
 
@@ -34,6 +36,7 @@ public class OrdersView {
     public OrdersView(Window parent) {
         frame = new JFrame("Orders");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
         frame.setPreferredSize(new Dimension(parent.getPreferredSize().width - 200, parent.getPreferredSize().height - 100));
         frame.add(new ManagementViewPane());
         frame.pack();

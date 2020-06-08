@@ -12,17 +12,20 @@ import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
 import org.spa.ui.util.Controls;
 import org.spa.ui.util.Fonts;
+import org.spa.ui.util.ImagesCache;
+
 import javax.swing.*;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
+
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 import static org.spa.ui.util.Controls.*;
 import static org.spa.ui.util.Controls.createTextArea;
 
 public class OrderInfoDialog extends JFrame {
-    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private final OrderViewInfo order;
     private TableManager<ItemColumn, ItemViewInfo> tableManager;
     private List<ItemViewInfo> tableModelList;
@@ -36,6 +39,7 @@ public class OrderInfoDialog extends JFrame {
 
     public OrderInfoDialog init() {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setPreferredSize(new Dimension((int) (screenSize.width / 1.5), (int) (screenSize.height / 2)));

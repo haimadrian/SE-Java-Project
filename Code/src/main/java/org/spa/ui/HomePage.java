@@ -47,7 +47,7 @@ import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver , ItemsWarehouseObserver {
     public static final int PAD = 10;
-    public static final int HOME_PAGE_BUTTON_IMAGE_SIZE = 60;
+    public static final int HOME_PAGE_BUTTON_IMAGE_SIZE = 58;
     public static final int HOME_PAGE_BUTTON_SIZE = 64;
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     private JButton management;
@@ -111,7 +111,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             }
         });
 
-        image = ImagesCache.getInstance().getImage("Register.png");
+        image = ImagesCache.getInstance().getImage("register-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         register = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(register, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
@@ -119,7 +119,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         management = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(management, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
-        image = ImagesCache.getInstance().getImage("history_order.png");
+        image = ImagesCache.getInstance().getImage("order-history-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         orders = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(orders, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);

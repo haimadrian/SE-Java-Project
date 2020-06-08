@@ -1,5 +1,6 @@
 package org.spa.ui.table.renderer;
 
+import org.spa.ui.util.Controls;
 import org.spa.ui.util.Fonts;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ import java.awt.*;
  * @since 16-May-20
  */
 public class TextCellRenderer extends DefaultTableCellRenderer {
+   private final JScrollPane scrollPane;
    private final JTextArea textArea;
    private final Border originalBorder;
    private final Border focusBorder;
@@ -24,6 +26,7 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       textArea.setWrapStyleWord(true);
       textArea.setLineWrap(true);
       textArea.setFont(Fonts.PLAIN_FONT);
+      scrollPane = Controls.withScrollPane(textArea, 200, Integer.MAX_VALUE);
       originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
@@ -35,6 +38,7 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       super.getTableCellRendererComponent(table, value, isSelected, isFocused, row, column);
 
       textArea.setText(getCellText(value));
+      textArea.setCaretPosition(0);
 
       if (isSelected) {
          textArea.setForeground(table.getSelectionForeground());
@@ -50,18 +54,7 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
          textArea.setBorder(originalBorder);
       }
 
-      /*int colWidth = table.getColumn(Integer.valueOf(column)).getWidth();
-      String cellText = getCellText(value);
-
-      // Use HTML hack so we can take the advantage of <div> for word wrapping a label text
-      // @formatter:off
-      String html = "<html><div style=\"width:" + colWidth + ";" + getAdditionalDivStyle() + "\">" +
-            StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))).replace("\n", "<br/>") +
-            "</div></html>";
-      // @formatter:on
-      setText(html);*/
-
-      return textArea;
+      return scrollPane;
    }
 
    /**

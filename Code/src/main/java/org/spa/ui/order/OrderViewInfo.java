@@ -51,8 +51,7 @@ public class OrderViewInfo implements TableModelIfc {
             sumItemPrice = (item.getPrice() * ((item.getProfitPercent() + 100) /100) * ((100 - item.getDiscountPercent()) / 100)) * item.getCount();
             sumTotalPrice+= sumItemPrice;
         }
-        sumTotalPrice = sumTotalPrice =Double.parseDouble(new DecimalFormat("##.##").format(sumTotalPrice));
-        itemsToString = "Amount of items: " + count + System.lineSeparator() + "Total Price: " + sumTotalPrice + "$";
+        itemsToString = "Amount of items: " + count + System.lineSeparator() + "Total Price: " + new DecimalFormat("##.##").format(sumTotalPrice) + "$";
         return itemsToString;
     }
 

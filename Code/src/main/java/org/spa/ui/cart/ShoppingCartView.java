@@ -102,7 +102,9 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
             return;
          }
 
-         Dialogs.executeWithWaitingDialog(() -> {
+         shoppingCart.setIsEditing(true);
+         try {
+            Dialogs.executeWithWaitingDialog(() -> {
                   // Save order
                   try {
                      ActionManager.executeAction(ActionType.Purchase);
@@ -128,6 +130,9 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                },
                getParentDialog(),
                "Placing your order...");
+         } finally {
+            shoppingCart.setIsEditing(false);
+         }
       };
 
       SPAApplication.getInstance().getUserManagementService().registerObserver(loggedInUser -> {

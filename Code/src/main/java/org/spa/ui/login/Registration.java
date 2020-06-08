@@ -5,6 +5,7 @@ import org.spa.controller.UserType;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
+import org.spa.ui.util.Controls;
 import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
@@ -242,6 +243,23 @@ public class Registration
             tusertype.setLocation(220, 475);
             c.add(tusertype);
         }
+
+        if (Controls.isDarkMode()) {
+            day.setBackground(Color.black);
+            day.setForeground(Color.white);
+            month.setBackground(Color.black);
+            month.setForeground(Color.white);
+            year.setBackground(Color.black);
+            year.setForeground(Color.white);
+            tquestion.setBackground(Color.black);
+            tquestion.setForeground(Color.white);
+
+            if (tusertype != null) {
+                tusertype.setBackground(Color.black);
+                tusertype.setForeground(Color.white);
+            }
+        }
+
         term = new JCheckBox("Accept Terms And Conditions.");
         term.setFont(new Font("Arial", Font.PLAIN, 15));
         term.setSize(250, 20);

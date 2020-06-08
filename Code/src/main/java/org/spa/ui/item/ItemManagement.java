@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 import static org.spa.main.SPAMain.FRAME_ICON_NAME;
+import static org.spa.ui.HomePage.MAGNIFYING_IMAGE;
 
 public class ItemManagement extends JFrame implements ActionListener {
 
@@ -195,23 +196,27 @@ public class ItemManagement extends JFrame implements ActionListener {
         textImage.setLocation(textX, y+450);
 
         add = new JButton("Add");
+        add.setBackground(Color.green.darker().darker().darker());
         add.setFont(Fonts.PLAIN_FONT);
         add.setSize(100, 30);
         add.setLocation(200, y+495);
         add.addActionListener(this);
         container.add(add);
 
-        searchBtn= new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
+        Image scaledImage = MAGNIFYING_IMAGE.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        searchBtn= new JButton(new ImageIcon(scaledImage));
         searchBtn.setFont(Fonts.PLAIN_FONT);
         searchBtn.setSize(30, textHeight);
         searchBtn.setLocation(400, y+450);
         searchBtn.addActionListener(this);
+        searchBtn.setToolTipText("Open file");
 
-        imageBtn = new JButton(ImagesCache.getInstance().getImage("DefaultBrowser.png"));
+        imageBtn = new JButton(ImagesCache.getInstance().getImage("web-icon.png"));
         imageBtn.setFont(Fonts.PLAIN_FONT);
         imageBtn.setSize(30, textHeight);
         imageBtn.setLocation(430, y+450);
         imageBtn.addActionListener(this);
+        imageBtn.setToolTipText("Open browser");
         container.add(searchBtn);
         container.add(imageBtn);
         container.add(textImage);

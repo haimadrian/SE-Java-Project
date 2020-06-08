@@ -50,6 +50,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     public static final int HOME_PAGE_BUTTON_IMAGE_SIZE = 58;
     public static final int HOME_PAGE_BUTTON_SIZE = 64;
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
+    public static final ImageIcon MAGNIFYING_IMAGE = ImagesCache.getInstance().getImage("magnifying-icon.png");
     private JButton management;
     private JButton login;
     private JButton logout;
@@ -182,7 +183,9 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         searchBar = new JTextField("Search for product...", 40);
         searchBar.setFont(Fonts.PLAIN_FONT);
         searchBar.setPreferredSize(new Dimension(40, 40));
-        searchBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
+        scaledImage = MAGNIFYING_IMAGE.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
+        searchBtn = new JButton(new ImageIcon(scaledImage));
+        searchBtn.setPreferredSize(new Dimension(40, 40));
         ActionListener searchActionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

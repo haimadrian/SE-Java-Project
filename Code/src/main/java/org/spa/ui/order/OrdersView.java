@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.spa.main.SPAMain.FRAME_ICON_NAME;
+import static org.spa.ui.HomePage.MAGNIFYING_IMAGE;
 import static org.spa.ui.order.OrderCopying.orderToOrderViewInfo;
 import static org.spa.ui.order.OrderCopying.orderViewInfoToOrder;
 
@@ -112,7 +113,9 @@ public class OrdersView {
 
             if (isAdmin) {
                 searchBar = new JTextField("Search by User/Order Id...");
-                findOrderBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
+                Image scaledImage = MAGNIFYING_IMAGE.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+                findOrderBtn= new JButton(new ImageIcon(scaledImage));
+                findOrderBtn.setPreferredSize(new Dimension(30, 30));
                 inner.add(searchBar);
                 inner.add(findOrderBtn);
                 searchBar.addMouseListener(new MouseAdapter() {

@@ -1,6 +1,5 @@
 package org.spa.ui.table.renderer;
 
-import org.spa.ui.util.Controls;
 import org.spa.ui.util.Fonts;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ import java.awt.*;
  * @since 16-May-20
  */
 public class TextCellRenderer extends DefaultTableCellRenderer {
-   private final JScrollPane scrollPane;
    private final JTextArea textArea;
    private final Border originalBorder;
    private final Border focusBorder;
@@ -26,7 +24,6 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       textArea.setWrapStyleWord(true);
       textArea.setLineWrap(true);
       textArea.setFont(Fonts.PLAIN_FONT);
-      scrollPane = Controls.withScrollPane(textArea, 200, Integer.MAX_VALUE);
       originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
@@ -54,7 +51,7 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
          textArea.setBorder(originalBorder);
       }
 
-      return scrollPane;
+      return textArea;
    }
 
    /**

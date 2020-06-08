@@ -59,6 +59,7 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
       ImageIcon image = ImagesCache.getInstance().getImage("alert-icon.png");
       Image scaledImage = image.getImage().getScaledInstance(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
       alertsButton = new ButtonWithBadge(new ImageIcon(scaledImage));
+      alertsButton.setToolTipText("View Alerts");
       alertsButton.setSize(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE);
       alertsButton.setCountForBadge(alertSystem.count());
       alertsButton.addActionListener(e -> {
@@ -71,6 +72,7 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
       title = Controls.createTitle("Alerts");
 
       clearButton = createButton("Clear All", e -> alertSystem.clear(), true);
+      clearButton.setBackground(Color.red.darker().darker().darker());
 
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));

@@ -83,6 +83,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       ImageIcon image = ImagesCache.getInstance().getImage("shopping-cart-icon.png");
       Image scaledImage = image.getImage().getScaledInstance(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
       shoppingCartButton = new ButtonWithBadge(new ImageIcon(scaledImage));
+      shoppingCartButton.setToolTipText("View Shopping Cart");
       shoppingCartButton.setSize(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE);
       shoppingCartButton.setCountForBadge(shoppingCart.count());
       shoppingCartButton.addActionListener(e -> {
@@ -141,11 +142,13 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
             continueButton.removeActionListener(placeOrderActionListener);
             continueButton.removeActionListener(loginActionListener);
             continueButton.addActionListener(loginActionListener);
+            continueButton.setBackground(UIManager.getColor("Button.background"));
          } else {
             continueButton.setText("Place Order");
             continueButton.removeActionListener(placeOrderActionListener);
             continueButton.removeActionListener(loginActionListener);
             continueButton.addActionListener(placeOrderActionListener);
+            continueButton.setBackground(Color.green.darker().darker().darker());
          }
       });
 
@@ -174,6 +177,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
          continueButton = createButton("Login", loginActionListener, true);
       } else {
          continueButton = createButton("Place Order", placeOrderActionListener, true);
+         continueButton.setBackground(Color.green.darker().darker().darker());
       }
 
       clearCartButton = createButton("Clear Cart", e -> {
@@ -195,6 +199,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                }
             },
             false);
+      clearCartButton.setBackground(Color.red.darker().darker().darker());
 
       JPanel buttonsPanel = new JPanel();
       buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));

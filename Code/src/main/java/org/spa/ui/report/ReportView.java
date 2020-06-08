@@ -12,6 +12,7 @@ import org.spa.model.report.OrderReport;
 import org.spa.model.report.StockReport;
 import org.spa.ui.control.PrintSupport;
 import org.spa.ui.util.DateLabelFormatter;
+import org.spa.ui.util.Fonts;
 import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
@@ -83,9 +84,9 @@ public class ReportView {
         scrollBar = new JScrollPane(reportText);
         selectStartDateLbl = new JLabel("Select starting day:");
         selectDayEndLbl = new JLabel("Select ending day:");
-        title.setFont(new Font("Arial", Font.PLAIN, 30));
-        selectStartDateLbl.setFont(new Font("Arial", Font.PLAIN, 20));
-        selectDayEndLbl.setFont(new Font("Arial", Font.PLAIN, 20));
+        title.setFont(Fonts.HEADING_FONT);
+        selectStartDateLbl.setFont(Fonts.PLAIN_FONT);
+        selectDayEndLbl.setFont(Fonts.PLAIN_FONT);
         contentPane.add(title);
         contentPane.add(scrollBar);
         contentPane.add(selectStartDateLbl);
@@ -157,7 +158,7 @@ public class ReportView {
         if (kindOfReport.equals("Order")) {
             datePanel1.setVisible(true);
             datePanel2.setVisible(true);
-            datePanel1.getModel().addChangeListener(changeEvent -> {
+            datePanel1.getModel().addChangeListener(changeEvent -> {    //If user change the first date panel
                 reportText.setText("");
                 Date dateStart = new Date(datePanel1.getModel().getYear() - 1900, datePanel1.getModel().getMonth(), datePanel1.getModel().getDay());
                 Date dateEnd = new Date(datePanel2.getModel().getYear() - 1900, datePanel2.getModel().getMonth(), datePanel2.getModel().getDay());
@@ -176,7 +177,7 @@ public class ReportView {
                         reportText.setText(reportText.getText() + "\n\n");
                     });
                 }
-            });
+            });//If user change the second date panel
             datePanel2.getModel().addChangeListener(changeEvent -> {
                 Date dateStart = new Date(datePanel1.getModel().getYear() - 1900, datePanel1.getModel().getMonth(), datePanel1.getModel().getDay());
                 Date dateEnd = new Date(datePanel2.getModel().getYear() - 1900, datePanel2.getModel().getMonth(), datePanel2.getModel().getDay());

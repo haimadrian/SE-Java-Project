@@ -75,14 +75,14 @@ public class Item {
       this.description = description;
    }
 
-   public double getPrice() {
+   public double getPrice() { return price; }
+
+   public void setPrice(double price) { this.price = price; }
+
+   public double getTotalPrice(){
+      price += (price * profitPercent/100) - (discountPercent*price/100);
       return price;
    }
-
-   public void setPrice(double price) {
-      this.price = price;
-   }
-
    public double getProfitPercent() {
       return profitPercent;
    }

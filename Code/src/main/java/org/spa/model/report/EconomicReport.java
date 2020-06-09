@@ -4,9 +4,6 @@ import org.spa.common.SPAApplication;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.model.Item;
 import org.spa.model.Order;
-
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +17,7 @@ public class EconomicReport extends Report {
 
     public double getIncoming() {
         Map<String, Order> ordersMap = SPAApplication.getInstance().getOrderSystem().getOrdersMap();
-        incoming = ordersMap.values().stream().flatMap(order -> order.getItems().stream()).mapToInt(item -> (int) item.getPrice()).sum();
+        incoming = ordersMap.values().stream().flatMap(order -> order.getItems().stream()).mapToDouble(item -> (double) item.getPrice()).sum();
         return incoming;
     }
 

@@ -1,6 +1,7 @@
 package org.spa.controller.item;
 
 
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -18,6 +19,7 @@ public class WarehouseItem {
    private double profitPercent;
    private double discountPercent;
    private int count;
+   private double totalPrice;
 
    /**
     * Constructs a new {@link WarehouseItem}
@@ -39,7 +41,7 @@ public class WarehouseItem {
       this.profitPercent = profitPercent;
       this.discountPercent = discountPercent;
       this.count = count;
-
+      this.totalPrice = 0;
    }
 
    /**
@@ -55,6 +57,11 @@ public class WarehouseItem {
       this.profitPercent = another.getProfitPercent();
       this.discountPercent = another.getDiscountPercent();
       this.count = another.getCount();
+      this.totalPrice = another.getTotalPrice();
+   }
+   public double getTotalPrice(){
+      totalPrice += (price * profitPercent/100) - (discountPercent*price/100);
+      return totalPrice;
    }
 
    public String getCategory() {return category; }

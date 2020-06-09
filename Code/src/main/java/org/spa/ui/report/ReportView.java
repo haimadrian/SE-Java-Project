@@ -94,20 +94,7 @@ public class ReportView {
         contentPane.add(selectDayEndLbl);
         contentPane.add(printBtn = new JButton(ImagesCache.getInstance().getImage("Printer.png")));
         contentPane.add(datePanel1);
-        switch (kindOfReport) {
-            case "Economic": {
-                title.setText("Economic Report");
-                break;
-            }
-            case "Order": {
-                title.setText("Orders Report");
-                break;
-            }
-            case "Stock":
-                title.setText("Stock Report");
-            default:
-                break;
-        }
+        title.setText(kindOfReport+" Report");
         closeBtn.addActionListener(e -> {
             frame.dispose();
             frame = null;
@@ -160,8 +147,8 @@ public class ReportView {
             datePanel2.setVisible(true);
             datePanel1.getModel().addChangeListener(changeEvent -> {    //If user change the first date panel
                 reportText.setText("");
-                Date dateStart = new Date(datePanel1.getModel().getYear() - 1900, datePanel1.getModel().getMonth(), datePanel1.getModel().getDay());
-                Date dateEnd = new Date(datePanel2.getModel().getYear() - 1900, datePanel2.getModel().getMonth(), datePanel2.getModel().getDay());
+                Date dateStart = (Date) datePanel1.getModel().getValue();
+                Date dateEnd = (Date) datePanel2.getModel().getValue();
                 if (!dateStart.after(dateEnd)) {
                     int randomID = rand.nextInt(9999999);
                     OrderReport stockReport = new OrderReport(String.valueOf(randomID), dateStart, dateEnd);
@@ -179,8 +166,9 @@ public class ReportView {
                 }
             });//If user change the second date panel
             datePanel2.getModel().addChangeListener(changeEvent -> {
-                Date dateStart = new Date(datePanel1.getModel().getYear() - 1900, datePanel1.getModel().getMonth(), datePanel1.getModel().getDay());
-                Date dateEnd = new Date(datePanel2.getModel().getYear() - 1900, datePanel2.getModel().getMonth(), datePanel2.getModel().getDay());
+                Date dateStart = (Date) datePanel1.getModel().getValue();
+                Date dateEnd = (Date) datePanel2.getModel().getValue();
+                logger.info(""+  ((Date) datePanel1.getModel().getValue()).getYear());
                 reportText.setText("");
                 if (!dateStart.after(dateEnd)) {
                     logger.info("" + dateStart);

@@ -18,9 +18,17 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
    private JTextArea textArea;
    private final Border originalBorder;
    private final Border focusBorder;
+   private boolean isReadOnly;
 
    public TextCellEditor() {
+      this(false);
+   }
+
+   public TextCellEditor(boolean isReadOnly) {
       super(new JTextField());
+      this.isReadOnly = isReadOnly;
+
+      setClickCountToStart(1);
       initTextArea();
       initScrollPane();
       originalBorder = BorderFactory.createEmptyBorder();
@@ -40,7 +48,7 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
    }
 
    private void initTextArea() {
-      textArea = Controls.createTextArea("", true);
+      textArea = Controls.createTextArea("", !isReadOnly);
       textArea.addFocusListener(this);
       editorComponent = textArea;
    }
@@ -54,6 +62,7 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
       super.getTableCellEditorComponent(table, value, isSelected, row, column);
 
       textArea.setText(String.valueOf(value));
+      textArea.setCaretPosition(0);
 
       if (isSelected) {
          textArea.setForeground(table.getSelectionForeground());

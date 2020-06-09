@@ -35,6 +35,7 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       super.getTableCellRendererComponent(table, value, isSelected, isFocused, row, column);
 
       textArea.setText(getCellText(value));
+      textArea.setCaretPosition(0);
 
       if (isSelected) {
          textArea.setForeground(table.getSelectionForeground());
@@ -49,17 +50,6 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       } else {
          textArea.setBorder(originalBorder);
       }
-
-      /*int colWidth = table.getColumn(Integer.valueOf(column)).getWidth();
-      String cellText = getCellText(value);
-
-      // Use HTML hack so we can take the advantage of <div> for word wrapping a label text
-      // @formatter:off
-      String html = "<html><div style=\"width:" + colWidth + ";" + getAdditionalDivStyle() + "\">" +
-            StringUtils.replaceWildcardWithHTMLStyle(StringEscapeUtils.escapeHtml4(StringUtils.replaceHTMLStyleWithWildcard(cellText))).replace("\n", "<br/>") +
-            "</div></html>";
-      // @formatter:on
-      setText(html);*/
 
       return textArea;
    }

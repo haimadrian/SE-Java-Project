@@ -2,6 +2,7 @@ package org.spa.ui.login;
 
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
+import org.spa.ui.util.Controls;
 import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
@@ -20,7 +21,7 @@ public class LoginView {
         frame = new JDialog(owner, "Login", Dialog.ModalityType.APPLICATION_MODAL);
         frame.setSize(350, 200);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        Controls.centerDialog(owner, frame);
         frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
         JPanel panel = new JPanel();
         frame.add(panel);

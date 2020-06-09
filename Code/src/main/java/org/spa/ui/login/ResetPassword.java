@@ -3,6 +3,7 @@ package org.spa.ui.login;
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
 import org.spa.ui.login.LoginView;
+import org.spa.ui.util.Controls;
 import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class ResetPassword {
       frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
       frame.setSize(350, 200);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      frame.setLocationRelativeTo(null);
+      Controls.centerDialog(owner, frame);
       JPanel panel = new JPanel();
       frame.add(panel);
       placeComponents(panel);

@@ -6,7 +6,10 @@ import org.spa.controller.action.ActionManager;
 import org.spa.controller.action.ActionType;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
+import org.spa.ui.util.Controls;
+import org.spa.ui.util.Fonts;
 import org.spa.ui.util.ImagesCache;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -21,6 +24,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static javax.swing.JOptionPane.showMessageDialog;
+import static org.spa.main.SPAMain.FRAME_ICON_NAME;
+import static org.spa.ui.HomePage.MAGNIFYING_IMAGE;
 
 public class ItemManagement extends JFrame implements ActionListener {
 
@@ -71,156 +76,180 @@ public class ItemManagement extends JFrame implements ActionListener {
         }
 
         setTitle("Item Management");
-        setBounds(600, 200, 500, 650);
+        setSize(500, 650);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
+        setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
 
         container = getContentPane();
         container.setLayout(null);
 
+        int textX = 160;
+        int textWidth = 300;
+        int textHeight = 30;
+        int labelX = 40;
+        int labelWidth = 115;
+
         title = new JLabel("Item Management");
-        title.setFont(new Font("Arial", Font.PLAIN, 30));
-        title.setSize(300, 30);
+        title.setFont(Fonts.HEADING_FONT);
+        title.setSize(textWidth, 40);
         title.setLocation(130, 15);
         container.add(title);
 
         name = new JLabel("Name");
-        name.setFont(new Font("Arial", Font.PLAIN, 20));
-        name.setSize(100, 25);
-        name.setLocation(60, y);
+        name.setFont(Fonts.PANEL_HEADING_FONT);
+        name.setSize(labelWidth, textHeight);
+        name.setLocation(labelX, y);
         container.add(name);
 
         textName = new JTextField();
-        textName.setFont(new Font("Arial", Font.PLAIN, 15));
-        textName.setSize(250, 25);
-        textName.setLocation(160, y);
+        textName.setFont(Fonts.PLAIN_FONT);
+        textName.setSize(textWidth, textHeight);
+        textName.setLocation(textX, y);
         container.add(textName);
 
         category = new JLabel("Category");
-        category.setFont(new Font("Arial", Font.PLAIN, 20));
-        category.setSize(100, 25);
-        category.setLocation(60, y+50);
+        category.setFont(Fonts.PANEL_HEADING_FONT);
+        category.setSize(labelWidth, textHeight);
+        category.setLocation(labelX, y+50);
         container.add(category);
 
         textCategory = new JTextField();
-        textCategory.setFont(new Font("Arial", Font.PLAIN, 15));
-        textCategory.setSize(250, 25);
-        textCategory.setLocation(160, y+50);
+        textCategory.setFont(Fonts.PLAIN_FONT);
+        textCategory.setSize(textWidth, textHeight);
+        textCategory.setLocation(textX, y+50);
         container.add(textCategory);
 
         description = new JLabel("Description");
-        description.setFont(new Font("Arial", Font.PLAIN, 20));
-        description.setSize(100, 25);
-        description.setLocation(60, y+100);
+        description.setFont(Fonts.PANEL_HEADING_FONT);
+        description.setSize(labelWidth, textHeight);
+        description.setLocation(labelX, y+100);
         container.add(description);
 
         textDescription = new JTextArea();
-        textDescription.setFont(new Font("Arial", Font.PLAIN, 15));
-        textDescription.setSize(300, 125);
-        textDescription.setLocation(160, y+100);
+        textDescription.setFont(Fonts.PLAIN_FONT);
         textDescription.setLineWrap(true);
-        container.add(textDescription);
+        JScrollPane scrollPane = new JScrollPane(textDescription);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setSize(textWidth, 125);
+        scrollPane.setLocation(textX, y+100);
+        container.add(scrollPane);
 
         price = new JLabel("Price");
-        price.setFont(new Font("Arial", Font.PLAIN, 20));
-        price.setSize(100, 25);
-        price.setLocation(60, y+250);
+        price.setFont(Fonts.PANEL_HEADING_FONT);
+        price.setSize(labelWidth, textHeight);
+        price.setLocation(labelX, y+250);
         container.add(price);
 
         textPrice = new JTextField();
-        textPrice.setFont(new Font("Arial", Font.PLAIN, 15));
-        textPrice.setSize(250, 25);
-        textPrice.setLocation(160, y+250);
+        textPrice.setFont(Fonts.PLAIN_FONT);
+        textPrice.setSize(textWidth, textHeight);
+        textPrice.setLocation(textX, y+250);
         container.add(textPrice);
 
         profit = new JLabel("Profit%");
-        profit.setFont(new Font("Arial", Font.PLAIN, 20));
-        profit.setSize(100, 25);
-        profit.setLocation(60, y+300);
+        profit.setFont(Fonts.PANEL_HEADING_FONT);
+        profit.setSize(labelWidth, textHeight);
+        profit.setLocation(labelX, y+300);
         container.add(profit);
 
         textProfit = new JTextField();
-        textProfit.setFont(new Font("Arial", Font.PLAIN, 15));
-        textProfit.setSize(250, 25);
-        textProfit.setLocation(160, y+300);
+        textProfit.setFont(Fonts.PLAIN_FONT);
+        textProfit.setSize(textWidth, textHeight);
+        textProfit.setLocation(textX, y+300);
         container.add(textProfit);
 
         discount = new JLabel("Discount%");
-        discount.setFont(new Font("Arial", Font.PLAIN, 20));
-        discount.setSize(100, 25);
-        discount.setLocation(60, y+350);
+        discount.setFont(Fonts.PANEL_HEADING_FONT);
+        discount.setSize(labelWidth, textHeight);
+        discount.setLocation(labelX, y+350);
         container.add(discount);
 
         textDiscount = new JTextField();
-        textDiscount.setFont(new Font("Arial", Font.PLAIN, 15));
-        textDiscount.setSize(250, 25);
-        textDiscount.setLocation(160, y+350);
+        textDiscount.setFont(Fonts.PLAIN_FONT);
+        textDiscount.setSize(textWidth, textHeight);
+        textDiscount.setLocation(textX, y+350);
         container.add(textDiscount);
 
         count = new JLabel("Count");
-        count.setFont(new Font("Arial", Font.PLAIN, 20));
-        count.setSize(100, 25);
-        count.setLocation(60, y+400);
+        count.setFont(Fonts.PANEL_HEADING_FONT);
+        count.setSize(labelWidth, textHeight);
+        count.setLocation(labelX, y+400);
         container.add(count);
 
         textCount = new JTextField();
-        textCount.setFont(new Font("Arial", Font.PLAIN, 15));
-        textCount.setSize(250, 25);
-        textCount.setLocation(160, y+400);
+        textCount.setFont(Fonts.PLAIN_FONT);
+        textCount.setSize(textWidth, textHeight);
+        textCount.setLocation(textX, y+400);
         container.add(textCount);
 
         image = new JLabel("Image");
-        image.setFont(new Font("Arial", Font.PLAIN, 20));
-        image.setSize(100, 25);
-        image.setLocation(60, y+450);
+        image.setFont(Fonts.PANEL_HEADING_FONT);
+        image.setSize(labelWidth, textHeight);
+        image.setLocation(labelX, y+450);
         container.add(image);
 
         textImage = new JTextField();
-        textImage.setFont(new Font("Arial", Font.PLAIN, 15));
-        textImage.setSize(250, 25);
-        textImage.setLocation(160, y+450);
-        container.add(textImage);
+        textImage.setFont(Fonts.PLAIN_FONT);
+        textImage.setSize(textWidth, textHeight);
+        textImage.setLocation(textX, y+450);
 
         add = new JButton("Add");
-        add.setFont(new Font("Arial", Font.PLAIN, 15));
+        add.setBackground(Color.green.darker().darker().darker());
+        add.setFont(Fonts.PLAIN_FONT);
         add.setSize(100, 30);
         add.setLocation(200, y+495);
         add.addActionListener(this);
         container.add(add);
 
-        searchBtn= new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
-        searchBtn.setFont(new Font("Arial", Font.PLAIN, 15));
-        searchBtn.setSize(35, 25);
-        searchBtn.setLocation(415, y+450);
+        Image scaledImage = MAGNIFYING_IMAGE.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        searchBtn= new JButton(new ImageIcon(scaledImage));
+        searchBtn.setFont(Fonts.PLAIN_FONT);
+        searchBtn.setSize(30, textHeight);
+        searchBtn.setLocation(400, y+450);
         searchBtn.addActionListener(this);
-        container.add(searchBtn);
+        searchBtn.setToolTipText("Open file");
 
-        imageBtn = new JButton(ImagesCache.getInstance().getImage("DefaultBrowser.png"));
-        imageBtn.setFont(new Font("Arial", Font.PLAIN, 15));
-        imageBtn.setSize(35, 25);
-        imageBtn.setLocation(455, y+450);
+        imageBtn = new JButton(ImagesCache.getInstance().getImage("web-icon.png"));
+        imageBtn.setFont(Fonts.PLAIN_FONT);
+        imageBtn.setSize(30, textHeight);
+        imageBtn.setLocation(430, y+450);
         imageBtn.addActionListener(this);
+        imageBtn.setToolTipText("Open browser");
+        container.add(searchBtn);
         container.add(imageBtn);
+        container.add(textImage);
 
         output = new JLabel("");
-        output.setFont(new Font("Arial", Font.PLAIN, 20));
+        output.setFont(Fonts.PANEL_HEADING_FONT);
         output.setSize(500, 20);
         output.setLocation(60, 50);
         container.add(output);
 
         id = new JLabel("");
-        id.setFont(new Font("Arial", Font.PLAIN, 20));
+        id.setFont(Fonts.PANEL_HEADING_FONT);
         id.setSize(500, 20);
-        id.setLocation(60, 85);
+        id.setLocation(labelX, 85);
         container.add(id);
 
+        JLabel idValue = new JLabel("");
+        idValue.setFont(Fonts.PANEL_HEADING_FONT);
+        idValue.setSize(500, 20);
+        idValue.setLocation(textX, 85);
+        container.add(idValue);
+
+        Controls.centerDialog(this);
         setVisible(true);
 
         if(itemSelected != null){
-            id.setText("ID: " + itemSelected.getId());
+            id.setText("ID");
+            idValue.setText(itemSelected.getId());
             textName.setText(itemSelected.getName());
+            textName.setCaretPosition(0);
             textCategory.setText(itemSelected.getCategory());
             textDescription.setText(itemSelected.getDescription());
+            textDescription.setCaretPosition(0);
             textPrice.setText(String.valueOf(itemSelected.getPrice()));
             textProfit.setText(String.valueOf(itemSelected.getProfitPercent()));
             textDiscount.setText(String.valueOf(itemSelected.getDiscountPercent()));

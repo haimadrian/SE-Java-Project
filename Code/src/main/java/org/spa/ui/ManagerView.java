@@ -52,7 +52,6 @@ public class ManagerView {
 
         private TitlePane title;
         private ReportsPane reportsPane;
-        private OrdersPane ordersPane;
 
 
         public ManagementViewPane() {
@@ -71,7 +70,6 @@ public class ManagerView {
             add((reportsPane = new ReportsPane()), gbc);
             gbc.gridy++;
             gbc.weighty = 0.92;
-            add((ordersPane = new OrdersPane()), gbc);
         }
     }
 
@@ -138,113 +136,6 @@ public class ManagerView {
             economicReport.addActionListener(actionEvent -> {
                 new ReportView("Economic");
             });
-        }
-    }
-
-    public class OrdersPane extends JPanel{
-        private TableManager<OrderColumn, OrderViewInfo> tableManager;
-        private List<OrderViewInfo> tableModelList;
-        private OrderSystem orderSystem;
-        JTextField searchBar;
-        JButton findOrderBtn;
-
-        public OrdersPane() {
-            setLayout(new GridBagLayout());
-            setBorder(new CompoundBorder(new TitledBorder("Orders"), new EmptyBorder(8, 0, 0, 0)));
-            GridBagConstraints gbc = new GridBagConstraints();
-
-            // OrderPanel Layout
-            JPanel inner = new JPanel();
-            inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
-            searchBar = new JTextField("Search by User/Order Id...");
-            findOrderBtn = new JButton(ImagesCache.getInstance().getImage("Magnifying.png"));
-            inner.add(searchBar);
-            inner.add(findOrderBtn);
-
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.weightx = 1000;
-            gbc.weighty = 1;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            add(inner, gbc);
-
-            // add Orders table
-            createTable();
-
-            gbc.anchor = GridBagConstraints.NORTHWEST;
-            gbc.fill = GridBagConstraints.BOTH;
-            gbc.weightx = 1000;
-            gbc.weighty = 1000;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            gbc.gridy++;
-            add(tableManager.getMainPanel(), gbc);
-
-            searchBar.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    searchBar.setText("");
-                    refreshTable();
-                }
-            });
-
-            findOrderBtn.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    String searchString = "(?i).*" + searchBar.getText() + ".*";
-                    List<Order> searchedItems = new ArrayList<>();
-                    orderSystem.getOrdersMap().values().stream().forEach(order -> {
-                        if ((order.getOrderId().matches(searchString)) || (order.getUserId().matches(searchString))) {
-                            searchedItems.add(order);
-                        }
-                    });
-                    tableModelList.clear();
-                    searchedItems.forEach(order -> tableModelList.add(orderToOrderViewInfo(order)));
-                    tableManager.refresh();
-                }
-            });
-        }
-        private void refreshTable() {
-            tableModelList.clear();
-            orderSystem.getOrdersMap().values().stream().forEach(order -> tableModelList.add(orderToOrderViewInfo(order)));
-            try {
-                tableManager.refresh();
-            } catch (Throwable t) {
-                logger.error("Error has occurred while trying to refresh table.", t);
-            }
-        }
-        public void createTable() {
-            orderSystem = SPAApplication.getInstance().getOrderSystem();
-            List<OrderColumn> orderCols = Arrays.asList(OrderColumn.OrderId, OrderColumn.OrderTime, OrderColumn.Summary, OrderColumn.UserId);
-            TableConfig tableConfig = TableConfig.create().withLinesInRow(4).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(false).build();
-            tableModelList = new ArrayList<>();
-            tableManager = new TableManager<>(orderCols, tableModelList, tableConfig);
-            tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> {
-                logger.info("Selected model is: " + selectedModel);
-                orderSystem.getSelectionModel().setSelection(orderViewInfoToOrder(selectedModel));
-            });
-            tableManager.setPopupAdapter(new PopupAdapter() {
-                @Override
-                protected java.util.List<JMenuItem> getMenuItemsForPopup() {
-                    JMenuItem item = new JMenuItem("View More...");
-                    item.setDisplayedMnemonicIndex(0);
-                    item.addActionListener(e -> {
-                        Order selection = orderSystem.getSelectionModel().getSelection();
-                        SwingUtilities.invokeLater(() -> {
-                            if (selection != null) {
-                                new OrderInfoDialog(orderToOrderViewInfo(selection)).init().setVisible(true);
-                            } else {
-                                Dialogs.showInfoDialog(frame, "No selection. Nothing to show.\nPlease select a row first.", "No selection");
-                            }
-                        });
-                    });
-                    return Collections.singletonList(item);
-                }
-            });
-            refreshTable();
         }
     }
 }

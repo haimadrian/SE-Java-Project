@@ -4,6 +4,7 @@ import org.spa.model.Item;
 import org.spa.ui.table.TableCellValue;
 import org.spa.ui.table.TableModelIfc;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -43,13 +44,14 @@ public class OrderViewInfo implements TableModelIfc {
     public String getItemsToString() {
         String itemsToString = "";
         int count = 0;
-        int sumPrice = 0;
+        double sumTotalPrice = 0;
+        double sumItemPrice = 0;
         for (Item item : items) {
-            count+= item.getCount();
-            // TODO: calculate actual price before aggregating it
-            sumPrice+= item.getPrice();
+            count += item.getCount();
+            sumItemPrice = (item.getPrice() * ((item.getProfitPercent() + 100) /100) * ((100 - item.getDiscountPercent()) / 100)) * item.getCount();
+            sumTotalPrice+= sumItemPrice;
         }
-        itemsToString = "Amount of items: " + count + System.lineSeparator() + "Total Price: " + sumPrice + "$";
+        itemsToString = "Amount of items: " + count + System.lineSeparator() + "Total Price: " + new DecimalFormat("##.##").format(sumTotalPrice) + "$";
         return itemsToString;
     }
 

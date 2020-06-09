@@ -66,7 +66,7 @@ public class ForgotPassword {
       panel.add(answer);
       answer.setVisible(false);
 
-      OK.addActionListener(new ActionListener() {
+      ActionListener okActionListener = new ActionListener() {
 
          @Override
          public void actionPerformed(ActionEvent e) {
@@ -85,7 +85,12 @@ public class ForgotPassword {
                res.setText("");
             }
          }
-      });
+      };
+
+      OK.addActionListener(okActionListener);
+      userText.addActionListener(okActionListener);
+      submit.addActionListener(okActionListener);
+
 
       submit.addActionListener(new ActionListener() {
 

@@ -63,7 +63,8 @@ public class ResetPassword {
       reset.setBounds(30, 100, 120, 25);
       panel.add(reset);
 
-      reset.addActionListener(new ActionListener() {
+      ActionListener resetActionListener = new ActionListener() {
+
          @Override
          public void actionPerformed(ActionEvent e) {
 
@@ -82,6 +83,10 @@ public class ResetPassword {
                res.setText("Password do not match!");
             }
          }
-      });
+      };
+
+      reset.addActionListener(resetActionListener);
+      newPasswordText.addActionListener(resetActionListener);
+      reEnterPasswordText.addActionListener(resetActionListener);
    }
 }

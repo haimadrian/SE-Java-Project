@@ -1,9 +1,8 @@
 package org.spa.controller.action.impl;
 
-public class StockReportAction extends  AbstractAction<Void> {
+public class StockReportAction extends AbstractAction<String> {
     @Override
-    public Void execute() {
-        context.getItemsWarehouse().getItems();
-        return null;
+    public String execute() {
+        return context.getReportSystem().generateStockReport(context.getItemsWarehouse().getItems());
     }
 }

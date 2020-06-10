@@ -6,6 +6,6 @@ public class SortbyPriceLowToHigh implements Comparator<WarehouseItem>
 {
    public int compare(WarehouseItem a, WarehouseItem b)
    {
-      return Double.compare(a.getTotalPrice() ,b.getTotalPrice());
+      return Double.compare(a.getActualPrice(), b.getActualPrice());
    }
 }

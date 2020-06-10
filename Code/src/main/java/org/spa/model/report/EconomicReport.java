@@ -1,50 +1,56 @@
 package org.spa.model.report;
 
 import org.spa.common.SPAApplication;
-import org.spa.controller.item.WarehouseItem;
-import org.spa.model.Item;
 import org.spa.model.Order;
-import java.util.List;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class EconomicReport extends Report {
     private double incoming;
     private double expenses;
 
-    public EconomicReport(String reportID) {
-        super(reportID);
+    public EconomicReport() {
+        super();
     }
 
     public double getIncoming() {
         Map<String, Order> ordersMap = SPAApplication.getInstance().getOrderSystem().getOrdersMap();
-        incoming = ordersMap.values().stream().flatMap(order -> order.getItems().stream()).mapToDouble(item -> (double) item.getPrice()).sum();
+        incoming = ordersMap.values().stream().flatMap(order -> order.getItems().stream()).mapToDouble(item -> item.getPriceWithProfit() *item.getCount()).sum();
         return incoming;
     }
 
-    public double getExpenses() {
-        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(warehouseItem ->
-                expenses+=warehouseItem.getPrice());
+    public double getExpenses() {// From the actual price we subtract the profit value to get the actual expense with discount included multiplied by the items count
+        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item ->
+                expenses+=(item.getActualPrice()-item.getProfitValue())*item.getCount());
+        //We also need to add the expenses of items that are now in the Orders
+        expenses += SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().stream().flatMap(order -> order.getItems().stream()).mapToDouble
+                (item -> (item.getActualPrice()-item.getProfitValue()) *item.getCount()).sum();
         return expenses;
     }
-    public double getTotalProfitPerItem() {
-        double totalPrice = 0;
-        double profitPerItem = 0;
-/*
-        SPAApplication.getInstance().getOrderSystem().getOrdersMap().forEach((s, order) ->
-        {
-        });*/
-        List<WarehouseItem> warehouseItemList = SPAApplication.getInstance().getItemsWarehouse().getItems();
-        for (WarehouseItem warehouseItem : warehouseItemList) {
-            totalPrice = (warehouseItem.getPrice() * warehouseItem.getProfitPercent() / 100) + warehouseItem.getPrice();
-            totalPrice += totalPrice - (totalPrice * warehouseItem.getDiscountPercent() / 100);
-        }
-
+    public Map<String, Double> getExpensesPerItem() {
+        Map<String, Double> expensesPerItem= new HashMap<>();
+        SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().stream().flatMap(order -> order.getItems().stream()).mapToDouble
+                (item -> expensesPerItem.put(item.getName(),(-1)*item.getActualPrice()-item.getProfitValue())*item.getCount());
+        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> expensesPerItem.put(item.getName(),((-1)*item.getActualPrice()-item.getProfitValue())*item.getCount()));
+    return expensesPerItem;
+    }
+    public Map<String, Double> getProfitPerItem() {
+        Map<String, Double> profitPerItem= new HashMap<>();
+        SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().stream().flatMap(order -> order.getItems().stream()).mapToDouble
+                (item -> profitPerItem.put(item.getName(),item.getPriceWithProfit()*item.getCount()));
+        SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> profitPerItem.put(item.getName(),(item.getPriceWithProfit()*item.getCount())));
         return profitPerItem;
     }
 
-    public double calculateTotalProfit(){
-        if(incoming > 0 && expenses > 0)
-            return incoming - expenses;
-        return 1;
+    public double getTotalProfit(){
+        return getIncoming() - getExpenses();
+    }
+
+    public Map<String, Double> getTotalProfitPerItem(){
+        Map<String, Double> profitPerItem= getProfitPerItem();
+        Map<String, Double> expensesPerItem= getExpensesPerItem();
+        profitPerItem.putAll(expensesPerItem);
+        return profitPerItem;
     }
 }

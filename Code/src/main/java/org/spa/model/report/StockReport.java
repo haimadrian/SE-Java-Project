@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 public class StockReport extends Report {
-    public StockReport(String reportID) {
-        super(reportID);
+    public StockReport() {
+        super();
     }
 
     public List<WarehouseItem> getItems() {

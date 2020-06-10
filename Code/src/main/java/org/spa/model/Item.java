@@ -55,6 +55,34 @@ public class Item {
    }
    //@formatter:on
 
+   /**
+    * @return The price after adding it the profit and discount values
+    */
+   public double getActualPrice() {
+      return getPriceWithProfit() - getDiscountValue();
+   }
+
+   /**
+    * @return The price after adding it the profit value
+    */
+   public double getPriceWithProfit() {
+      return getPrice() + getProfitValue();
+   }
+
+   /**
+    * @return The profit of this item
+    */
+   public double getProfitValue() {
+      return getPrice() * (getProfitPercent() / 100.0);
+   }
+
+   /**
+    * @return The discount of this item
+    */
+   public double getDiscountValue() {
+      return getPriceWithProfit() * (getDiscountPercent() / 100.0);
+   }
+
    public String getCategory() {return category;}
 
    public void setCategory(String category){this.category= category;}
@@ -79,10 +107,6 @@ public class Item {
 
    public void setPrice(double price) { this.price = price; }
 
-   public double getTotalPrice(){
-      price += (price * profitPercent/100) - (discountPercent*price/100);
-      return price;
-   }
    public double getProfitPercent() {
       return profitPercent;
    }

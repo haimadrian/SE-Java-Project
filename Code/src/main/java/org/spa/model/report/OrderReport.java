@@ -12,8 +12,7 @@ public class OrderReport extends Report {
     private Date dateStart;
     private Date dateEnd;
 
-    public OrderReport(String reportID, Date dateStart, Date dateEnd) {
-        super(reportID);
+    public OrderReport(Date dateStart, Date dateEnd) {
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
     }

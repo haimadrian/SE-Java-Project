@@ -24,6 +24,7 @@ import org.spa.ui.item.ItemViewInfoHome;
 import org.spa.ui.login.LoginView;
 import org.spa.ui.login.Registration;
 import org.spa.ui.order.OrdersView;
+import org.spa.ui.report.ReportView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
@@ -49,7 +50,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     public static final int HOME_PAGE_BUTTON_SIZE = 64;
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     public static final ImageIcon MAGNIFYING_IMAGE = ImagesCache.getInstance().getImage("magnifying-icon.png");
-    private JButton management;
+    private JButton reports;
     private JButton login;
     private JButton logout;
     private JButton orders;
@@ -117,8 +118,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         Controls.setComponentSize(register, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
         image = ImagesCache.getInstance().getImage("management-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
-        management = new JButton(new ImageIcon(scaledImage));
-        Controls.setComponentSize(management, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+        reports = new JButton(new ImageIcon(scaledImage));
+        Controls.setComponentSize(reports, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
         image = ImagesCache.getInstance().getImage("order-history-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         orders = new JButton(new ImageIcon(scaledImage));
@@ -144,17 +145,17 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             public void actionPerformed(ActionEvent actionEvent) {
                 SPAApplication.getInstance().getUserManagementService().logout();
                 logout.setVisible(false);
-                management.setVisible(false);
+                reports.setVisible(false);
                 login.setVisible(true);
                 orders.setVisible(false);
                 register.setVisible(false);
             }
         });
 
-        management.addActionListener(new ActionListener() {
+        reports.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                new ManagerView(mainForm);
+                new ReportView("Order");
             }
         });
 
@@ -253,7 +254,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(logout);
         add(lblUsername);
         add(darkMode);
-        add(management);
+        add(reports);
         add(orders);
         add(register);
         add(shoppingCart.getNavigatingComponent());
@@ -263,7 +264,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(searchBtn);
         add(searchBar);
         alerts.getNavigatingComponent().setVisible(false);
-        management.setVisible(false);
+        reports.setVisible(false);
         orders.setVisible(false);
         register.setVisible(false);
         add(imageContainer);
@@ -312,7 +313,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         if ((loggedInUser instanceof SystemAdmin)
                 || (loggedInUser instanceof Admin)) {
             alerts.getNavigatingComponent().setVisible(true);
-            management.setVisible(true);
+            reports.setVisible(true);
             if(loggedInUser instanceof SystemAdmin) {
                 register.setVisible(true);
             }
@@ -360,10 +361,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         layout.putConstraint(SpringLayout.WEST, cart, -cart.getPreferredSize().width - PAD, SpringLayout.WEST, login);
         layout.putConstraint(SpringLayout.NORTH, orders, PAD, SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, orders, -orders.getPreferredSize().width - PAD, SpringLayout.WEST, cart);
-        layout.putConstraint(SpringLayout.NORTH, management, PAD, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, management, -management.getPreferredSize().width - PAD, SpringLayout.WEST, orders);
+        layout.putConstraint(SpringLayout.NORTH, reports, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, reports, -reports.getPreferredSize().width - PAD, SpringLayout.WEST, orders);
         layout.putConstraint(SpringLayout.NORTH, alerts, 10, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, alerts, -alerts.getPreferredSize().width - PAD, SpringLayout.WEST, management);
+        layout.putConstraint(SpringLayout.WEST, alerts, -alerts.getPreferredSize().width - PAD, SpringLayout.WEST, reports);
         layout.putConstraint(SpringLayout.NORTH, register, 10, SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, register, -register.getPreferredSize().width - PAD, SpringLayout.WEST, alerts);
         layout.putConstraint(SpringLayout.NORTH, lblUsername, 5, SpringLayout.SOUTH, login);

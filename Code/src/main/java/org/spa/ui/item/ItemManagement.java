@@ -64,6 +64,7 @@ public class ItemManagement extends JFrame implements ActionListener {
     private JButton imageBtn;
     private JLabel output;
     private JLabel id;
+    private JLabel idValue;
 
     public ItemManagement(){
         this(null);
@@ -243,7 +244,7 @@ public class ItemManagement extends JFrame implements ActionListener {
         id.setLocation(labelX, 85);
         container.add(id);
 
-        JLabel idValue = new JLabel("");
+        idValue = new JLabel("");
         idValue.setFont(Fonts.PANEL_HEADING_FONT);
         idValue.setSize(500, 20);
         idValue.setLocation(textX, 85);
@@ -326,7 +327,7 @@ public class ItemManagement extends JFrame implements ActionListener {
                 }
             } else if (warehouseItem != null) {
                 String convertedId="";
-                convertedId = id.getText().replace("ID: ","");
+                convertedId = idValue.getText();
                 WarehouseItem warehouseItem = new WarehouseItem(convertedId,
                         textCategory.getText(),
                         textName.getText(),

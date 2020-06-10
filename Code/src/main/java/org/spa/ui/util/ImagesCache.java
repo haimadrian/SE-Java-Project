@@ -46,9 +46,9 @@ public class ImagesCache {
     * @return The image or <code>null</code> in case it could not be found
     */
    public ImageIcon getImage(String imageName) {
-      ImageIcon image = cache.get(imageName);
+      String legalImageName = StringUtils.toLegalFileName(imageName);
+      ImageIcon image = cache.get(legalImageName);
       if (image == null) {
-         String legalImageName = StringUtils.toLegalFileName(imageName);
          try {
             // Use our class to resolve the same package
             Class<?> callingClass = getCallingClass();
@@ -66,15 +66,15 @@ public class ImagesCache {
             if (resource != null) {
                try {
                   image = new ImageIcon(ImageIO.read(resource));
-                  image.setDescription(imageName); // So we will use this description in tooltips
-                  cache.put(imageName, image);
+                  image.setDescription(legalImageName); // So we will use this description in tooltips
+                  cache.put(legalImageName, image);
                } finally {
                   resource.close();
                }
             }
          } catch (Exception e) {
             image = null;
-            logger.error("Could not find resource: " + imageName);
+            logger.error("Could not find resource: " + legalImageName);
          }
       }
 
@@ -119,7 +119,7 @@ public class ImagesCache {
          File currImageFile = new File(imagesDir, imageName);
          if (!currImageFile.exists()) {
             try {
-               ImageIO.write((BufferedImage)image.getImage(), imageName.substring(imageName.indexOf('.') + 1), currImageFile);
+               ImageIO.write((BufferedImage)image.getImage(), imageName.substring(imageName.lastIndexOf('.') + 1), currImageFile);
                imagesCount.incrementAndGet();
             } catch (Exception e) {
                logger.error("Error has occurred while saving image to local disk: " + currImageFile);

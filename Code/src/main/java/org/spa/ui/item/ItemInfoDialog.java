@@ -113,6 +113,7 @@ public class ItemInfoDialog extends JFrame {
          this.dispose();
       }), true);
       this.getRootPane().setDefaultButton(buttonPanel);
+      buttonPanel.setBackground(acceptButtonColor);
 
       // Lay out the label and scroll pane from top to bottom.
       JPanel contentPane = new JPanel();

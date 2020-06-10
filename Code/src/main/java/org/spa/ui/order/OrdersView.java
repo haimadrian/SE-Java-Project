@@ -13,15 +13,13 @@ import org.spa.ui.table.TableManager;
 import org.spa.ui.util.Controls;
 import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.ImagesCache;
+
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,7 +67,7 @@ public class OrdersView {
         }
     }
 
-    public class TitlePane extends JPanel {
+    public static class TitlePane extends JPanel {
 
         public TitlePane() {
             setLayout(new GridBagLayout());
@@ -94,36 +92,47 @@ public class OrdersView {
         User loggedInUser;
         public OrdersPanel() {
             loggedInUser = SPAApplication.getInstance().getUserManagementService().getLoggedInUser();
-            isAdmin=(SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Admin ||
-                    SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.SysAdmin) ? true : false;
+            isAdmin= SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Admin ||
+                  SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.SysAdmin;
 
             setLayout(new GridBagLayout());
             setBorder(new CompoundBorder(new TitledBorder("Orders"), new EmptyBorder(8, 0, 0, 0)));
             GridBagConstraints gbc = new GridBagConstraints();
-            // OrderPanel Layout
-            JPanel inner = new JPanel();
-            inner.setLayout(new BoxLayout(inner, BoxLayout.X_AXIS));
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.weightx = 1000;
-            gbc.weighty = 1;
-            gbc.gridwidth = 1;
-            gbc.gridheight = 1;
-            add(inner, gbc);
 
             if (isAdmin) {
+            // OrderPanel Layout
+            JPanel inner = new JPanel();
+                inner.setLayout(new OverlayLayout(inner));
+
                 searchBar = new JTextField("Search by User/Order Id...");
+                searchBar.setPreferredSize(new Dimension(200, 30));
                 Image scaledImage = MAGNIFYING_IMAGE.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
                 findOrderBtn= new JButton(new ImageIcon(scaledImage));
+                Controls.setFlatStyle(findOrderBtn, false);
                 findOrderBtn.setPreferredSize(new Dimension(30, 30));
-                inner.add(searchBar);
                 inner.add(findOrderBtn);
+                inner.add(searchBar);
+
+                searchBar.addComponentListener(new ComponentAdapter() {
+                    @Override
+                    public void componentResized(ComponentEvent e) {
+                        // Do it later cause somehow the getSize() retrieves the preferred size, which differs from the actual size
+                        // and it might bring the button to a wrong location..
+                        SwingUtilities.invokeLater(() -> {
+                            if (!searchBar.getSize().equals(searchBar.getPreferredSize())) {
+                                findOrderBtn.setLocation(searchBar.getSize().width - findOrderBtn.getPreferredSize().width - 10, 0);
+                            }
+                        });
+                    }
+                });
+
                 searchBar.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
+                        if ("Search by User/Order Id...".equalsIgnoreCase(searchBar.getText())) {
                         searchBar.setText("");
+                        }
+
                         refreshTable();
                     }
                 });
@@ -133,7 +142,7 @@ public class OrdersView {
                     public void actionPerformed(ActionEvent e) {
                         String searchString = "(?i).*" + searchBar.getText() + ".*";
                         List<Order> searchedItems = new ArrayList<>();
-                        orderSystem.getOrdersMap().values().stream().forEach(order -> {
+                        orderSystem.getOrdersMap().values().forEach(order -> {
                             if ((order.getOrderId().matches(searchString)) || (order.getUserId().matches(searchString))) {
                                 searchedItems.add(order);
                             }
@@ -145,6 +154,16 @@ public class OrdersView {
                 };
                 findOrderBtn.addActionListener(searchActionListener);
                 searchBar.addActionListener(searchActionListener);
+
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.anchor = GridBagConstraints.WEST;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1000;
+                gbc.weighty = 1;
+                gbc.gridwidth = 1;
+                gbc.gridheight = 1;
+                add(inner, gbc);
             }
             // add Orders table
             createTable();
@@ -160,7 +179,7 @@ public class OrdersView {
         private void refreshTable() {
             tableModelList.clear();
             if(isAdmin) {
-                orderSystem.getOrdersMap().values().stream().forEach(order -> tableModelList.add(orderToOrderViewInfo(order)));
+                orderSystem.getOrdersMap().values().forEach(order -> tableModelList.add(orderToOrderViewInfo(order)));
             }
             else {
                 for (Order order  : orderSystem.getOrdersMap().values()) {

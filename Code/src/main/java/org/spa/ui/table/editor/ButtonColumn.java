@@ -1,10 +1,12 @@
 package org.spa.ui.table.editor;
 
 import org.spa.ui.table.TableCellValue;
+import org.spa.ui.util.Controls;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -28,7 +30,6 @@ import java.util.function.Consumer;
  */
 
 public class ButtonColumn extends DefaultCellEditor implements TableCellRenderer, TableCellEditor {
-    private final Consumer<JTable> listener;
     private int mnemonic;
     private Border originalBorder;
     private Border focusBorder;
@@ -45,14 +46,17 @@ public class ButtonColumn extends DefaultCellEditor implements TableCellRenderer
      */
     public ButtonColumn(Consumer<JTable> listener) {
         super(new JTextField(""));
-        this.listener = listener;
         renderButton = new JButton();
+        Controls.setFlatStyle(renderButton);
         editButton = new JButton();
-        editButton.setFocusPainted(false);
+        Controls.setFlatStyle(editButton);
         editButton.addActionListener(actionEvent -> {this.stopCellEditing();
         listener.accept(table);});
-        originalBorder = editButton.getBorder();
-        setFocusBorder(new LineBorder(Color.BLUE));
+
+        // Get the focus border of the LAF we use
+        focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+        originalBorder = new DefaultTableCellRenderer().getBorder();
+
         setClickCountToStart(1);
     }
 
@@ -98,6 +102,18 @@ public class ButtonColumn extends DefaultCellEditor implements TableCellRenderer
 
         handleValueForButton(value, editButton);
 
+        editButton.setOpaque(true);
+
+        if (isSelected) {
+            editButton.setForeground(table.getSelectionForeground());
+            editButton.setBackground(table.getSelectionBackground());
+            editButton.setBorder(focusBorder);
+        } else {
+            editButton.setBackground(table.getBackground());
+            editButton.setForeground(table.getForeground());
+            editButton.setBorder(originalBorder);
+        }
+
         this.editorValue = value;
         return editButton;
     }
@@ -119,23 +135,25 @@ public class ButtonColumn extends DefaultCellEditor implements TableCellRenderer
 //  Implement TableCellRenderer interface
 //
     public Component getTableCellRendererComponent(
-            JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            JTable table, Object value, boolean isSelected, boolean isFocused, int row, int column) {
         this.table = table;
+
+        renderButton.setOpaque(row % 2 == 1 || isSelected || isFocused);
+
         if (isSelected) {
             renderButton.setForeground(table.getSelectionForeground());
             renderButton.setBackground(table.getSelectionBackground());
         } else {
+            renderButton.setBackground(table.getBackground());
             renderButton.setForeground(table.getForeground());
-            renderButton.setBackground(UIManager.getColor("Button.background"));
         }
 
-        if (hasFocus) {
+        if (isFocused) {
             renderButton.setBorder(focusBorder);
         } else {
             renderButton.setBorder(originalBorder);
         }
 
-//		renderButton.setText( (value == null) ? "" : value.toString() );
         handleValueForButton(value, renderButton);
 
         return renderButton;

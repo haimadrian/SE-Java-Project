@@ -8,6 +8,7 @@ import org.spa.ui.util.Dialogs;
 import org.spa.ui.util.Fonts;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -19,28 +20,27 @@ import java.awt.*;
 public class CountCellEditor extends DefaultCellEditor {
    private JSpinner spinner;
    private JTextField editor;
-   private Color selectionBackground;
+   private final Border originalBorder;
+   private final Border focusBorder;
 
    public CountCellEditor() {
       super(new JTextField());
       setClickCountToStart(1);
-   }
 
-   public CountCellEditor(javax.swing.text.Document doc) {
-      super(new JTextField(doc, "", 0));
-      setClickCountToStart(1);
+      // Get the focus border of the LAF we use
+      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      originalBorder = BorderFactory.createEmptyBorder();
    }
 
    @Override
    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
       int count = Integer.parseInt(value.toString());
 
-      selectionBackground = table.getSelectionBackground();
-
       spinner = new JSpinner();
       spinner.setOpaque(true);
 
       editor = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
+      editor.setBorder(BorderFactory.createEmptyBorder());
       editor.setHorizontalAlignment(JTextField.CENTER);
       editor.setEditable(false);
       editor.setFont(Fonts.PLAIN_FONT);
@@ -50,7 +50,17 @@ public class CountCellEditor extends DefaultCellEditor {
       spinner.setValue(Integer.valueOf(count));
       spinner.addChangeListener(new CountChangeListener(row));
 
-      spinner.setBackground(selectionBackground);
+      if (isSelected) {
+         spinner.setForeground(table.getSelectionForeground());
+         spinner.setBackground(table.getSelectionBackground());
+         spinner.setBorder(focusBorder);
+         editor.setBackground(table.getSelectionBackground());
+      } else {
+         spinner.setForeground(table.getForeground());
+         spinner.setBackground(table.getBackground());
+         spinner.setBorder(originalBorder);
+         editor.setBackground(table.getBackground());
+      }
 
       return spinner;
    }

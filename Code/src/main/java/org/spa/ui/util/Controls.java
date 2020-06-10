@@ -11,6 +11,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,6 +37,7 @@ public class Controls {
    public static Color background;
    private static Color tooltipBack;
    public static Color textColor;
+   public static final Color acceptButtonColor = new Color(54, 88, 128);
 
    private Controls() {
       // Disallow instantiation of this class
@@ -267,6 +270,42 @@ public class Controls {
    }
 
    /**
+    * Make a flat style for button with a highlight when hovering over it
+    * @param button The button to stylize
+    */
+   public static void setFlatStyle(AbstractButton button) {
+      setFlatStyle(button, true);
+   }
+
+   /**
+    * Make a flat style for button where you can control whether to set a highlight when hovering over it or not
+    * @param button The button to stylize
+    * @param putHoverEffect Set a mouse hover highlight effect?
+    */
+   public static void setFlatStyle(AbstractButton button, boolean putHoverEffect) {
+      button.setBorderPainted(false);
+      button.setFocusPainted(false);
+      button.setContentAreaFilled(false);
+      button.setBackground(background.brighter());
+
+      if (putHoverEffect) {
+         button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+               // Show background so there will be an highlight
+               button.setOpaque(true);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+               // Transparent background
+               button.setOpaque(false);
+            }
+         });
+      }
+   }
+
+   /**
     * @return A nice-looking and resizable horizontal separator, preferably for use in box layouts
     */
    public static JSeparator createHorizontalSeparator() {
@@ -473,6 +512,28 @@ public class Controls {
             setFontToComponents((Container)child, font);
          } else if (child instanceof JComponent) {
             setFontToComponents((JComponent)child, font);
+         }
+      }
+   }
+
+   public static void setBackgroundToComponents(Container comp, Color color) {
+      comp.setBackground(color);
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            setBackgroundToComponents((Container)child, color);
+         } else if (child instanceof JComponent) {
+            setBackgroundToComponents((JComponent)child, color);
+         }
+      }
+   }
+
+   public static void setBackgroundToComponents(JComponent comp, Color color) {
+      comp.setBackground(color);
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            setBackgroundToComponents((Container)child, color);
+         } else if (child instanceof JComponent) {
+            setBackgroundToComponents((JComponent)child, color);
          }
       }
    }

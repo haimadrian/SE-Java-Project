@@ -24,10 +24,10 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       textArea.setWrapStyleWord(true);
       textArea.setLineWrap(true);
       textArea.setFont(Fonts.PLAIN_FONT);
-      originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
       focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      originalBorder = getBorder();
    }
 
    @Override

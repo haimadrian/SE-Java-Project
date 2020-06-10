@@ -28,9 +28,7 @@ import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.*;
@@ -83,6 +81,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       ImageIcon image = ImagesCache.getInstance().getImage("shopping-cart-icon.png");
       Image scaledImage = image.getImage().getScaledInstance(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
       shoppingCartButton = new ButtonWithBadge(new ImageIcon(scaledImage));
+      Controls.setFlatStyle(shoppingCartButton);
       shoppingCartButton.setToolTipText("View Shopping Cart");
       shoppingCartButton.setSize(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE);
       shoppingCartButton.setCountForBadge(shoppingCart.count());
@@ -148,7 +147,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
             continueButton.removeActionListener(placeOrderActionListener);
             continueButton.removeActionListener(loginActionListener);
             continueButton.addActionListener(placeOrderActionListener);
-            continueButton.setBackground(Color.green.darker().darker().darker());
+            continueButton.setBackground(Controls.acceptButtonColor);
          }
       });
 
@@ -177,7 +176,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
          continueButton = createButton("Login", loginActionListener, true);
       } else {
          continueButton = createButton("Place Order", placeOrderActionListener, true);
-         continueButton.setBackground(Color.green.darker().darker().darker());
+         continueButton.setBackground(Controls.acceptButtonColor);
       }
 
       clearCartButton = createButton("Clear Cart", e -> {

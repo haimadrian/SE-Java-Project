@@ -68,7 +68,7 @@ public class LoginView {
 
         JLabel forgotPassword = new JLabel("Forgot Password?" );
         forgotPassword.setBounds(115, 130, 130, 25);
-        forgotPassword.setForeground(Color.BLUE);
+        forgotPassword.setForeground(Controls.acceptButtonColor);
         panel.add(forgotPassword);
 
 

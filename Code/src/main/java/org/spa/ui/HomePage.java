@@ -47,8 +47,8 @@ import static org.spa.ui.item.ItemCopying.warehouseItemToItemViewInfo;
 
 public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, UserManagementServiceObserver , ItemsWarehouseObserver {
     public static final int PAD = 10;
-    public static final int HOME_PAGE_BUTTON_IMAGE_SIZE = 58;
-    public static final int HOME_PAGE_BUTTON_SIZE = 64;
+    public static final int HOME_PAGE_BUTTON_IMAGE_SIZE = 50;
+    public static final int HOME_PAGE_BUTTON_SIZE = 65;
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     public static final ImageIcon MAGNIFYING_IMAGE = ImagesCache.getInstance().getImage("magnifying-icon.png");
     private JButton management;
@@ -116,23 +116,28 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         register = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(register, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+        Controls.setFlatStyle(register);
         image = ImagesCache.getInstance().getImage("management-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         management = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(management, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+        Controls.setFlatStyle(management);
         image = ImagesCache.getInstance().getImage("order-history-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         orders = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(orders, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+        Controls.setFlatStyle(orders);
         image = ImagesCache.getInstance().getImage("logout-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         logout = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(logout, HOME_PAGE_BUTTON_SIZE + 2, HOME_PAGE_BUTTON_SIZE);
+        Controls.setFlatStyle(logout);
         logout.setVisible(false);
         image = ImagesCache.getInstance().getImage("login-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         login = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(login, HOME_PAGE_BUTTON_SIZE + 2, HOME_PAGE_BUTTON_SIZE);
+        Controls.setFlatStyle(login);
         itemsPick= new ArrayList<>();
         login.addActionListener(new ActionListener() {
             @Override
@@ -185,6 +190,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         searchBar.setPreferredSize(new Dimension(40, 40));
         scaledImage = MAGNIFYING_IMAGE.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
         searchBtn = new JButton(new ImageIcon(scaledImage));
+        Controls.setFlatStyle(searchBtn, false);
         searchBtn.setPreferredSize(new Dimension(40, 40));
         ActionListener searchActionListener = new ActionListener() {
             @Override
@@ -317,20 +323,20 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     public void ComponentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer) {
         layout.putConstraint(SpringLayout.NORTH, imageContainer, PAD, SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, imageContainer, PAD, SpringLayout.WEST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, login, PAD, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, login, -login.getPreferredSize().width - PAD, SpringLayout.EAST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, logout, PAD, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, logout, -logout.getPreferredSize().width - PAD, SpringLayout.EAST, contentPane);
-        layout.putConstraint(SpringLayout.NORTH, cart, PAD, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, cart, -cart.getPreferredSize().width - PAD, SpringLayout.WEST, login);
-        layout.putConstraint(SpringLayout.NORTH, orders, PAD, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, orders, -orders.getPreferredSize().width - PAD, SpringLayout.WEST, cart);
-        layout.putConstraint(SpringLayout.NORTH, management, PAD, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, management, -management.getPreferredSize().width - PAD, SpringLayout.WEST, orders);
-        layout.putConstraint(SpringLayout.NORTH, alerts, 10, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, alerts, -alerts.getPreferredSize().width - PAD, SpringLayout.WEST, management);
-        layout.putConstraint(SpringLayout.NORTH, register, 10, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, register, -register.getPreferredSize().width - PAD, SpringLayout.WEST, alerts);
+        layout.putConstraint(SpringLayout.NORTH, login, 0, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, login, -login.getPreferredSize().width, SpringLayout.EAST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, logout, 0, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, logout, -logout.getPreferredSize().width, SpringLayout.EAST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, cart, 0, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, cart, -cart.getPreferredSize().width, SpringLayout.WEST, login);
+        layout.putConstraint(SpringLayout.NORTH, orders, 0, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, orders, -orders.getPreferredSize().width, SpringLayout.WEST, cart);
+        layout.putConstraint(SpringLayout.NORTH, management, 0, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, management, -management.getPreferredSize().width, SpringLayout.WEST, orders);
+        layout.putConstraint(SpringLayout.NORTH, alerts, 0, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, alerts, -alerts.getPreferredSize().width, SpringLayout.WEST, management);
+        layout.putConstraint(SpringLayout.NORTH, register, 0, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, register, -register.getPreferredSize().width, SpringLayout.WEST, alerts);
         layout.putConstraint(SpringLayout.NORTH, lblUsername, 5, SpringLayout.SOUTH, login);
         layout.putConstraint(SpringLayout.WEST, lblUsername, -lblUsername.getPreferredSize().width, SpringLayout.EAST, contentPane);
         layout.putConstraint(SpringLayout.NORTH, darkMode, 5, SpringLayout.SOUTH, lblUsername);

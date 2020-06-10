@@ -1,6 +1,8 @@
 package org.spa.ui.item;
 
 import org.spa.common.SPAApplication;
+import org.spa.common.util.log.Logger;
+import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.action.ActionException;
 import org.spa.controller.action.ActionManager;
 import org.spa.controller.action.ActionType;
@@ -17,8 +19,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -28,6 +34,7 @@ import static org.spa.main.SPAMain.FRAME_ICON_NAME;
 import static org.spa.ui.HomePage.MAGNIFYING_IMAGE;
 
 public class ItemManagement extends JFrame implements ActionListener {
+    private static final Logger logger = LoggerFactory.getLogger(ItemManagement.class);
 
     private WarehouseItem warehouseItem;
     private ItemsWarehouse itemsWarehouse;
@@ -196,7 +203,7 @@ public class ItemManagement extends JFrame implements ActionListener {
         textImage.setLocation(textX, y+450);
 
         add = new JButton("Add");
-        add.setBackground(Color.green.darker().darker().darker());
+        add.setBackground(Controls.acceptButtonColor);
         add.setFont(Fonts.PLAIN_FONT);
         add.setSize(100, 30);
         add.setLocation(200, y+495);
@@ -211,12 +218,15 @@ public class ItemManagement extends JFrame implements ActionListener {
         searchBtn.addActionListener(this);
         searchBtn.setToolTipText("Open file");
 
-        imageBtn = new JButton(ImagesCache.getInstance().getImage("web-icon.png"));
+        scaledImage = ImagesCache.getInstance().getImage("web-icon.png").getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        imageBtn = new JButton(new ImageIcon(scaledImage));
         imageBtn.setFont(Fonts.PLAIN_FONT);
         imageBtn.setSize(30, textHeight);
         imageBtn.setLocation(430, y+450);
         imageBtn.addActionListener(this);
         imageBtn.setToolTipText("Open browser");
+        Controls.setFlatStyle(searchBtn, false);
+        Controls.setFlatStyle(imageBtn, false);
         container.add(searchBtn);
         container.add(imageBtn);
         container.add(textImage);
@@ -364,12 +374,18 @@ public class ItemManagement extends JFrame implements ActionListener {
         }
         else if (e.getSource() == imageBtn)
         {
-            String googleImagesPath = "https://www.google.co.il/imghp?hl=iw&tab=wi&authuser=0&ogbl";
+            String url = "https://www.google.com/";
             try {
-                Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + googleImagesPath);
-                p.waitFor();
+                url += "search?q=" + URLEncoder.encode(textName.getText(), StandardCharsets.UTF_8.name()) + "&tbm=isch";
+            } catch (UnsupportedEncodingException e1) {
+                url += "imghp";
+                logger.warn("Error has occurred while trying to build a google images search query", e1);
+            }
+
+            try {
+                Desktop.getDesktop().browse(new URI(url));
             } catch (Exception err) {
-                err.printStackTrace();
+                logger.error("Error has occurred while trying to open browser", err);
             }
         }
     }

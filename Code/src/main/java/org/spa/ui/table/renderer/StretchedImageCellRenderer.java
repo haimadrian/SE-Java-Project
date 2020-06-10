@@ -31,10 +31,10 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
    public StretchedImageCellRenderer(int margin, String adsAttributeName) {
       this.margin = margin;
       this.adsAttributeName = adsAttributeName;
-      originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
       focusBorder = (Border)UIManager.get("Table.focusCellHighlightBorder");
+      originalBorder = BorderFactory.createEmptyBorder();
    }
 
    @Override

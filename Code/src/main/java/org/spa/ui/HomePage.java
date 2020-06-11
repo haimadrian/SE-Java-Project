@@ -165,7 +165,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
       reports.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent actionEvent) {
-            new ReportView("Order");
+            new ReportView(mainForm, "Order");
          }
       });
 

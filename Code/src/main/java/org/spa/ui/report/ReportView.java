@@ -14,6 +14,7 @@ import org.spa.model.report.EconomicReport;
 import org.spa.model.report.OrderReport;
 import org.spa.model.report.StockReport;
 import org.spa.ui.control.PrintSupport;
+import org.spa.ui.util.Controls;
 import org.spa.ui.util.DateLabelFormatter;
 import org.spa.ui.util.Fonts;
 import org.spa.ui.util.ImagesCache;
@@ -46,7 +47,7 @@ public class ReportView {
    JDatePanelImpl datePanel1;
    JDatePanelImpl datePanel2;
 
-   public ReportView(String kindOfReport) {
+   public ReportView(Window parent, String kindOfReport) {
 
       this.kindOfReport = kindOfReport;
       frame = new JFrame("Report View");
@@ -54,7 +55,7 @@ public class ReportView {
       frame.setLayout(layout);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setSize(868, 600);
-      frame.setLocationRelativeTo(null);
+      Controls.centerDialog(parent, frame);
       panel = new JPanel();
       buttonsPanel = new JPanel();
       buttonsPanel.setBorder(BorderFactory.createTitledBorder("Reports:"));

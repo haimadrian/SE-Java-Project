@@ -10,9 +10,7 @@ import org.spa.controller.UserType;
 import org.spa.controller.action.ActionException;
 import org.spa.controller.action.ActionManager;
 import org.spa.controller.action.ActionType;
-import org.spa.controller.item.ItemsWarehouse;
-import org.spa.controller.item.ItemsWarehouseObserver;
-import org.spa.controller.item.WarehouseItem;
+import org.spa.controller.item.*;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
@@ -26,6 +24,7 @@ import org.spa.ui.item.ItemViewInfoHome;
 import org.spa.ui.login.LoginView;
 import org.spa.ui.login.Registration;
 import org.spa.ui.order.OrdersView;
+import org.spa.ui.report.ReportView;
 import org.spa.ui.table.PopupAdapter;
 import org.spa.ui.table.TableConfig;
 import org.spa.ui.table.TableManager;
@@ -51,13 +50,14 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     public static final int HOME_PAGE_BUTTON_SIZE = 64;
     private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
     public static final ImageIcon MAGNIFYING_IMAGE = ImagesCache.getInstance().getImage("magnifying-icon.png");
-    private JButton management;
+    private JButton reports;
     private JButton login;
     private JButton logout;
     private JButton orders;
     private JButton register;
     private JButton searchBtn;
     private JCheckBox darkMode;
+    private JComboBox sortTable;
     private CategoryTree categoryTree;
     private JTextField searchBar;
     private JFrame mainForm;
@@ -67,8 +67,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
     private ImageIcon spaLogo;
     private final UserManagementService userManagement;
     private ItemsWarehouse itemsWarehouse;
+    private List<WarehouseItem> modifiedItemList;
     private TableManager<ItemColumn, ItemViewInfoHome> tableManager;
-    private ArrayList<String> itemsPick;
     private java.util.List<ItemViewInfoHome> tableModelList;
 
     public HomePage(JFrame parent) {
@@ -84,29 +84,29 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         imageContainer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         categoryTree = new CategoryTree();
         categoryTree.getCategoryTree().setBorder(((JComponent)tableManager.getMainPanel().getComponent(0)).getBorder());
+        modifiedItemList = new ArrayList<>();
         imageContainer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 categoryTree.clear();
+                modifiedItemList.clear();
                 refreshTable();
             }
         });
-
         categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
             public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                modifiedItemList.clear();
                 TreePath newLeadSelectionPath = evt.getNewLeadSelectionPath();
                 if (newLeadSelectionPath != null) {
                     String node = newLeadSelectionPath.getLastPathComponent().toString();
-                    //TODO filter table by node
-                    List<WarehouseItem> selectedCategory = new ArrayList<>();
                     itemsWarehouse.getItems().stream().forEach(item -> {
                         if (item.getCategory().matches(node)) {
-                            selectedCategory.add(item);
+                            modifiedItemList.add(item);
                         }
                     });
                     tableModelList.clear();
-                    selectedCategory.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
+                    modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
                     tableManager.refresh();
                 }
             }
@@ -118,8 +118,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         Controls.setComponentSize(register, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
         image = ImagesCache.getInstance().getImage("management-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
-        management = new JButton(new ImageIcon(scaledImage));
-        Controls.setComponentSize(management, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
+        reports = new JButton(new ImageIcon(scaledImage));
+        Controls.setComponentSize(reports, HOME_PAGE_BUTTON_SIZE, HOME_PAGE_BUTTON_SIZE);
         image = ImagesCache.getInstance().getImage("order-history-icon.png");
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         orders = new JButton(new ImageIcon(scaledImage));
@@ -133,7 +133,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         scaledImage = image.getImage().getScaledInstance(HOME_PAGE_BUTTON_IMAGE_SIZE, HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
         login = new JButton(new ImageIcon(scaledImage));
         Controls.setComponentSize(login, HOME_PAGE_BUTTON_SIZE + 2, HOME_PAGE_BUTTON_SIZE);
-        itemsPick= new ArrayList<>();
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,17 +145,17 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             public void actionPerformed(ActionEvent actionEvent) {
                 SPAApplication.getInstance().getUserManagementService().logout();
                 logout.setVisible(false);
-                management.setVisible(false);
+                reports.setVisible(false);
                 login.setVisible(true);
                 orders.setVisible(false);
                 register.setVisible(false);
             }
         });
 
-        management.addActionListener(new ActionListener() {
+        reports.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                new ManagerView(mainForm);
+                new ReportView("Order");
             }
         });
 
@@ -189,15 +188,15 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         ActionListener searchActionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                modifiedItemList.clear();
                 String searchString = "(?i).*" + searchBar.getText() + ".*";
-                List<WarehouseItem> searchedItems = new ArrayList<>();
                 itemsWarehouse.getItems().forEach(item -> {
                     if ((item.getName().matches(searchString)) || (item.getDescription().matches(searchString))) {
-                        searchedItems.add(item);
+                        modifiedItemList.add(item);
                     }
                 });
                 tableModelList.clear();
-                searchedItems.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
+                modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
                 tableManager.refresh();
             }
         };
@@ -207,7 +206,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             @Override
             public void mouseClicked(MouseEvent e) {
                 searchBar.setText("");
-                refreshTable();
+                modifiedItemList.clear();
+                sortTable.setSelectedIndex(0);
             }
         });
 
@@ -216,12 +216,45 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         darkMode.setToolTipText("You must restart the application so changes will take effect");
         darkMode.addChangeListener(e -> Controls.setIsDarkMode(darkMode.isSelected()));
 
+        String sortArray[] = {"Sort by: None","Price: Low to high","Price: High to low","Name: Alphabetically"};
+        sortTable = new JComboBox(sortArray);
+        if (Controls.isDarkMode()) {
+            sortTable.setBackground(Color.black);
+            sortTable.setForeground(Color.white);
+        }
+        sortTable.addActionListener(new ActionListener () {
+            public void actionPerformed(ActionEvent e) {
+                tableModelList.clear();
+                if (modifiedItemList.size() == 0)
+                    modifiedItemList.addAll(itemsWarehouse.getItems());
+                switch (sortTable.getSelectedIndex()) {
+                    case 1: { //Low to high
+                            modifiedItemList.sort(new SortbyPriceLowToHigh());
+                        }
+                        break;
+
+                    case 2: { //High to low
+                            modifiedItemList.sort(new SortbyPriceHighToLow());
+                        break;
+                    }
+                    case 3: { //Alphabetic
+                        Collections.sort(modifiedItemList, (item1, item2) -> item1.getName().compareToIgnoreCase(item2.getName()));
+                        }
+                    default: {
+                        break;
+                    }
+                }
+                modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(warehouseItemToItemViewInfo(item))));
+                tableManager.refresh();
+            }
+        });
         itemsWarehouse.registerObserver(this);
+        add(sortTable);
         add(login);
         add(logout);
         add(lblUsername);
         add(darkMode);
-        add(management);
+        add(reports);
         add(orders);
         add(register);
         add(shoppingCart.getNavigatingComponent());
@@ -231,13 +264,13 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         add(searchBtn);
         add(searchBar);
         alerts.getNavigatingComponent().setVisible(false);
-        management.setVisible(false);
+        reports.setVisible(false);
         orders.setVisible(false);
         register.setVisible(false);
         add(imageContainer);
         SpringLayout layout = new SpringLayout();
         this.setLayout(layout);
-        ComponentLocation(layout, this, shoppingCart.getNavigatingComponent(),
+        componentLocation(layout, this, shoppingCart.getNavigatingComponent(),
                 alerts.getNavigatingComponent(),imageContainer);
     }
 
@@ -280,7 +313,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         if ((loggedInUser instanceof SystemAdmin)
                 || (loggedInUser instanceof Admin)) {
             alerts.getNavigatingComponent().setVisible(true);
-            management.setVisible(true);
+            reports.setVisible(true);
             if(loggedInUser instanceof SystemAdmin) {
                 register.setVisible(true);
             }
@@ -301,20 +334,23 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
 
     @Override
     public void deleteItem(WarehouseItem item) {
-        refreshTable();
+        modifiedItemList.clear();
+        sortTable.setSelectedIndex(0);
     }
 
     @Override
     public void updateItem(WarehouseItem item) {
-        refreshTable();
+        modifiedItemList.clear();
+        sortTable.setSelectedIndex(0);
     }
 
     @Override
     public void addItem(WarehouseItem item) {
-        refreshTable();
+        modifiedItemList.clear();
+        sortTable.setSelectedIndex(0);
     }
 
-    public void ComponentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer) {
+    public void componentLocation(SpringLayout layout, Container contentPane, Component cart, Component alerts, Component imageContainer) {
         layout.putConstraint(SpringLayout.NORTH, imageContainer, PAD, SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, imageContainer, PAD, SpringLayout.WEST, contentPane);
         layout.putConstraint(SpringLayout.NORTH, login, PAD, SpringLayout.NORTH, contentPane);
@@ -325,10 +361,10 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         layout.putConstraint(SpringLayout.WEST, cart, -cart.getPreferredSize().width - PAD, SpringLayout.WEST, login);
         layout.putConstraint(SpringLayout.NORTH, orders, PAD, SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, orders, -orders.getPreferredSize().width - PAD, SpringLayout.WEST, cart);
-        layout.putConstraint(SpringLayout.NORTH, management, PAD, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, management, -management.getPreferredSize().width - PAD, SpringLayout.WEST, orders);
+        layout.putConstraint(SpringLayout.NORTH, reports, PAD, SpringLayout.NORTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, reports, -reports.getPreferredSize().width - PAD, SpringLayout.WEST, orders);
         layout.putConstraint(SpringLayout.NORTH, alerts, 10, SpringLayout.NORTH, contentPane);
-        layout.putConstraint(SpringLayout.WEST, alerts, -alerts.getPreferredSize().width - PAD, SpringLayout.WEST, management);
+        layout.putConstraint(SpringLayout.WEST, alerts, -alerts.getPreferredSize().width - PAD, SpringLayout.WEST, reports);
         layout.putConstraint(SpringLayout.NORTH, register, 10, SpringLayout.NORTH, contentPane);
         layout.putConstraint(SpringLayout.WEST, register, -register.getPreferredSize().width - PAD, SpringLayout.WEST, alerts);
         layout.putConstraint(SpringLayout.NORTH, lblUsername, 5, SpringLayout.SOUTH, login);
@@ -349,6 +385,8 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         layout.putConstraint(SpringLayout.WEST, tableManager.getMainPanel(), 0, SpringLayout.EAST, categoryTree.getCategoryTree());
         layout.putConstraint(SpringLayout.EAST, tableManager.getMainPanel(), 0, SpringLayout.EAST, contentPane);
         layout.putConstraint(SpringLayout.SOUTH, tableManager.getMainPanel(), 0, SpringLayout.SOUTH, contentPane);
+        layout.putConstraint(SpringLayout.WEST, sortTable, 0, SpringLayout.EAST, searchBtn);
+        layout.putConstraint(SpringLayout.NORTH, sortTable, PAD, SpringLayout.NORTH, searchBtn);
     }
 
     private void createItemsTable() {
@@ -464,5 +502,3 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
         return (userManagement.getLoggedInUserType() == UserType.Admin || userManagement.getLoggedInUserType()==UserType.SysAdmin );
     }
 }
-
-

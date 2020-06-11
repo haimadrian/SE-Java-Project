@@ -7,6 +7,7 @@ import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.order.OrderSystem;
+import org.spa.controller.report.ReportSystem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.util.ImagesCache;
@@ -28,6 +29,7 @@ public class SPAApplication {
    private final UserManagementService userManagementService;
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
    private final OrderSystem orderSystem;
+   private final ReportSystem reportSystem;
    private boolean isStarted = false;
 
    // Disallow creation of this class from outside
@@ -38,6 +40,7 @@ public class SPAApplication {
       userManagementService = new UserManagementService();
       selectionModel = new SelectionModelManager<>();
       orderSystem = new OrderSystem();
+      reportSystem = new ReportSystem();
    }
 
    /**
@@ -120,6 +123,10 @@ public class SPAApplication {
 
    public OrderSystem getOrderSystem() {
       return orderSystem;
+   }
+
+   public ReportSystem getReportSystem() {
+      return reportSystem;
    }
 
    /**

@@ -6,6 +6,7 @@ import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.order.OrderSystem;
+import org.spa.controller.report.ReportSystem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class ActionContext {
    private final ShoppingCart shoppingCart;
    private final AlertSystem alertSystem;
    private final OrderSystem orderSystem;
+   private final ReportSystem reportSystem;
 
    /**
     * A way to let users of this class to append any value that they need to pass from action invoker to the action they implement
@@ -37,6 +39,7 @@ public class ActionContext {
       shoppingCart = SPAApplication.getInstance().getShoppingCart();
       alertSystem = SPAApplication.getInstance().getAlertSystem();
       orderSystem = SPAApplication.getInstance().getOrderSystem();
+      reportSystem = SPAApplication.getInstance().getReportSystem();
    }
 
    /**
@@ -76,6 +79,8 @@ public class ActionContext {
    public AlertSystem getAlertSystem() {
       return alertSystem;
    }
+
+   public ReportSystem getReportSystem() { return reportSystem; }
 
    public OrderSystem getOrderSystem() {
       return orderSystem;

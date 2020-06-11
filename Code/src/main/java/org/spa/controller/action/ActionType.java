@@ -1,6 +1,7 @@
 package org.spa.controller.action;
 
 import org.spa.controller.action.impl.*;
+import org.spa.controller.action.impl.StockReportAction;
 
 /**
  * @author Haim Adrian, Lior Shor, Idan Pollak
@@ -10,6 +11,9 @@ public enum ActionType {
    ClearCart(ClearCartAction.class),
    RemoveFromCart(RemoveFromCartAction.class),
    Purchase(PurchaseAction.class),
+   GenerateStockReport(StockReportAction.class),
+   GenerateEconomicReport(EconomicReportAction.class),
+   GenerateOrdersReport(OrdersReportAction.class),
    CreateItemInWarehouse(CreateItemInWarehouseAction.class),
    DeleteItemFromWarehouse(DeleteItemFromWarehouseAction.class),
    UpdateItemInWarehouse(UpdateItemInWarehouseAction.class);

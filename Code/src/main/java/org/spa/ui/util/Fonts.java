@@ -8,7 +8,7 @@ import java.awt.*;
  */
 public class Fonts {
    public static final int DEFAULT_FONT_SIZE = Math.max(14, Toolkit.getDefaultToolkit().getScreenResolution() / 9);
-   public static final int PROPORTIONAL_FONT_SIZE_CHANGE  = (int)(0.2*DEFAULT_FONT_SIZE);
+   public static final int PROPORTIONAL_FONT_SIZE_CHANGE = (int) (0.2 * DEFAULT_FONT_SIZE);
    public static final String DEFAULT_FONT_FACE = "Dialog";
    public static final String DEFAULT_MONOSPACED_FONT_FACE = "Courier New";
 

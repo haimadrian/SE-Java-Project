@@ -21,7 +21,7 @@ public class SpinnerCellRenderer extends DefaultTableCellRenderer {
       setVerticalAlignment(JLabel.TOP);
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      focusBorder = (Border) UIManager.get("List.focusCellHighlightBorder");
       originalBorder = BorderFactory.createEmptyBorder();
    }
 
@@ -40,7 +40,7 @@ public class SpinnerCellRenderer extends DefaultTableCellRenderer {
       // for such rows. In addition, check if it is selected or focused cause it got a different background
       boolean isOpaque = row % 2 == 1 || isSelected || isFocused;
       spinner.setOpaque(isOpaque);
-      JTextField editor = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
+      JTextField editor = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
       editor.setHorizontalAlignment(JTextField.CENTER);
       editor.setFont(Fonts.PLAIN_FONT);
       editor.setBorder(BorderFactory.createEmptyBorder());

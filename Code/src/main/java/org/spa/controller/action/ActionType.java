@@ -10,6 +10,9 @@ public enum ActionType {
    ClearCart(ClearCartAction.class),
    RemoveFromCart(RemoveFromCartAction.class),
    Purchase(PurchaseAction.class),
+   GenerateStockReport(StockReportAction.class),
+   GenerateEconomicReport(EconomicReportAction.class),
+   GenerateOrdersReport(OrdersReportAction.class),
    CreateItemInWarehouse(CreateItemInWarehouseAction.class),
    DeleteItemFromWarehouse(DeleteItemFromWarehouseAction.class),
    UpdateItemInWarehouse(UpdateItemInWarehouseAction.class);
@@ -22,7 +25,7 @@ public enum ActionType {
    }
 
    public <R, T extends Action<R>> T newInstance() throws IllegalAccessException, InstantiationException {
-      T action = (T)clazz.newInstance();
+      T action = (T) clazz.newInstance();
       return action;
    }
 }

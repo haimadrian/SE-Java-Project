@@ -18,17 +18,17 @@ import java.awt.*;
  * @since 22-May-20
  */
 public class CountCellEditor extends DefaultCellEditor {
-   private JSpinner spinner;
-   private JTextField editor;
    private final Border originalBorder;
    private final Border focusBorder;
+   private JSpinner spinner;
+   private JTextField editor;
 
    public CountCellEditor() {
       super(new JTextField());
       setClickCountToStart(1);
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      focusBorder = (Border) UIManager.get("List.focusCellHighlightBorder");
       originalBorder = BorderFactory.createEmptyBorder();
    }
 
@@ -39,7 +39,7 @@ public class CountCellEditor extends DefaultCellEditor {
       spinner = new JSpinner();
       spinner.setOpaque(true);
 
-      editor = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
+      editor = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
       editor.setBorder(BorderFactory.createEmptyBorder());
       editor.setHorizontalAlignment(JTextField.CENTER);
       editor.setEditable(false);

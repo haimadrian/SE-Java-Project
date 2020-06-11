@@ -13,6 +13,7 @@ public class ItemCopying {
 
    /**
     * A converter from {@link WarehouseItem} to {@link ItemViewInfo}
+    *
     * @param item The item to convert
     * @return The conversion result
     */
@@ -26,6 +27,7 @@ public class ItemCopying {
 
    /**
     * A converter from {@link ItemViewInfo} to {@link WarehouseItem}
+    *
     * @param item The item to convert
     * @return The conversion result
     */

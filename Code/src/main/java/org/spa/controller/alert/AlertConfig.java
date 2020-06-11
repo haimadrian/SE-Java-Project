@@ -30,6 +30,7 @@ public class AlertConfig {
 
    /**
     * Finding a specific threshold for the specified value. Each threshold is an interval with closed beginning and open ending.
+    *
     * @param value The value to find matching threshold for
     * @return The threshold matched for the specified value
     */

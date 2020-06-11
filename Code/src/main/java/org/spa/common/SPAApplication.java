@@ -7,6 +7,7 @@ import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.order.OrderSystem;
+import org.spa.controller.report.ReportSystem;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.ui.SPAExplorerIfc;
 import org.spa.ui.util.ImagesCache;
@@ -15,6 +16,7 @@ import org.spa.ui.util.ImagesCache;
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
  * Everybody can access this class in order to get to the different services in the project. The
  * services themselves use this class in order to communicate between themselves.
+ *
  * @author Haim Adrian
  * @since 16-May-20
  */
@@ -28,6 +30,7 @@ public class SPAApplication {
    private final UserManagementService userManagementService;
    private final SelectionModelManager<SPAExplorerIfc<?>> selectionModel;
    private final OrderSystem orderSystem;
+   private final ReportSystem reportSystem;
    private boolean isStarted = false;
 
    // Disallow creation of this class from outside
@@ -38,6 +41,7 @@ public class SPAApplication {
       userManagementService = new UserManagementService();
       selectionModel = new SelectionModelManager<>();
       orderSystem = new OrderSystem();
+      reportSystem = new ReportSystem();
    }
 
    /**
@@ -45,6 +49,13 @@ public class SPAApplication {
     */
    public static SPAApplication getInstance() {
       return instance;
+   }
+
+   /**
+    * @return Working directory used for storing and loading files from disk
+    */
+   public static String getWorkingDirectory() {
+      return "C:\\temp\\SPAApp";
    }
 
    /**
@@ -87,13 +98,6 @@ public class SPAApplication {
    }
 
    /**
-    * @return Working directory used for storing and loading files from disk
-    */
-   public static String getWorkingDirectory() {
-      return "C:\\temp\\SPAApp";
-   }
-
-   /**
     * @return A reference to {@link ItemsWarehouse}
     */
    public ItemsWarehouse getItemsWarehouse() {
@@ -122,9 +126,14 @@ public class SPAApplication {
       return orderSystem;
    }
 
+   public ReportSystem getReportSystem() {
+      return reportSystem;
+   }
+
    /**
     * @return A reference to the global {@link SelectionModelManager}
     */
    public SelectionModelManager<SPAExplorerIfc<?>> getSelectionModel() {
       return selectionModel;
-   }}
+   }
+}

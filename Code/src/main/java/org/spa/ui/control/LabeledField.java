@@ -7,6 +7,7 @@ import javax.swing.*;
 /**
  * A component that contains a text and some other component next to it.
  * Useful for when there is a need to a text box for example with a label at its left.
+ *
  * @author Haim Adrian
  * @since 12-May-20
  */
@@ -16,6 +17,7 @@ public class LabeledField extends JPanel {
 
    /**
     * Constructs a new {@link LabeledField}
+    *
     * @param label The string to set as the label of this labeled field
     * @param field The field which is labeled
     * @see #LabeledField(String, int, JComponent) LabeledField(String label, int labelWidth, JComponent field) for defining custom label width
@@ -26,6 +28,7 @@ public class LabeledField extends JPanel {
 
    /**
     * Constructs a new {@link LabeledField}
+    *
     * @param label The string to set as the label of this labeled field
     * @param labelWidth Custom width for the label. -1 for default width
     * @param field The field which is labeled

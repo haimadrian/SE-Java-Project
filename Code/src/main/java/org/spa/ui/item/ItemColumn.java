@@ -4,8 +4,8 @@ import org.spa.common.SPAApplication;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.cart.ShoppingCartException;
 import org.spa.controller.item.WarehouseItem;
-import org.spa.ui.table.editor.ButtonColumn;
 import org.spa.ui.table.TableColumnIfc;
+import org.spa.ui.table.editor.ButtonColumn;
 import org.spa.ui.table.editor.CountCellEditor;
 import org.spa.ui.table.editor.TextCellEditor;
 import org.spa.ui.table.renderer.SpinnerCellRenderer;
@@ -26,7 +26,7 @@ public enum ItemColumn implements TableColumnIfc {
    Name("Name", 0.15, String.class, new TextCellRenderer(), new TextCellEditor(true), true, 1),
    Description("Description", 0.46, String.class, new TextCellRenderer(), new TextCellEditor(true), true, 2),
    Price("Price", 0.1, Double.class, new TextCellRenderer(), null, false, 3),
-   Count("Count", 0.06, Integer.class, new SpinnerCellRenderer(), new CountCellEditor(), true,4),
+   Count("Count", 0.06, Integer.class, new SpinnerCellRenderer(), new CountCellEditor(), true, 4),
    Cart("Cart", 0.07, String.class, Constants.CART_BUTTON, Constants.CART_BUTTON, true, 4);
 
    private final String header;
@@ -96,17 +96,17 @@ public enum ItemColumn implements TableColumnIfc {
 
    private static class Constants {
       public static final ButtonColumn CART_BUTTON = new ButtonColumn(table -> SwingUtilities.invokeLater(() -> {
-            WarehouseItem selection = SPAApplication.getInstance().getItemsWarehouse().getSelectionModel().getSelection();
-            if (selection != null) {
-               String selectedItemId = selection.getId();
-               ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();
-               try {
-                  WarehouseItem shoppingCartItem = shoppingCart.getItems().stream().filter(item -> item.getId().equals(selectedItemId)).findFirst().orElse(null);
-                  shoppingCart.add(selectedItemId, shoppingCartItem == null ? 1 : shoppingCartItem.getCount() + 1);
-               } catch (ShoppingCartException ex) {
-                  SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(null, ex.getMessage(), "Error"));
-               }
+         WarehouseItem selection = SPAApplication.getInstance().getItemsWarehouse().getSelectionModel().getSelection();
+         if (selection != null) {
+            String selectedItemId = selection.getId();
+            ShoppingCart shoppingCart = SPAApplication.getInstance().getShoppingCart();
+            try {
+               WarehouseItem shoppingCartItem = shoppingCart.getItems().stream().filter(item -> item.getId().equals(selectedItemId)).findFirst().orElse(null);
+               shoppingCart.add(selectedItemId, shoppingCartItem == null ? 1 : shoppingCartItem.getCount() + 1);
+            } catch (ShoppingCartException ex) {
+               SwingUtilities.invokeLater(() -> Dialogs.showErrorDialog(null, ex.getMessage(), "Error"));
             }
-         }));
+         }
+      }));
    }
 }

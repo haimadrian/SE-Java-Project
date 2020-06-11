@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
-    @JsonProperty
-    private String orderId;
+   @JsonProperty
+   private String orderId;
 
-    @JsonProperty
-    private long orderTime;
+   @JsonProperty
+   private long orderTime;
 
-    @JsonProperty
-    private String userId;
+   @JsonProperty
+   private String userId;
 
-    @JsonProperty
-    private List<Item> items;
+   @JsonProperty
+   private List<Item> items;
 
-    //@formatter:off
+   //@formatter:off
     @JsonCreator()
     public Order(@JsonProperty(value = "orderId") String orderId,
                  @JsonProperty(value = "orderTime") long orderTime,
@@ -32,26 +32,26 @@ public class Order {
     }
     //@formatter:on
 
-    public Order(Order copy) {
-        this.orderId = copy.getOrderId();
-        this.orderTime = copy.getOrderTime();
-        this.userId = copy.getUserId();
-        this.items = new ArrayList<>(copy.getItems());
-    }
+   public Order(Order copy) {
+      this.orderId = copy.getOrderId();
+      this.orderTime = copy.getOrderTime();
+      this.userId = copy.getUserId();
+      this.items = new ArrayList<>(copy.getItems());
+   }
 
-    public String getOrderId() {
-        return orderId;
-    }
+   public String getOrderId() {
+      return orderId;
+   }
 
-    public long getOrderTime() {
-        return orderTime;
-    }
+   public long getOrderTime() {
+      return orderTime;
+   }
 
-    public String getUserId() {
-        return userId;
-    }
+   public String getUserId() {
+      return userId;
+   }
 
-    public List<Item> getItems() {
-        return items;
-    }
+   public List<Item> getItems() {
+      return items;
+   }
 }

@@ -2,7 +2,6 @@ package org.spa.ui.login;
 
 import org.spa.common.SPAApplication;
 import org.spa.common.User;
-import org.spa.ui.login.LoginView;
 import org.spa.ui.util.Controls;
 import org.spa.ui.util.ImagesCache;
 

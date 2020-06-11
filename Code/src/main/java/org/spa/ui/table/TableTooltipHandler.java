@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 /**
  * This is used to display tooltips with cell data when mouse is above certain cell. Very useful when cell
  * contents exceeds cell boundaries.
+ *
  * @author Haim Adrian
  * @since 12-May-20
  */
@@ -19,14 +20,14 @@ public class TableTooltipHandler extends MouseAdapter {
    private static final Logger logger = LoggerFactory.getLogger(TableTooltipHandler.class);
    private static final int MAX_TOOLTIP_WIDTH = 800;
 
-   private int row = -1;
-   private int col = -1;
-   private final JTable table;
-
    static {
       ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
       ToolTipManager.sharedInstance().setReshowDelay(1000);
    }
+
+   private final JTable table;
+   private int row = -1;
+   private int col = -1;
 
    /**
     * Constructs a new {@link TableTooltipHandler}

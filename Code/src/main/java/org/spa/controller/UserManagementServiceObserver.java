@@ -4,5 +4,5 @@ import org.spa.common.User;
 
 public interface UserManagementServiceObserver {
 
-    void userLogin(User loggedInUser);
+   void userLogin(User loggedInUser);
 }

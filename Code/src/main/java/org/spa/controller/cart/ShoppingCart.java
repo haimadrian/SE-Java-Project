@@ -81,6 +81,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
 
    /**
     * Summarizes all counts of the items in cart
+    *
     * @return How many items in cart
     */
    public int count() {
@@ -93,6 +94,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
 
    /**
     * Clears the shopping cart
+    *
     * @param revertWarehouseCount Whether to add the count back to the items warehouse (cart cleared) or not (cart purchased)
     */
    public void clear(boolean revertWarehouseCount) {
@@ -117,6 +119,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
 
    /**
     * Add an item to shopping cart
+    *
     * @param itemId The item to add (its identifier)
     * @param count How many items of this kind
     * @throws ShoppingCartException In cae the identifier does not exist in warehouse, or if the count is bigger than the count in warehouse
@@ -153,6 +156,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
 
    /**
     * Remove an item from shopping cart
+    *
     * @param itemId Identifier of the item to remove
     */
    public void remove(String itemId) {
@@ -188,6 +192,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
     * Update the count of an item which is in the cart to a new value. In case the item is not in cart, we will
     * redirect the method to {@link #add(String, int)}, as the item is first added to cart now. In case the new count is 0,
     * we will redirect the method to {@link #remove(String)}
+    *
     * @param itemId Identifier of the item to update
     * @param newCount The new value
     * @throws ShoppingCartException In case value was negative or if value was not in cart and the add method failed.
@@ -230,6 +235,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
 
    /**
     * This method created in order to be able to get the id of an item in the cart by its row at the table
+    *
     * @param row The row index at the table
     * @return The item identifier at the specified row
     */
@@ -239,6 +245,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
 
    /**
     * Register yourself as an observer of the shopping cart, to get notified when there is any change in the shopping cart (item added/removed)
+    *
     * @param observer An observer to be notified upon changes
     * @see ShoppingCartObserver
     */
@@ -285,6 +292,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
 
    /**
     * See {@link #isEditing()}
+    *
     * @param isEditing Whether the cart is being edited right now or not
     */
    public void setIsEditing(boolean isEditing) {
@@ -297,6 +305,7 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
     * dialog (info/error) to the user. Displaying another dialog causes the cart to get deactivated, so it
     * tries to close itself although it should not. That's why we need some sign to use so we can
     * distinguish between the scenarios.
+    *
     * @return Whether the cart is being edited right now or not
     */
    public boolean isEditing() {

@@ -32,16 +32,13 @@ import static org.spa.ui.util.Controls.createButton;
  */
 public class AlertsView implements SPAExplorerIfc<Alert> {
    private static final Logger logger = LoggerFactory.getLogger(AlertsView.class);
-
-   private JDialog alertsDialog;
    private final Window parent;
    private final ButtonWithBadge alertsButton;
    private final AlertSystem alertSystem;
-
    private final JPanel workArea;
    private final JLabel title;
    private final JButton clearButton;
-
+   private JDialog alertsDialog;
    /**
     * The table where we display alerts at
     */
@@ -85,9 +82,9 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
       workArea.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
       workArea.setLayout(new BoxLayout(workArea, BoxLayout.PAGE_AXIS));
       workArea.add(title);
-      workArea.add(Box.createRigidArea(new Dimension(0,5)));
+      workArea.add(Box.createRigidArea(new Dimension(0, 5)));
       workArea.add(tableManager.getMainPanel());
-      workArea.add(Box.createRigidArea(new Dimension(0,5)));
+      workArea.add(Box.createRigidArea(new Dimension(0, 5)));
       workArea.add(buttonsPanel);
    }
 

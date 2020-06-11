@@ -9,6 +9,7 @@ import java.awt.event.ComponentEvent;
 
 /**
  * An image viewer which can be used when there is a need to stretch an image over its container's content
+ *
  * @author Haim Adrian
  * @since 16-May-20
  */
@@ -23,6 +24,7 @@ public class ImageViewer extends JPanel {
 
    /**
     * Constructs an {@link ImageViewer} with margin=0
+    *
     * @param image The image to display
     */
    public ImageViewer(Image image) {
@@ -31,6 +33,7 @@ public class ImageViewer extends JPanel {
 
    /**
     * Constructs an {@link ImageViewer} with custom margin
+    *
     * @param image The image to display
     * @param margin The space to take from image's container boundaries
     */
@@ -40,6 +43,7 @@ public class ImageViewer extends JPanel {
 
    /**
     * Constructs an {@link ImageViewer} with custom margin and an ad
+    *
     * @param image The image to display
     * @param margin The space to take from image's container boundaries
     * @param ad An additional text that can be printed over the picture, at its top left corner - used for ads
@@ -50,6 +54,7 @@ public class ImageViewer extends JPanel {
 
    /**
     * Constructs an {@link ImageViewer} with custom margin
+    *
     * @param image The image to display
     * @param isStretched Whether to stretch the image or not
     * @param margin The space to take from image's container boundaries
@@ -60,6 +65,7 @@ public class ImageViewer extends JPanel {
 
    /**
     * Constructs an {@link ImageViewer} with custom margin
+    *
     * @param image The image to display
     * @param isStretched Whether to stretch the image or not
     * @param margin The space to take from image's container boundaries
@@ -91,7 +97,7 @@ public class ImageViewer extends JPanel {
                scaledImage = scaleImageIfNeeded();
             }
 
-            g.drawImage(scaledImage, x + margin, y + margin,this);
+            g.drawImage(scaledImage, x + margin, y + margin, this);
          } else {
             g.drawImage(image, x + margin, y + margin, this);
          }
@@ -102,7 +108,7 @@ public class ImageViewer extends JPanel {
          Font fontBackup = g.getFont();
          g.setFont(Fonts.PANEL_HEADING_FONT);
          g.setColor(Color.RED);
-         int doubleMargin = margin*2;
+         int doubleMargin = margin * 2;
          if (doubleMargin == 0) {
             doubleMargin = 10;
          }
@@ -114,11 +120,12 @@ public class ImageViewer extends JPanel {
 
    /**
     * To avoid of scaling an image on every onPaint event, we cache it and scale it only in case there was a resize event.
+    *
     * @return The scaled image or <code>null</code> in case the image was not configured as stretched.
     */
    private Image scaleImageIfNeeded() {
       if (isStretched) {
-         int doubleMargin = margin*2;
+         int doubleMargin = margin * 2;
          int width = Math.max(getWidth() - doubleMargin, 1);
          int height = Math.max(getHeight() - doubleMargin, 1);
          return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);

@@ -5,10 +5,11 @@ import org.spa.common.util.log.Logger;
 
 /**
  * Used for constructing concrete log adapters according to the specified parameters.
+ *
  * @author Haim Adrian
- * @since 10-May-20
  * @see Logger
  * @see #getLogger(LogType, Object...)
+ * @since 10-May-20
  */
 public class LoggerFactory {
 
@@ -53,12 +54,13 @@ public class LoggerFactory {
     *     // ...
     * }
     * </code></pre>
+    *
     * @param type The type to create a logger for
     * @param params Additional parameters if required. See the documentation for examples
     * @return A {@link Logger}
     * @see LogType
     */
-   public static Logger getLogger(LogType type, Object ... params) {
+   public static Logger getLogger(LogType type, Object... params) {
       Logger logger;
 
       switch (type) {
@@ -66,7 +68,7 @@ public class LoggerFactory {
             if (params.length == 0) {
                logger = new Log4j2Adapter();
             } else if (params[0] instanceof Class) {
-               logger = new Log4j2Adapter((Class<?>)params[0]);
+               logger = new Log4j2Adapter((Class<?>) params[0]);
             } else {
                logger = new Log4j2Adapter(String.valueOf(params[0]));
             }
@@ -75,7 +77,7 @@ public class LoggerFactory {
             logger = new ConsoleAdapter();
             break;
          case component:
-            logger = new ComponentAdapter((ComponentLogHandler)params[0]);
+            logger = new ComponentAdapter((ComponentLogHandler) params[0]);
             break;
          default:
             logger = new Log4j2Adapter();
@@ -86,6 +88,7 @@ public class LoggerFactory {
 
    /**
     * Retrieve a new {@link LogType#log4j2 log4j2} logger for class
+    *
     * @param forClass The class to get logger for
     * @return Log4j2 adapter for {@link Logger}
     */
@@ -95,6 +98,7 @@ public class LoggerFactory {
 
    /**
     * Retrieve a new {@link LogType#log4j2 log4j2} logger for a name
+    *
     * @param forName The name to get logger for
     * @return Log4j2 adapter for {@link Logger}
     */

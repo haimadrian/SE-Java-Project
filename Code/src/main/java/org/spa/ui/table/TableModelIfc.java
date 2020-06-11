@@ -6,5 +6,6 @@ package org.spa.ui.table;
  */
 public interface TableModelIfc {
    Object getAttributeValue(String attributeName);
+
    void setAttributeValue(String attributeName, Object value);
 }

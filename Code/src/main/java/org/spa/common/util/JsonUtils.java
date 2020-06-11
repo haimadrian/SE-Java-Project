@@ -21,6 +21,7 @@ public class JsonUtils {
 
    /**
     * Use this method to create and initialize an object mapper for our standards.
+    *
     * @return A new object mapper ready to work with Jsons.
     */
    public static ObjectMapper createObjectMapper() {

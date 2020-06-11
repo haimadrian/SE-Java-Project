@@ -1,6 +1,7 @@
 package org.spa.ui.table;
 
 import org.spa.ui.item.ItemViewInfo;
+
 /**
  * This class created in order to get the ability to have a reference to the current table model (row)
  * from within the renderers and editors.<br/>
@@ -20,6 +21,7 @@ public class TableCellValue<T extends TableModelIfc> {
 
    /**
     * Constructs a new {@link TableCellValue}
+    *
     * @param value The actual value, e.g. image or name
     * @param item A reference to the item which constructing this item value reference.
     */

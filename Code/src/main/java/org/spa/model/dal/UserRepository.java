@@ -21,193 +21,193 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class UserRepository implements Repository<User> {
-    private static final File CUSTOMER_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Customers.json");
-    private static final File ADMIN_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Admins.json");
-    private static final File SYSADMIN_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "SysAdmins.json");
-    private static final Logger logger = LoggerFactory.getLogger(OrderRepository.class);
+   private static final File CUSTOMER_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Customers.json");
+   private static final File ADMIN_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Admins.json");
+   private static final File SYSADMIN_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "SysAdmins.json");
+   private static final Logger logger = LoggerFactory.getLogger(OrderRepository.class);
 
-    private final Map<String, User> users = new HashMap<>();
+   private final Map<String, User> users = new HashMap<>();
 
-    public UserRepository() {
-        CUSTOMER_FILE.getParentFile().mkdirs();
-    }
+   public UserRepository() {
+      CUSTOMER_FILE.getParentFile().mkdirs();
+   }
 
-    @Override
-    public List<User> selectAll() {
-        if (users.isEmpty()) {
-            readUsersFromFile(CUSTOMER_FILE, CustomerList.class);
-            readUsersFromFile(ADMIN_FILE, AdminList.class);
-            readUsersFromFile(SYSADMIN_FILE, SysAdminList.class);
+   @Override
+   public List<User> selectAll() {
+      if (users.isEmpty()) {
+         readUsersFromFile(CUSTOMER_FILE, CustomerList.class);
+         readUsersFromFile(ADMIN_FILE, AdminList.class);
+         readUsersFromFile(SYSADMIN_FILE, SysAdminList.class);
 
-            createSysAdminIfMissing();
+         createSysAdminIfMissing();
 
-            if (!users.isEmpty()) {
-                logger.info(users.size() + " users have been read");
+         if (!users.isEmpty()) {
+            logger.info(users.size() + " users have been read");
+         }
+      }
+
+      return new ArrayList<>(users.values());
+   }
+
+   private void createSysAdminIfMissing() {
+      if (users.values().stream().noneMatch(SystemAdmin.class::isInstance)) {
+         users.put("Idan", new SystemAdmin("Idan", "1234"));
+      }
+   }
+
+   private <T extends UserList<? extends User>> void readUsersFromFile(File currFile, Class<T> customerListClass) {
+      if (currFile.exists()) {
+         logger.info("Reading users from file: " + currFile);
+         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(currFile))))) {
+            T usersFromFile = JsonUtils.readValue(reader, customerListClass);
+            if (usersFromFile != null) {
+               usersFromFile.getUsers().forEach(user -> users.put(user.getUserId(), user));
             }
-        }
+         } catch (Exception e) {
+            logger.error("Error has occurred while reading users from file: " + currFile, e);
+         }
+      } else {
+         logger.info("Users file does not exist. Nothing to read: " + currFile);
+      }
+   }
 
-        return new ArrayList<>(users.values());
-    }
+   @Override
+   public User create(User user) {
+      if (user instanceof Admin) {
+         Admin admin = (Admin) user;
+         users.put(admin.getUserId(), new Admin(admin.getUserId(), admin.getPassword(),
+               admin.getPhoneNumber(), admin.getBirthDay(), admin.getRegistrationDate(),
+               admin.getSecretQuestion(), admin.getSecretAnswer(), admin.getSalary(), admin.getPositionPercentage()));
+      } else if (user instanceof Customer) {
+         Customer customer = (Customer) user;
+         users.put(customer.getUserId(), new Customer(customer.getUserId(), customer.getPassword(),
+               customer.getPhoneNumber(), customer.getBirthDay(), customer.getRegistrationDate(),
+               customer.getSecretQuestion(), customer.getSecretAnswer()));
+      } else if (user instanceof SystemAdmin) {
+         users.put(user.getUserId(), new SystemAdmin(user.getUserId(), ((SystemAdmin) user).getKey()));
+      }
 
-    private void createSysAdminIfMissing() {
-        if (users.values().stream().noneMatch(SystemAdmin.class::isInstance)) {
-            users.put("Idan", new SystemAdmin("Idan", "1234"));
-        }
-    }
+      return user;
+   }
 
-    private <T extends UserList<? extends User>> void readUsersFromFile(File currFile, Class<T> customerListClass) {
-        if (currFile.exists()) {
-            logger.info("Reading users from file: " + currFile);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(currFile))))) {
-               T usersFromFile = JsonUtils.readValue(reader, customerListClass);
-                if (usersFromFile != null) {
-                    usersFromFile.getUsers().forEach(user -> users.put(user.getUserId(), user));
-                }
+   @Override
+   public User update(User item) {
+      users.put(item.getUserId(), item);
+      return item;
+   }
+
+   @Override
+   public User delete(User item) {
+      return users.remove(item.getUserId());
+   }
+
+   @Override
+   public void saveAll(Iterable<User> users) {
+      users.forEach(this::update);
+
+      ArrayList<Admin> admins = new ArrayList<>();
+      ArrayList<Customer> customers = new ArrayList<>();
+      ArrayList<SystemAdmin> sysadmins = new ArrayList<>();
+
+      if (!this.users.isEmpty()) {
+         logger.info("Saving " + this.users.size() + " users to file");
+
+         for (User user : this.users.values()) {
+            if (user instanceof Admin) {
+               admins.add((Admin) user);
+            } else if (user instanceof Customer) {
+               customers.add((Customer) user);
+            } else if (user instanceof SystemAdmin) {
+               sysadmins.add((SystemAdmin) user);
+            }
+         }
+
+         if (!admins.isEmpty()) {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(ADMIN_FILE))))) {
+               JsonUtils.writeValue(writer, new AdminList(admins));
             } catch (Exception e) {
-                logger.error("Error has occurred while reading users from file: " + currFile, e);
+               logger.error("Error has occurred while writing admins to file", e);
             }
-        } else {
-            logger.info("Users file does not exist. Nothing to read: " + currFile);
-        }
-    }
+         }
 
-    @Override
-    public User create(User user) {
-        if (user instanceof Admin) {
-            Admin admin = (Admin) user;
-            users.put(admin.getUserId(), new Admin(admin.getUserId(), admin.getPassword(),
-                    admin.getPhoneNumber(), admin.getBirthDay(), admin.getRegistrationDate(),
-                    admin.getSecretQuestion(), admin.getSecretAnswer(), admin.getSalary(), admin.getPositionPercentage()));
-        } else if (user instanceof Customer) {
-            Customer customer = (Customer) user;
-            users.put(customer.getUserId(), new Customer(customer.getUserId(), customer.getPassword(),
-                    customer.getPhoneNumber(), customer.getBirthDay(), customer.getRegistrationDate(),
-                    customer.getSecretQuestion(),customer.getSecretAnswer()));
-        } else if (user instanceof SystemAdmin) {
-            users.put(user.getUserId(), new SystemAdmin(user.getUserId(), ((SystemAdmin) user).getKey()));
-        }
-
-        return user;
-    }
-
-    @Override
-    public User update(User item) {
-        users.put(item.getUserId(), item);
-        return item;
-    }
-
-    @Override
-    public User delete(User item) {
-        return users.remove(item.getUserId());
-    }
-
-    @Override
-    public void saveAll(Iterable<User> users) {
-        users.forEach(this::update);
-
-        ArrayList<Admin> admins = new ArrayList<>();
-        ArrayList<Customer> customers = new ArrayList<>();
-        ArrayList<SystemAdmin> sysadmins = new ArrayList<>();
-
-        if (!this.users.isEmpty()) {
-            logger.info("Saving " + this.users.size() + " users to file");
-
-            for (User user : this.users.values()) {
-                if (user instanceof Admin) {
-                    admins.add((Admin) user);
-                } else if (user instanceof Customer) {
-                    customers.add((Customer) user);
-                } else if (user instanceof SystemAdmin) {
-                    sysadmins.add((SystemAdmin) user);
-                }
+         if (!customers.isEmpty()) {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(CUSTOMER_FILE))))) {
+               JsonUtils.writeValue(writer, new CustomerList(customers));
+            } catch (Exception e) {
+               logger.error("Error has occurred while writing customers to file", e);
             }
+         }
 
-            if (!admins.isEmpty()) {
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(ADMIN_FILE))))) {
-                    JsonUtils.writeValue(writer, new AdminList(admins));
-                } catch (Exception e) {
-                    logger.error("Error has occurred while writing admins to file", e);
-                }
+         if (!sysadmins.isEmpty()) {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(SYSADMIN_FILE))))) {
+               JsonUtils.writeValue(writer, new SysAdminList(sysadmins));
+            } catch (Exception e) {
+               logger.error("Error has occurred while writing sys-admins to file", e);
             }
+         }
 
-            if (!customers.isEmpty()) {
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(CUSTOMER_FILE))))) {
-                    JsonUtils.writeValue(writer, new CustomerList(customers));
-                } catch (Exception e) {
-                    logger.error("Error has occurred while writing customers to file", e);
-                }
-            }
+         logger.info("Users saved");
+      }
+   }
 
-            if (!sysadmins.isEmpty()) {
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(SYSADMIN_FILE))))) {
-                    JsonUtils.writeValue(writer, new SysAdminList(sysadmins));
-                } catch (Exception e) {
-                    logger.error("Error has occurred while writing sys-admins to file", e);
-                }
-            }
+   public interface UserList<T> {
+      List<T> getUsers();
+   }
 
-            logger.info("Users saved");
-        }
-    }
+   public static class CustomerList implements UserList<Customer> {
+      @JsonProperty
+      private ArrayList<Customer> customers;
 
-    public interface UserList<T> {
-        List<T> getUsers();
-    }
+      public CustomerList() {
+         customers = new ArrayList<>();
+      }
 
-    public static class CustomerList implements UserList<Customer> {
-        @JsonProperty
-        private ArrayList<Customer> customers;
+      @JsonCreator
+      public CustomerList(@JsonProperty(value = "customers") ArrayList<Customer> customers) {
+         this.customers = customers;
+      }
 
-        public CustomerList() {
-            customers = new ArrayList<>();
-        }
+      @Override
+      public List<Customer> getUsers() {
+         return customers;
+      }
+   }
 
-        @JsonCreator
-        public CustomerList(@JsonProperty(value = "customers") ArrayList<Customer> customers) {
-            this.customers = customers;
-        }
+   public static class AdminList implements UserList<Admin> {
+      @JsonProperty
+      private ArrayList<Admin> admins;
 
-        @Override
-        public List<Customer> getUsers() {
-            return customers;
-        }
-    }
+      public AdminList() {
+         admins = new ArrayList<>();
+      }
 
-    public static class AdminList implements UserList<Admin> {
-        @JsonProperty
-        private ArrayList<Admin> admins;
+      @JsonCreator
+      public AdminList(@JsonProperty(value = "admins") ArrayList<Admin> admins) {
+         this.admins = admins;
+      }
 
-        public AdminList() {
-            admins = new ArrayList<>();
-        }
+      @Override
+      public List<Admin> getUsers() {
+         return admins;
+      }
+   }
 
-        @JsonCreator
-        public AdminList(@JsonProperty(value = "admins") ArrayList<Admin> admins) {
-            this.admins = admins;
-        }
+   public static class SysAdminList implements UserList<SystemAdmin> {
+      @JsonProperty
+      private ArrayList<SystemAdmin> sysadmins;
 
-        @Override
-        public List<Admin> getUsers() {
-            return admins;
-        }
-    }
+      public SysAdminList() {
+         sysadmins = new ArrayList<>();
+      }
 
-    public static class SysAdminList implements UserList<SystemAdmin> {
-        @JsonProperty
-        private ArrayList<SystemAdmin> sysadmins;
+      @JsonCreator
+      public SysAdminList(@JsonProperty(value = "sysadmins") ArrayList<SystemAdmin> sysadmins) {
+         this.sysadmins = sysadmins;
+      }
 
-        public SysAdminList() {
-            sysadmins = new ArrayList<>();
-        }
-
-        @JsonCreator
-        public SysAdminList(@JsonProperty(value = "sysadmins") ArrayList<SystemAdmin> sysadmins) {
-            this.sysadmins = sysadmins;
-        }
-
-        @Override
-        public List<SystemAdmin> getUsers() {
-            return sysadmins;
-        }
-    }
+      @Override
+      public List<SystemAdmin> getUsers() {
+         return sysadmins;
+      }
+   }
 }

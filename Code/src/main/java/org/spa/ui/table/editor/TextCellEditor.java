@@ -10,15 +10,16 @@ import java.awt.event.FocusListener;
 
 /**
  * Editor component for strings - uses a text field
+ *
  * @author Haim Adrian
  * @since 15-May-20
  */
 public class TextCellEditor extends DefaultCellEditor implements FocusListener {
-   private JScrollPane scrollPane;
-   private JTextArea textArea;
    private final Border originalBorder;
    private final Border focusBorder;
    private final boolean isReadOnly;
+   private JScrollPane scrollPane;
+   private JTextArea textArea;
 
    public TextCellEditor() {
       this(false);
@@ -33,7 +34,7 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
       initScrollPane();
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      focusBorder = (Border) UIManager.get("List.focusCellHighlightBorder");
       originalBorder = BorderFactory.createEmptyBorder();
    }
 

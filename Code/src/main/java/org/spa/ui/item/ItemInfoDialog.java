@@ -8,7 +8,10 @@ import org.spa.ui.util.ImagesCache;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 
 import static org.spa.main.SPAMain.FRAME_ICON_NAME;
@@ -31,12 +34,12 @@ public class ItemInfoDialog extends JFrame {
       setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
 
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-      setPreferredSize(new Dimension((int)(screenSize.width / 1.5), (int)(screenSize.height / 2)));
+      setPreferredSize(new Dimension((int) (screenSize.width / 1.5), (int) (screenSize.height / 2)));
 
       // These fucking Swing panels insist on not working as expected.. Hence I do this voodoo in order to repaint he window with
       // a different height after it has been displayed. Somehow it works and the "Price" row is displayed. Otherwise the price is
       // not displayed and the dialog must be resized by user
-      SwingUtilities.invokeLater(() -> setPreferredSize(new Dimension((int)(screenSize.width / 1.5), (int)(screenSize.height / 1.8))));
+      SwingUtilities.invokeLater(() -> setPreferredSize(new Dimension((int) (screenSize.width / 1.5), (int) (screenSize.height / 1.8))));
 
       setTitle("Item Info");
 
@@ -74,24 +77,23 @@ public class ItemInfoDialog extends JFrame {
       ImageViewer imageViewer = new ImageViewer(item.getImage().getImage(), true, 0, ads);
 
       imageViewer.setSize(300, 300);
-      imageViewer.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+      imageViewer.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
       // Lay out the label and scroll pane from top to bottom.
       JPanel detailsPanel = new JPanel();
       detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.PAGE_AXIS));
 
       detailsPanel.add(label);
-      detailsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+      detailsPanel.add(Box.createRigidArea(new Dimension(0, 5)));
       detailsPanel.add(fields);
-      detailsPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+      detailsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
       // Lay out the sections from left to right.
       JSplitPane splitPane = new JSplitPane();
       splitPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       splitPane.setLeftComponent(detailsPanel);
       splitPane.setRightComponent(imageViewer);
-      //splitPane.setDividerSize(15);
-      splitPane.setDividerLocation((int)(getPreferredSize().width * 0.6));
+      splitPane.setDividerLocation((int) (getPreferredSize().width * 0.6));
       splitPane.setOpaque(true);
       splitPane.setContinuousLayout(true);
       splitPane.addMouseListener(new MouseAdapter() {

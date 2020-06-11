@@ -14,11 +14,16 @@ import java.net.URL;
 
 /**
  * Test class for {@link ItemViewInfo}
+ *
  * @author Haim Adrian
  * @since 05-Jun-20
  */
 public class ItemViewInfoTest extends BaseTest {
    private File sandboxDir;
+
+   private static ItemViewInfo createItemWithPricing(double price, double profit, double discount, int count) {
+      return new ItemViewInfo("#1234, ", "cat", "item", "desc", price, profit, discount, count);
+   }
 
    @Before
    public void init() {
@@ -42,10 +47,6 @@ public class ItemViewInfoTest extends BaseTest {
       assertNotNull("Item image supposed to be retrieved as we loaded ImageForTest.png under the item name: " + itemName, itemImage);
    }
 
-   private static ItemViewInfo createItemWithPricing(double price, double profit, double discount, int count) {
-      return new ItemViewInfo("#1234, ", "cat", "item", "desc", price, profit, discount, count);
-   }
-
    @Test
    public void TestActualPrice_SetPriceOnly_ActualPriceEqualsToPrice() {
       // Arrange
@@ -67,7 +68,7 @@ public class ItemViewInfoTest extends BaseTest {
       double actualPrice = item.getActualPrice();
 
       // Assert
-      assertEquals("Discount value expected to be price * (discount/100)", (item.getDiscountPercent()/100.0)*item.getPrice(), item.getDiscountValue(), 0);
+      assertEquals("Discount value expected to be price * (discount/100)", (item.getDiscountPercent() / 100.0) * item.getPrice(), item.getDiscountValue(), 0);
       assertEquals("Actual price supposed to be equal to price - discount", item.getPrice() - item.getDiscountValue(), actualPrice, 0);
    }
 
@@ -80,7 +81,7 @@ public class ItemViewInfoTest extends BaseTest {
       double actualPrice = item.getActualPrice();
 
       // Assert
-      assertEquals("Profit value expected to be price * (profit/100)", (item.getProfitPercent()/100.0)*item.getPrice(), item.getProfitValue(), 0);
+      assertEquals("Profit value expected to be price * (profit/100)", (item.getProfitPercent() / 100.0) * item.getPrice(), item.getProfitValue(), 0);
       assertEquals("Actual price supposed to be equal to price + profit", item.getPrice() + item.getProfitValue(), actualPrice, 0);
    }
 

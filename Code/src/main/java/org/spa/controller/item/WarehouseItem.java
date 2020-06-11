@@ -6,6 +6,7 @@ import java.util.Objects;
 /**
  * To share item data between different layers in the project, we create this class which has the same fields as the DAL one,
  * but here we also keep the count of each item, without knowing how the DAL keeps this information
+ *
  * @author Haim Adrian
  * @since 16-May-20
  */
@@ -21,6 +22,7 @@ public class WarehouseItem {
 
    /**
     * Constructs a new {@link WarehouseItem}
+    *
     * @param id
     * @param category
     * @param name
@@ -30,7 +32,7 @@ public class WarehouseItem {
     * @param discountPercent
     * @param count
     */
-   public WarehouseItem(String id,String category, String name, String description, double price, double profitPercent, double discountPercent, int count) {
+   public WarehouseItem(String id, String category, String name, String description, double price, double profitPercent, double discountPercent, int count) {
       this.id = id;
       this.category = category;
       this.name = name;
@@ -39,11 +41,11 @@ public class WarehouseItem {
       this.profitPercent = profitPercent;
       this.discountPercent = discountPercent;
       this.count = count;
-
    }
 
    /**
     * Constructs a copy of a {@link WarehouseItem}
+    *
     * @param another The item to copy data from
     */
    public WarehouseItem(WarehouseItem another) {
@@ -57,9 +59,42 @@ public class WarehouseItem {
       this.count = another.getCount();
    }
 
-   public String getCategory() {return category; }
 
-   public void setCategory(String category) {this.category = category;}
+   /**
+    * @return The price after adding it the profit and discount values
+    */
+   public double getActualPrice() {
+      return getPriceWithProfit() - getDiscountValue();
+   }
+
+   /**
+    * @return The price after adding it the profit value
+    */
+   public double getPriceWithProfit() {
+      return getPrice() + getProfitValue();
+   }
+
+   /**
+    * @return The profit of this item
+    */
+   public double getProfitValue() {
+      return getPrice() * (getProfitPercent() / 100.0);
+   }
+
+   /**
+    * @return The discount of this item
+    */
+   public double getDiscountValue() {
+      return getPriceWithProfit() * (getDiscountPercent() / 100.0);
+   }
+
+   public String getCategory() {
+      return category;
+   }
+
+   public void setCategory(String category) {
+      this.category = category;
+   }
 
    public String getId() {
       return id;

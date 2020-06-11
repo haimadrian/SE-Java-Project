@@ -18,6 +18,7 @@ import org.spa.view.item.ItemColumn;
 import org.spa.view.item.ItemInfoDialog;
 import org.spa.view.item.ItemViewInfo;
 import org.spa.view.login.LoginView;
+import org.spa.view.order.OrdersView;
 import org.spa.view.table.PopupAdapter;
 import org.spa.view.table.TableConfig;
 import org.spa.view.table.TableManager;
@@ -112,7 +113,10 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
                               shoppingCart.setIsEditing(false);
                            }
 
-                           SwingUtilities.invokeLater(this::close);
+                           SwingUtilities.invokeLater(() -> {
+                              close();
+                              new OrdersView(parent);
+                           });
                         });
                      } catch (Exception e1) {
                         logger.error("Error has occurred while saving order.", e1);

@@ -56,14 +56,16 @@ public class OrderRepository implements Repository<Order> {
 
    @Override
    public Order create(Order order) {
-      orders.put(order.getOrderId(), new OrderImpl(order));
-      return order;
+      OrderImpl value = new OrderImpl(order);
+      orders.put(order.getOrderId(), value);
+      return value;
    }
 
    @Override
    public Order update(Order order) {
-      orders.put(order.getOrderId(), new OrderImpl(order));
-      return order;
+      OrderImpl value = new OrderImpl(order);
+      orders.put(order.getOrderId(), value);
+      return value;
    }
 
    @Override

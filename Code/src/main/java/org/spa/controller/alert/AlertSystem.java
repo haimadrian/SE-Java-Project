@@ -28,7 +28,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
    /**
     * Map between alert's key (The Item ID) to the alert
     */
-   private final Map<String, Alert> alerts;
+   private final ConcurrentMap<String, Alert> alerts;
    private AlertConfig alertConfig;
    private ScheduledExecutorService alertSystemCheck;
    private ExecutorService notifier;
@@ -39,7 +39,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
    public AlertSystem() {
       observers = new HashSet<>();
       alertConfig = new AlertConfig();
-      alerts = new HashMap<>();
+      alerts = new ConcurrentHashMap<>();
    }
 
    /**
@@ -124,7 +124,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
     * @return The alerts there are currently in alert system
     */
    public Collection<Alert> getAlerts() {
-      return Collections.unmodifiableCollection(alerts.values());
+      return new ArrayList<>(alerts.values());
    }
 
    public AlertConfig getAlertConfig() {
@@ -161,7 +161,9 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
     */
    private void raiseAlert(Item item, Threshold matchingThreshold) {
       String key = item.getId();
-      String message = "Only " + item.getCount() + " left in stock for '" + item.getName() + "' (Item ID=" + item.getId() + ")";
+      String message = item.getCount() == 0 ? "'" + item.getName() + "' is out of stock" :
+            "Only " + item.getCount() + " left in stock for '" + item.getName() + "'";
+      message += " (Item ID=" + item.getId() + ")";
       String severity = matchingThreshold.getSeverity().name();
       Date date = new Date(System.currentTimeMillis());
 

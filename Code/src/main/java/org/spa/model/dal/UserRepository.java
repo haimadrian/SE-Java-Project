@@ -75,21 +75,25 @@ public class UserRepository implements Repository<User> {
 
    @Override
    public User create(User user) {
+      User value = user;
       if (user instanceof Admin) {
          Admin admin = (Admin) user;
-         users.put(admin.getUserId(), new Admin(admin.getUserId(), admin.getPassword(),
+         value = new Admin(admin.getUserId(), admin.getPassword(),
                admin.getPhoneNumber(), admin.getBirthDay(), admin.getRegistrationDate(),
-               admin.getSecretQuestion(), admin.getSecretAnswer(), admin.getSalary(), admin.getPositionPercentage()));
+               admin.getSecretQuestion(), admin.getSecretAnswer(), admin.getSalary(), admin.getPositionPercentage());
+         users.put(admin.getUserId(), value);
       } else if (user instanceof Customer) {
          Customer customer = (Customer) user;
-         users.put(customer.getUserId(), new Customer(customer.getUserId(), customer.getPassword(),
+         value = new Customer(customer.getUserId(), customer.getPassword(),
                customer.getPhoneNumber(), customer.getBirthDay(), customer.getRegistrationDate(),
-               customer.getSecretQuestion(), customer.getSecretAnswer()));
+               customer.getSecretQuestion(), customer.getSecretAnswer());
+         users.put(customer.getUserId(), value);
       } else if (user instanceof SystemAdmin) {
-         users.put(user.getUserId(), new SystemAdmin(user.getUserId(), ((SystemAdmin) user).getKey()));
+         value = new SystemAdmin(user.getUserId(), ((SystemAdmin) user).getKey());
+         users.put(user.getUserId(), value);
       }
 
-      return user;
+      return value;
    }
 
    @Override

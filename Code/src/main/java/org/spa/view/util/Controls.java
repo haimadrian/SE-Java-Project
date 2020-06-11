@@ -674,5 +674,17 @@ public class Controls {
       UIManager.put("SliderThumb.background", background);
       UIManager.put("SliderTrack.background", background);
       UIManager.put("info", UIManager.get("ToolTip.background"));
+      Color selectionBackground = UIManager.getColor("Table[Enabled+Selected].textBackground").darker();
+      UIManager.put("Table[Enabled+Selected].textBackground", selectionBackground);
+      UIManager.put("Table[Disabled+Selected].textBackground", selectionBackground);
+      UIManager.put("Table.textForeground", textColor);
+      UIManager.put("ComboBox:\"ComboBox.renderer\"[Selected].background", selectionBackground);
+      UIManager.put("ComboBox:\"ComboBox.listRenderer\"[Selected].background", selectionBackground);
+      UIManager.put("[Selected].background", selectionBackground);
+      UIManager.put("Tree.selectionBackground", selectionBackground);
+      UIManager.put("List[Selected].textBackground", selectionBackground);
+      UIManager.put("List[Disabled+Selected].textBackground", selectionBackground);
+      UIManager.put("List:\"List.cellRenderer\"[Disabled].background", selectionBackground);
+      UIManager.put("nimbusSelectionBackground", selectionBackground);
    }
 }

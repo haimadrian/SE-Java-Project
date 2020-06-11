@@ -219,7 +219,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       TableConfig tableConfig = TableConfig.create().withLinesInRow(6).withEditable(true).withBorder(true).withColumnReordering(true).withColumnResizing(false).build();
 
       tableManager = new TableManager<>(itemCols, tableModelList, tableConfig);
-      tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> shoppingCart.getSelectionModel().setSelection(new WarehouseItem(selectedModel)));
+      tableManager.setFocusedRowChangedListener((rowNumber, selectedModel) -> shoppingCart.getSelectionModel().setSelection(selectedModel == null ? null : new WarehouseItem(selectedModel)));
       tableManager.setPopupAdapter(new PopupAdapter() {
          @Override
          protected List<JMenuItem> getMenuItemsForPopup() {

@@ -29,7 +29,7 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
       super(new JTextField());
       this.isReadOnly = isReadOnly;
 
-      setClickCountToStart(1);
+      setClickCountToStart(2);
       initTextArea();
       initScrollPane();
 

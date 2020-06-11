@@ -91,7 +91,7 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
    private void createAlertsTable() {
       List<AlertColumn> alertCols = Arrays.asList(AlertColumn.Severity, AlertColumn.Message, AlertColumn.Date);
       tableModelList = new ArrayList<>();
-      tableManager = new TableManager<>(alertCols, tableModelList, TableConfig.create().withRowHeight(64).build());
+      tableManager = new TableManager<>(alertCols, tableModelList, TableConfig.create().withRowHeight(64).withEditable(true).build());
       tableManager.setPopupAdapter(new PopupAdapter() {
          @Override
          protected List<JMenuItem> getMenuItemsForPopup() {

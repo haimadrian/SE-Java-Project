@@ -55,14 +55,16 @@ public class ItemRepository implements Repository<Item> {
 
    @Override
    public Item create(Item item) {
-      items.put(item.getId(), new ItemImpl(item));
-      return item;
+      ItemImpl value = new ItemImpl(item);
+      items.put(item.getId(), value);
+      return value;
    }
 
    @Override
    public Item update(Item item) {
-      items.put(item.getId(), new ItemImpl(item));
-      return item;
+      ItemImpl value = new ItemImpl(item);
+      items.put(item.getId(), value);
+      return value;
    }
 
    @Override

@@ -63,7 +63,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
 
    private void initTable() {
       table.setFont(Fonts.PLAIN_FONT);
-      table.setForeground(Controls.textColor);
+      //table.setForeground(Controls.textColor);
       table.setColumnSelectionAllowed(false);
       table.setRowSelectionAllowed(true);
       //noinspection MagicConstant

@@ -17,4 +17,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Gradle
-      run: ./gradlew.bat build
+      uses: eskatos/gradle-command-action@v1
+      with:
+        arguments: build

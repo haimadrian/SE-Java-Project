@@ -31,6 +31,7 @@ public class StringUtils {
    /**
     * In order to support HTML styling in strings, we need to escape them before escaping HTML characters, hence we use
     * this method so we can keep the HTML style.
+    *
     * @param text The text to replace its HTML styling tags with wildcards
     * @return The modified text
     */
@@ -46,6 +47,7 @@ public class StringUtils {
    /**
     * In order to support HTML styling in strings, we need to escape them before escaping HTML characters, hence we use
     * this method so we can keep the HTML style. This method responsible to unescape a previously escaped styled text
+    *
     * @param text The text to replace its wildcards with HTML styling tags
     * @return The modified text
     */

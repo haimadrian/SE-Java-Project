@@ -9,6 +9,7 @@ import java.awt.*;
 
 /**
  * A text cell renderer used to wrap text when it is too long to fit in table cell.
+ *
  * @author Haim Adrian
  * @since 16-May-20
  */
@@ -24,10 +25,10 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
       textArea.setWrapStyleWord(true);
       textArea.setLineWrap(true);
       textArea.setFont(Fonts.PLAIN_FONT);
-      originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
+      focusBorder = (Border) UIManager.get("List.focusCellHighlightBorder");
+      originalBorder = getBorder();
    }
 
    @Override
@@ -56,6 +57,7 @@ public class TextCellRenderer extends DefaultTableCellRenderer {
 
    /**
     * Expose this method so derived renderers can customize their values before we print them
+    *
     * @param value The value to customize
     * @return The value to present
     */

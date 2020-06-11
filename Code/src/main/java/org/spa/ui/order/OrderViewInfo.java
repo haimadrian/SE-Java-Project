@@ -11,83 +11,83 @@ import java.util.List;
 
 public class OrderViewInfo implements TableModelIfc {
 
-    private final String orderId;
-    private long orderTime;
-    private List<Item> items;
-    private String userId;
+   private final String orderId;
+   private long orderTime;
+   private List<Item> items;
+   private String userId;
 
-    public OrderViewInfo(String orderId, long orderTime, String userId, List<Item> items) {
-        this.orderId = orderId;
-        this.orderTime = orderTime;
-        this.items = items;
-        this.userId = userId;
-    }
+   public OrderViewInfo(String orderId, long orderTime, String userId, List<Item> items) {
+      this.orderId = orderId;
+      this.orderTime = orderTime;
+      this.items = items;
+      this.userId = userId;
+   }
 
-    public String getOrderId() {
-        return orderId;
-    }
+   public String getOrderId() {
+      return orderId;
+   }
 
-    public long getOrderTime() {
-        return orderTime;
-    }
+   public long getOrderTime() {
+      return orderTime;
+   }
 
-    public String getConvertedOrderTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
-        Date convertedDate = new Date(orderTime);
-        return (sdf.format(convertedDate));
-    }
+   public String getConvertedOrderTime() {
+      SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+      Date convertedDate = new Date(orderTime);
+      return (sdf.format(convertedDate));
+   }
 
-    public String getUserId() {
-        return userId;
-    }
+   public String getUserId() {
+      return userId;
+   }
 
-    public String getItemsToString() {
-        String itemsToString = "";
-        int count = 0;
-        double sumTotalPrice = 0;
-        double sumItemPrice = 0;
-        for (Item item : items) {
-            count += item.getCount();
-            sumItemPrice = (item.getPrice() * ((item.getProfitPercent() + 100) /100) * ((100 - item.getDiscountPercent()) / 100)) * item.getCount();
-            sumTotalPrice+= sumItemPrice;
-        }
-        itemsToString = "Amount of items: " + count + System.lineSeparator() + "Total Price: " + new DecimalFormat("##.##").format(sumTotalPrice) + "$";
-        return itemsToString;
-    }
+   public String getItemsToString() {
+      String itemsToString = "";
+      int count = 0;
+      double sumTotalPrice = 0;
+      double sumItemPrice = 0;
+      for (Item item : items) {
+         count += item.getCount();
+         sumItemPrice = (item.getPrice() * ((item.getProfitPercent() + 100) / 100) * ((100 - item.getDiscountPercent()) / 100)) * item.getCount();
+         sumTotalPrice += sumItemPrice;
+      }
+      itemsToString = "Amount of items: " + count + System.lineSeparator() + "Total Price: " + new DecimalFormat("##.##").format(sumTotalPrice) + "$";
+      return itemsToString;
+   }
 
-    public List<Item> getItems(){
-        return items;
-    }
+   public List<Item> getItems() {
+      return items;
+   }
 
-    @Override
-    public Object getAttributeValue(String attributeName) {
+   @Override
+   public Object getAttributeValue(String attributeName) {
 
-        switch (OrderColumn.valueOf(attributeName)) {
-            case OrderId: {
-                return new TableCellValue<OrderViewInfo>(getOrderId(), this);
-            }
-            case OrderTime: {
-                return new TableCellValue<OrderViewInfo>(getConvertedOrderTime(), this);
-            }
-            case Summary: {
-                return new TableCellValue<OrderViewInfo>(getItemsToString(), this);
-            }
-            case UserId: {
-                return new TableCellValue<OrderViewInfo>(getUserId(), this);
-            }
-            default:
-                //do nothing
-                return "";
-        }
-    }
+      switch (OrderColumn.valueOf(attributeName)) {
+         case OrderId: {
+            return new TableCellValue<OrderViewInfo>(getOrderId(), this);
+         }
+         case OrderTime: {
+            return new TableCellValue<OrderViewInfo>(getConvertedOrderTime(), this);
+         }
+         case Summary: {
+            return new TableCellValue<OrderViewInfo>(getItemsToString(), this);
+         }
+         case UserId: {
+            return new TableCellValue<OrderViewInfo>(getUserId(), this);
+         }
+         default:
+            //do nothing
+            return "";
+      }
+   }
 
-    @Override
-    public void setAttributeValue(String attributeName, Object value) {
-    }
+   @Override
+   public void setAttributeValue(String attributeName, Object value) {
+   }
 
-    @Override
-    public String toString() {
-        return "OrderViewInfo{" +
-                "id='" + orderId + '}';
-    }
+   @Override
+   public String toString() {
+      return "OrderViewInfo{" +
+            "id='" + orderId + '}';
+   }
 }

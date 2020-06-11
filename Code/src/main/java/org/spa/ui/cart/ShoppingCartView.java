@@ -43,6 +43,7 @@ import static org.spa.ui.util.Controls.createButton;
  * The main view of the shopping cart system<br/>
  * This view contains a {@link TableManager} that display the items there are in {@link ShoppingCart}. In addition, we manage
  * a button-with-a-badge here, in order to update its badge with the amount of items in the shopping cart.
+ *
  * @author Haim Adrian
  * @since 22-May-20
  */
@@ -50,30 +51,25 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartView.class);
    private static final String TOTAL = "Total: ";
    private static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
-
-   private JDialog shoppingCartDialog;
    private final Window parent;
    private final ButtonWithBadge shoppingCartButton;
    private final ShoppingCart shoppingCart;
-
+   private final ActionListener loginActionListener;
+   private final ActionListener placeOrderActionListener;
+   private JDialog shoppingCartDialog;
    private JPanel workArea;
    private JLabel title;
    private JLabel totalPriceLabel;
    private JButton continueButton;
    private JButton clearCartButton;
-
    /**
     * The table where we display items at
     */
    private TableManager<ItemColumn, ItemViewInfo> tableManager;
-
    /**
     * Hold the list of the table here so we can update it outside table manager and then call refresh table.
     */
    private List<ItemViewInfo> tableModelList;
-
-   private final ActionListener loginActionListener;
-   private final ActionListener placeOrderActionListener;
 
    public ShoppingCartView(Window parent) {
       this.parent = parent;
@@ -83,6 +79,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       ImageIcon image = ImagesCache.getInstance().getImage("shopping-cart-icon.png");
       Image scaledImage = image.getImage().getScaledInstance(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
       shoppingCartButton = new ButtonWithBadge(new ImageIcon(scaledImage));
+      Controls.setFlatStyle(shoppingCartButton);
       shoppingCartButton.setToolTipText("View Shopping Cart");
       shoppingCartButton.setSize(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE);
       shoppingCartButton.setCountForBadge(shoppingCart.count());
@@ -106,31 +103,31 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
          shoppingCart.setIsEditing(true);
          try {
             Dialogs.executeWithWaitingDialog(() -> {
-                  // Save order
-                  try {
-                     ActionManager.executeAction(ActionType.Purchase);
-                     SwingUtilities.invokeLater(() -> {
+                     // Save order
+                     try {
+                        ActionManager.executeAction(ActionType.Purchase);
+                        SwingUtilities.invokeLater(() -> {
+                           try {
+                              shoppingCart.setIsEditing(true);
+                              Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
+                           } finally {
+                              shoppingCart.setIsEditing(false);
+                           }
+
+                           SwingUtilities.invokeLater(this::close);
+                        });
+                     } catch (Exception e1) {
+                        logger.error("Error has occurred while saving order.", e1);
                         try {
                            shoppingCart.setIsEditing(true);
-                           Dialogs.showInfoDialog(getParentDialog(), "Order has been placed.\nShop will contact you within few hours for payment details.", "Order completed");
+                           Dialogs.showErrorDialog(getParentDialog(), "Error has occurred while placing order: " + e1.getMessage(), "Error");
                         } finally {
                            shoppingCart.setIsEditing(false);
                         }
-
-                        SwingUtilities.invokeLater(this::close);
-                     });
-                  } catch (Exception e1) {
-                     logger.error("Error has occurred while saving order.", e1);
-                     try {
-                        shoppingCart.setIsEditing(true);
-                        Dialogs.showErrorDialog(getParentDialog(), "Error has occurred while placing order: " + e1.getMessage(), "Error");
-                     } finally {
-                        shoppingCart.setIsEditing(false);
                      }
-                  }
-               },
-               getParentDialog(),
-               "Placing your order...");
+                  },
+                  getParentDialog(),
+                  "Placing your order...");
          } finally {
             shoppingCart.setIsEditing(false);
          }
@@ -148,7 +145,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
             continueButton.removeActionListener(placeOrderActionListener);
             continueButton.removeActionListener(loginActionListener);
             continueButton.addActionListener(placeOrderActionListener);
-            continueButton.setBackground(Color.green.darker().darker().darker());
+            continueButton.setBackground(Controls.acceptButtonColor);
          }
       });
 
@@ -164,9 +161,9 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       workArea.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
       workArea.setLayout(new BoxLayout(workArea, BoxLayout.PAGE_AXIS));
       workArea.add(title);
-      workArea.add(Box.createRigidArea(new Dimension(0,10)));
+      workArea.add(Box.createRigidArea(new Dimension(0, 10)));
       workArea.add(tableManager.getMainPanel());
-      workArea.add(Box.createRigidArea(new Dimension(0,5)));
+      workArea.add(Box.createRigidArea(new Dimension(0, 5)));
       workArea.add(buttons);
    }
 
@@ -177,7 +174,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
          continueButton = createButton("Login", loginActionListener, true);
       } else {
          continueButton = createButton("Place Order", placeOrderActionListener, true);
-         continueButton.setBackground(Color.green.darker().darker().darker());
+         continueButton.setBackground(Controls.acceptButtonColor);
       }
 
       clearCartButton = createButton("Clear Cart", e -> {
@@ -206,9 +203,9 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       buttonsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
       buttonsPanel.add(Box.createHorizontalGlue());
       buttonsPanel.add(totalPriceLabel);
-      buttonsPanel.add(Box.createRigidArea(new Dimension(10,0)));
+      buttonsPanel.add(Box.createRigidArea(new Dimension(10, 0)));
       buttonsPanel.add(clearCartButton);
-      buttonsPanel.add(Box.createRigidArea(new Dimension(10,0)));
+      buttonsPanel.add(Box.createRigidArea(new Dimension(10, 0)));
       buttonsPanel.add(continueButton);
 
       return buttonsPanel;
@@ -296,22 +293,6 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
       totalPriceLabel.setText(TOTAL + decimalFormat.format(totalPrice.getValue()) + "$");
    }
 
-   private static class DoubleCounter {
-      private double value;
-
-      public DoubleCounter() {
-         value = 0;
-      }
-
-      public void add(double value) {
-         this.value += value;
-      }
-
-      public double getValue() {
-         return value;
-      }
-   }
-
    @Override
    public void show() {
       SPAApplication.getInstance().getSelectionModel().setSelection(this);
@@ -335,7 +316,7 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
 
             @Override
             public void windowLostFocus(WindowEvent e) {
-              close();
+               close();
             }
 
             @Override
@@ -409,5 +390,21 @@ public class ShoppingCartView implements SPAExplorerIfc<WarehouseItem>, Shopping
    public void itemCountUpdated(ShoppingCart cart, WarehouseItem item, int oldCount, int newCount) {
       shoppingCartButton.setCountForBadge(cart.count());
       refreshTable();
+   }
+
+   private static class DoubleCounter {
+      private double value;
+
+      public DoubleCounter() {
+         value = 0;
+      }
+
+      public void add(double value) {
+         this.value += value;
+      }
+
+      public double getValue() {
+         return value;
+      }
    }
 }

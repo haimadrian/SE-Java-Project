@@ -16,6 +16,7 @@ import org.spa.ui.util.ImagesCache;
  * A singleton class that keeps a unique reference to all of the application's controllers.<br/>
  * Everybody can access this class in order to get to the different services in the project. The
  * services themselves use this class in order to communicate between themselves.
+ *
  * @author Haim Adrian
  * @since 16-May-20
  */
@@ -48,6 +49,13 @@ public class SPAApplication {
     */
    public static SPAApplication getInstance() {
       return instance;
+   }
+
+   /**
+    * @return Working directory used for storing and loading files from disk
+    */
+   public static String getWorkingDirectory() {
+      return "C:\\temp\\SPAApp";
    }
 
    /**
@@ -90,13 +98,6 @@ public class SPAApplication {
    }
 
    /**
-    * @return Working directory used for storing and loading files from disk
-    */
-   public static String getWorkingDirectory() {
-      return "C:\\temp\\SPAApp";
-   }
-
-   /**
     * @return A reference to {@link ItemsWarehouse}
     */
    public ItemsWarehouse getItemsWarehouse() {
@@ -134,4 +135,5 @@ public class SPAApplication {
     */
    public SelectionModelManager<SPAExplorerIfc<?>> getSelectionModel() {
       return selectionModel;
-   }}
+   }
+}

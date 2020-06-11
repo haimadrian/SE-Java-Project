@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Test class for {@link ShoppingCart}
+ *
  * @author Haim Adrian
  * @since 05-Jun-20
  */

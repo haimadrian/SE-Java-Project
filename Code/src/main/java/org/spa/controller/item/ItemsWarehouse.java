@@ -7,6 +7,7 @@ import org.spa.controller.Service;
 import org.spa.controller.selection.SelectionModelManager;
 import org.spa.model.Item;
 import org.spa.model.dal.ItemRepository;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,14 @@ public class ItemsWarehouse implements Service {
       itemRepository = new ItemRepository();
       selectionModel = new SelectionModelManager<>();
       observers = new HashSet<>();
+   }
+
+   private static WarehouseItem itemToWarehouseItem(Item item) {
+      return new WarehouseItem(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
+   }
+
+   private static Item warehouseItemToItem(WarehouseItem item) {
+      return new Item(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
 
    public SelectionModelManager<WarehouseItem> getSelectionModel() {
@@ -57,6 +66,7 @@ public class ItemsWarehouse implements Service {
    /**
     * Note that the result is a copy of the items in warehouse, so you cannot modify it by accessing this method. You mast use the
     * add/remove methods.
+    *
     * @return All items in warehouse
     */
    public List<WarehouseItem> getItems() {
@@ -67,6 +77,7 @@ public class ItemsWarehouse implements Service {
 
    /**
     * Add a new item to the items warehouse. This will override any amount of this item in case it is already existing in the warehouse.
+    *
     * @param id
     * @param name
     * @param category
@@ -85,11 +96,12 @@ public class ItemsWarehouse implements Service {
 
    /**
     * Completely remove an item from warehouse
+    *
     * @param id The id of the item to remove
     * @return The removed item or <code>null</code> in case there is no item with the specified id
     */
    public WarehouseItem removeItem(String id) {
-      WarehouseItem item =  idToItem.remove(id);
+      WarehouseItem item = idToItem.remove(id);
       if (item != null) {
          itemRepository.delete(warehouseItemToItem(item));
          logger.info("Removed item from warehouse: " + item);
@@ -100,6 +112,7 @@ public class ItemsWarehouse implements Service {
 
    /**
     * Set new amount of an item in the warehouse
+    *
     * @param id The id of the item to update
     * @param amount The new amount
     */
@@ -119,8 +132,9 @@ public class ItemsWarehouse implements Service {
          logger.warn("Tried to update amount for item that does not exist in the warehouse.. id=" + id);
       }
    }
+
    public WarehouseItem updateItem(WarehouseItem warehouseItem) {
-      WarehouseItem item =  idToItem.get(warehouseItem.getId());
+      WarehouseItem item = idToItem.get(warehouseItem.getId());
       if (item != null) {
          item.setCategory(warehouseItem.getCategory());
          item.setDescription(warehouseItem.getDescription());
@@ -133,7 +147,7 @@ public class ItemsWarehouse implements Service {
          notifyItemUpdated(item);
       }
       // else - if item doesn't exist - create a new item
-      else{
+      else {
          addItem(warehouseItem);
       }
       return warehouseItem;
@@ -148,14 +162,8 @@ public class ItemsWarehouse implements Service {
       return new WarehouseItem(idToItem.get(id));
    }
 
-   private static WarehouseItem itemToWarehouseItem(Item item) {
-      return new WarehouseItem(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
-   }
-
-   private static Item warehouseItemToItem(WarehouseItem item) {
-      return new Item(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
-   }
-   public void registerObserver(ItemsWarehouseObserver observer) {observers.add(observer);
+   public void registerObserver(ItemsWarehouseObserver observer) {
+      observers.add(observer);
    }
 
    public void unregisterObserver(ItemsWarehouseObserver observer) {
@@ -167,11 +175,13 @@ public class ItemsWarehouse implements Service {
          observer.deleteItem(item);
       }
    }
+
    private void notifyItemUpdated(WarehouseItem item) {
       for (ItemsWarehouseObserver observer : observers) {
          observer.updateItem(item);
       }
    }
+
    private void notifyItemAdded(WarehouseItem item) {
       for (ItemsWarehouseObserver observer : observers) {
          observer.addItem(item);

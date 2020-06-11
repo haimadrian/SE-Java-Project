@@ -12,14 +12,14 @@ import java.util.Set;
  * what component is in focus, so the status bar expects to get updates when a selected component is changed to another component,
  * for this we create the Observer mechanism such that the status bar can register itself to observe selection changes.
  * </p>
+ *
  * @author Haim Adrian
  * @since 22-May-20
  */
 public class SelectionModelManager<T> {
+   private final Set<SelectionModelObserver<T>> observers;
    private T currentSelection;
    private T previousSelection;
-
-   private final Set<SelectionModelObserver<T>> observers;
 
    /**
     * Constructs a new {@link SelectionModelManager}
@@ -29,20 +29,21 @@ public class SelectionModelManager<T> {
    }
 
    /**
+    * @return The current selected component in this selection model manager. May refer to <code>null</code> when there is nothing in focus
+    */
+   public T getSelection() {
+      return currentSelection;
+   }
+
+   /**
     * Set the active (selected) component as the current selection of this selection model listener
+    *
     * @param selection The selection to set
     */
    public void setSelection(T selection) {
       previousSelection = currentSelection;
       currentSelection = selection;
       notifyObservers();
-   }
-
-   /**
-    * @return The current selected component in this selection model manager. May refer to <code>null</code> when there is nothing in focus
-    */
-   public T getSelection() {
-      return currentSelection;
    }
 
    /**
@@ -54,6 +55,7 @@ public class SelectionModelManager<T> {
 
    /**
     * Register yourself as an observer of this selection model manager, to get notified when there is a selection change
+    *
     * @param observer An observer to be notified upon selection changes
     * @see SelectionModelObserver
     */

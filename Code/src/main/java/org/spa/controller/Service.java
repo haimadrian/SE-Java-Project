@@ -2,6 +2,7 @@ package org.spa.controller;
 
 /**
  * Represents a system in the application
+ *
  * @author Haim Adrian
  * @since 05-Jun-20
  */

@@ -1,7 +1,7 @@
 package org.spa.controller.action;
 
-import org.spa.controller.UserManagementService;
 import org.spa.common.SPAApplication;
+import org.spa.controller.UserManagementService;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
@@ -44,6 +44,7 @@ public class ActionContext {
 
    /**
     * Add a custom parameter to pass to an action
+    *
     * @param key The key so the action can retrieve this parameter
     * @param value The value to map to the specified key
     * @return A reference to this
@@ -56,12 +57,13 @@ public class ActionContext {
    /**
     * Gets a value that was previously set as an additional parameter for function.<br/>
     * Make sure you use the correct type, as this is a generic method.
+    *
     * @param key The key to get value for
     * @param <T> The type of the value
     * @return The value or <code>null</code> in case there is no value mapped to the specified key
     */
    public <T> T getValue(String key) {
-      return (T)additionalFields.get(key.toLowerCase());
+      return (T) additionalFields.get(key.toLowerCase());
    }
 
    public UserManagementService getUserManagement() {
@@ -80,7 +82,9 @@ public class ActionContext {
       return alertSystem;
    }
 
-   public ReportSystem getReportSystem() { return reportSystem; }
+   public ReportSystem getReportSystem() {
+      return reportSystem;
+   }
 
    public OrderSystem getOrderSystem() {
       return orderSystem;

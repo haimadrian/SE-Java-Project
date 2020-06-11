@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * Use this class to execute actions in the application from anywhere you need.
+ *
  * @author Haim Adrian
  * @since 23-May-20
  */
@@ -15,6 +16,7 @@ public class ActionManager {
 
    /**
     * Execute a new action based on the specified {@link ActionType}
+    *
     * @param actionType The action to execute
     * @param <T> Response type of the action. May be Void if the action has no response
     * @return The response of action execution
@@ -26,6 +28,7 @@ public class ActionManager {
 
    /**
     * Execute a new action based on the specified {@link ActionType}
+    *
     * @param actionType The action to execute
     * @param params Additional parameters to pass to the command
     * @param <T> Response type of the action. May be Void if the action has no response

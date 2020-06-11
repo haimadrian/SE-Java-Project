@@ -11,10 +11,35 @@ import java.util.function.Supplier;
 
 /**
  * Used for logging messages to console. (out and err)
+ *
  * @author Haim Adrian
  * @since 10-May-20
  */
 class ConsoleAdapter implements Logger {
+
+   private static String formatMessage(LogRecord logRecord) {
+      StringBuilder msg = new StringBuilder();
+
+      //@formatter:off
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+      msg.append(logRecord.getTime().format(formatter)).append(' ')
+            .append(logRecord.getLevel().name())
+            .append('[').append(Thread.currentThread().getName()).append("] - ")
+            .append(logRecord.getMessage());
+      //@formatter:on
+
+      if (logRecord.getThrown() != null) {
+         StringWriter sw = new StringWriter();
+         try (PrintWriter pw = new PrintWriter(sw)) {
+            pw.println();
+            logRecord.getThrown().printStackTrace(pw);
+         }
+
+         msg.append(System.lineSeparator()).append(sw.toString());
+      }
+
+      return msg.toString();
+   }
 
    @Override
    public void log(Level level, Supplier<CharSequence> messageSupplier) {
@@ -61,30 +86,6 @@ class ConsoleAdapter implements Logger {
          LogRecord newRecord = new LogRecord(LocalDateTime.now(), Level.ERROR, message, e);
          System.err.println(formatMessage(newRecord));
       }
-   }
-
-   private static String formatMessage(LogRecord logRecord) {
-      StringBuilder msg = new StringBuilder();
-
-      //@formatter:off
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-      msg.append(logRecord.getTime().format(formatter)).append(' ')
-            .append(logRecord.getLevel().name())
-            .append('[').append(Thread.currentThread().getName()).append("] - ")
-            .append(logRecord.getMessage());
-      //@formatter:on
-
-      if (logRecord.getThrown() != null) {
-         StringWriter sw = new StringWriter();
-         try (PrintWriter pw = new PrintWriter(sw)) {
-            pw.println();
-            logRecord.getThrown().printStackTrace(pw);
-         }
-
-         msg.append(System.lineSeparator()).append(sw.toString());
-      }
-
-      return msg.toString();
    }
 
    private static class LogRecord {

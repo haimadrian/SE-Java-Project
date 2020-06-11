@@ -14,17 +14,18 @@ import java.net.URL;
 
 /**
  * A test class for {@link ImagesCache}
+ *
  * @author Haim Adrian
  * @since 05-Jun-20
  */
 public class ImagesCacheTest extends BaseTest {
+   private final String testImageName = "imageName.png";
    /**
     * We use it in order to redirect errors from ImagesCache into our error log such that we can
     * know that there was a problem
     */
    private ErrorLogHandler errorLogHandler;
    private File sandboxDir;
-   private final String testImageName = "imageName.png";
 
    @Before
    public void init() {

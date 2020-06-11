@@ -1,7 +1,5 @@
 package org.spa.controller.action.impl;
 
-import org.spa.common.SPAApplication;
-
 import java.util.concurrent.TimeUnit;
 
 /**

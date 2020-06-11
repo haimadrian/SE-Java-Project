@@ -4,6 +4,7 @@ import javax.swing.*;
 
 /**
  * Defines table configuration to be used when working with {@link TableManager}
+ *
  * @author Haim Adrian
  * @since 12-May-20
  */

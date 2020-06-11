@@ -38,9 +38,13 @@ public class ItemViewInfo implements TableModelIfc {
       this.count = count;
    }
 
-   public String getCategory() {return category;}
+   public String getCategory() {
+      return category;
+   }
 
-   public void setCategory(String category) {this.category = category;}
+   public void setCategory(String category) {
+      this.category = category;
+   }
 
    public String getId() {
       return id;
@@ -130,6 +134,7 @@ public class ItemViewInfo implements TableModelIfc {
     * Price can be displayed in two different tables. One is the warehouse table where we display the price of each
     * item, and another is at the shopping cart, where we calculate the price based on count. Hence we use this method, to
     * be able to separate between two item view infos, such that one can derive from another and modify the format.
+    *
     * @return The price, formatted for JTable as text
     */
    protected String getPriceFormattedForTable() {

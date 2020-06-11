@@ -10,15 +10,16 @@ import java.awt.event.FocusListener;
 
 /**
  * Editor component for strings - uses a text field
+ *
  * @author Haim Adrian
  * @since 15-May-20
  */
 public class TextCellEditor extends DefaultCellEditor implements FocusListener {
-   private JScrollPane scrollPane;
-   private JTextArea textArea;
    private final Border originalBorder;
    private final Border focusBorder;
-   private boolean isReadOnly;
+   private final boolean isReadOnly;
+   private JScrollPane scrollPane;
+   private JTextArea textArea;
 
    public TextCellEditor() {
       this(false);
@@ -31,20 +32,10 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
       setClickCountToStart(1);
       initTextArea();
       initScrollPane();
-      originalBorder = BorderFactory.createEmptyBorder();
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
-   }
-
-   public TextCellEditor(javax.swing.text.Document doc) {
-      super(new JTextField(doc, "", 0));
-      initTextArea();
-      initScrollPane();
+      focusBorder = (Border) UIManager.get("List.focusCellHighlightBorder");
       originalBorder = BorderFactory.createEmptyBorder();
-
-      // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("List.focusCellHighlightBorder");
    }
 
    private void initTextArea() {
@@ -68,10 +59,12 @@ public class TextCellEditor extends DefaultCellEditor implements FocusListener {
          textArea.setForeground(table.getSelectionForeground());
          textArea.setBackground(table.getSelectionBackground());
          textArea.setBorder(focusBorder);
+         scrollPane.setBackground(table.getSelectionBackground());
       } else {
          textArea.setBackground(table.getBackground());
          textArea.setForeground(table.getForeground());
          textArea.setBorder(originalBorder);
+         scrollPane.setBackground(table.getBackground());
       }
 
       return scrollPane;

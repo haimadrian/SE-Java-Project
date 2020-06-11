@@ -83,9 +83,13 @@ public class Item {
       return getPriceWithProfit() * (getDiscountPercent() / 100.0);
    }
 
-   public String getCategory() {return category;}
+   public String getCategory() {
+      return category;
+   }
 
-   public void setCategory(String category){this.category= category;}
+   public void setCategory(String category) {
+      this.category = category;
+   }
 
    public String getId() {
       return id;
@@ -103,9 +107,13 @@ public class Item {
       this.description = description;
    }
 
-   public double getPrice() { return price; }
+   public double getPrice() {
+      return price;
+   }
 
-   public void setPrice(double price) { this.price = price; }
+   public void setPrice(double price) {
+      this.price = price;
+   }
 
    public double getProfitPercent() {
       return profitPercent;

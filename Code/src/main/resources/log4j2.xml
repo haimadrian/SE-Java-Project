@@ -26,7 +26,7 @@
         <RollingRandomAccessFile name="FileAppender" fileName="${logDir}\SPAApp.log" filePattern="${logDir}\SPAApp-%i.log" immediateFlush="false">
             <PatternLayout pattern="${mainLogPattern}" charset="UTF-8"/>
             <Policies>
-                <OnStartupTriggeringPolicy />
+                <OnStartupTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy size="5 MB"/>
             </Policies>
             <DefaultRolloverStrategy max="5" fileIndex="min"/>

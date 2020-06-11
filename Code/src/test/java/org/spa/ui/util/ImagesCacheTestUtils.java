@@ -9,6 +9,7 @@ import java.io.File;
 public class ImagesCacheTestUtils {
    /**
     * Give test classes the ability to modify the images cache directory, as the ImageCache's test accessor is package private.
+    *
     * @param imagesDir The directory to set
     */
    public static void setImagesDirectory(File imagesDir) {

@@ -14,68 +14,69 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderSystem implements Service {
-    private static final Logger logger = LoggerFactory.getLogger(OrderSystem.class);
-    private final Map<String, Order> ordersMap;
-    private final Repository<Order> orderRepository;
-    private final SelectionModelManager<Order> selectionModel;
+   private static final Logger logger = LoggerFactory.getLogger(OrderSystem.class);
+   private final Map<String, Order> ordersMap;
+   private final Repository<Order> orderRepository;
+   private final SelectionModelManager<Order> selectionModel;
 
-    public OrderSystem() {
-        ordersMap = new HashMap<>(1000);
-        orderRepository = new OrderRepository();
-        selectionModel = new SelectionModelManager<>();
-    }
-    public SelectionModelManager<Order> getSelectionModel() {
-        return selectionModel;
-    }
+   public OrderSystem() {
+      ordersMap = new HashMap<>(1000);
+      orderRepository = new OrderRepository();
+      selectionModel = new SelectionModelManager<>();
+   }
 
-    @Override
-    public void start() {
-        logger.info("Starting OrderSystem - Select orders from repository");
+   private static Item warehouseItemToItem(WarehouseItem item) {
+      return new Item(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
+   }
 
-        // Load data into memory
-        orderRepository.selectAll().forEach(order -> ordersMap.put(order.getOrderId(), order));
-    }
+   public SelectionModelManager<Order> getSelectionModel() {
+      return selectionModel;
+   }
 
-    @Override
-    public void stop() {
-        logger.info("Stopping OrderSystem - Save orders to repository");
+   @Override
+   public void start() {
+      logger.info("Starting OrderSystem - Select orders from repository");
 
-        // Save data to storage
-        orderRepository.saveAll(ordersMap.values());
-    }
+      // Load data into memory
+      orderRepository.selectAll().forEach(order -> ordersMap.put(order.getOrderId(), order));
+   }
 
-    public Map<String, Order> getOrdersMap() {
-        return ordersMap;
-    }
+   @Override
+   public void stop() {
+      logger.info("Stopping OrderSystem - Save orders to repository");
 
-    public Order findOrder(String orderId) {
-        return ordersMap.get(orderId);
-    }
+      // Save data to storage
+      orderRepository.saveAll(ordersMap.values());
+   }
 
-    public List<Order> findOrdersOfUser(String userId) {
-        List<Order> orders = ordersMap.values().stream().filter(order -> userId.equalsIgnoreCase(order.getUserId())).collect(Collectors.toList());
-        logger.info("Find orders for userId '" + userId + "' returned " + orders.size() + " orders");
-        return orders;
-    }
+   public Map<String, Order> getOrdersMap() {
+      return ordersMap;
+   }
 
-    public Order deleteOrder(String orderId) {
-        logger.info("Deleting order - " + orderId);
-        return ordersMap.remove(orderId);
-    }
+   public Order findOrder(String orderId) {
+      return ordersMap.get(orderId);
+   }
 
-    public Order createOrder(String userId, Iterable<WarehouseItem> items) {
-        String orderId = UUID.randomUUID().toString();
-        List<Item> modelItems = new ArrayList<>();
-        items.forEach(item -> modelItems.add(warehouseItemToItem(item)));
+   public List<Order> findOrdersOfUser(String userId) {
+      List<Order> orders = ordersMap.values().stream().filter(order -> userId.equalsIgnoreCase(order.getUserId())).collect(Collectors.toList());
+      logger.info("Find orders for userId '" + userId + "' returned " + orders.size() + " orders");
+      return orders;
+   }
 
-        logger.info("Creating order: " + orderId + " for user '" + userId + "'");
+   public Order deleteOrder(String orderId) {
+      logger.info("Deleting order - " + orderId);
+      return ordersMap.remove(orderId);
+   }
 
-        Order order = new Order(orderId, System.currentTimeMillis(), userId, modelItems);
-        ordersMap.put(orderId, order);
-        return order;
-    }
+   public Order createOrder(String userId, Iterable<WarehouseItem> items) {
+      String orderId = UUID.randomUUID().toString();
+      List<Item> modelItems = new ArrayList<>();
+      items.forEach(item -> modelItems.add(warehouseItemToItem(item)));
 
-    private static Item warehouseItemToItem(WarehouseItem item) {
-        return new Item(item.getId(),item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
-    }
+      logger.info("Creating order: " + orderId + " for user '" + userId + "'");
+
+      Order order = new Order(orderId, System.currentTimeMillis(), userId, modelItems);
+      ordersMap.put(orderId, order);
+      return order;
+   }
 }

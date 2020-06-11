@@ -8,6 +8,7 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  * An interface that declares all methods that needed by a {@link TableManager} to operate. See the methods
+ *
  * @author Haim Adrian
  * @since 12-May-20
  */
@@ -15,12 +16,14 @@ public interface TableColumnIfc {
    /**
     * Columns are not movable, here you should specify the index of a column. Columns will be displayed
     * with the order defined by the indexing
+    *
     * @return index of a column
     */
    int getColIndex();
 
    /**
     * A header to display for that column. Used by table headers
+    *
     * @return column's header
     */
    String getHeader();
@@ -31,6 +34,7 @@ public interface TableColumnIfc {
     * should be retrieved for get/set operations. For example, let's assume a column represents 'quantity'
     * of an item, hence this method should return "Quantity", and the model should have "setQuantity" and "getQuantity"
     * methods.
+    *
     * @return Name of the attribute for get/set operations
     */
    String getAttributeName();
@@ -49,6 +53,7 @@ public interface TableColumnIfc {
     * This method created in order to let custom formats for different columns. For example an image column will
     * present the image, and a date column will format a date time according to its preferred format.<br/>
     * We use this method when a value is about to be draw.
+    *
     * @param value The value to format. Safe cast it to the value that this column represents
     * @return The value after formatting it
     */
@@ -57,6 +62,7 @@ public interface TableColumnIfc {
    /**
     * To support default cell renderer that renders column by its value type, we need the class of the values
     * that are going to be inside this column.
+    *
     * @return The class of the values that are going to fit in this column
     */
    Class<?> getColumnClass();
@@ -64,6 +70,7 @@ public interface TableColumnIfc {
    /**
     * Implementors can implement this to return the table cell editor which is relevant to this column.<br/>
     * It can be any custom editor you would like to use, e.g. numeric. By default we use a {@link TextCellEditor}.
+    *
     * @return The cell editor for this column
     */
    default TableCellEditor getCellEditor() {
@@ -73,6 +80,7 @@ public interface TableColumnIfc {
    /**
     * Implementors can implement this to return the table cell renderer which is relevant to this column.<br/>
     * It can be any custom editor you would like to use, e.g. numeric. By default we use a {@link javax.swing.table.DefaultTableCellRenderer}.
+    *
     * @return The cell renderer for this column
     */
    default TableCellRenderer getCellRenderer() {

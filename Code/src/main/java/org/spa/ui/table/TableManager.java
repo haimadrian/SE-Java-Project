@@ -20,24 +20,21 @@ import java.util.List;
 public class TableManager<Column extends TableColumnIfc, Model extends TableModelIfc> {
    private final JPanel mainPanel;
    private final JTable table;
+   private final java.util.List<Column> columns;
+   private final TableConfig tableConfig;
    private JScrollPane scrollPane;
    private TableModel tableModel;
-
    /**
     * To propagate row selections to the user of this class
     */
    private FocusedTableRowChangedListener<Model> listener;
-
-   private final java.util.List<Column> columns;
    private java.util.List<Model> tableModelList;
-
-   private final TableConfig tableConfig;
-
    @SuppressWarnings("unused")
    private TableTooltipHandler tableTooltipHandler;
 
    /**
     * Constructs a new {@link TableManager}
+    *
     * @param columns List of columns in this table. See {@link TableColumnIfc}
     * @param tableModelList List of rows in this table. See {@link TableModelIfc}
     * @param tableConfig The {@link TableConfig} to use for customizations of the table. May be <code>null</code> to use defaults.
@@ -93,7 +90,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
          tableColumn.setIdentifier(Integer.valueOf(column.getColIndex()));
          tableColumn.setHeaderValue(column.getHeader());
          tableColumn.setCellRenderer(column.getCellRenderer());
-         int colWidth = (int)(column.getWidth() * (mainPanel.getWidth() - scrollPane.getVerticalScrollBar().getWidth()));
+         int colWidth = (int) (column.getWidth() * (mainPanel.getWidth() - scrollPane.getVerticalScrollBar().getWidth()));
          tableColumn.setPreferredWidth(colWidth);
          tableColumn.setWidth(colWidth);
          tableColumn.setMinWidth(Math.max(colWidth / 3, 30));
@@ -180,6 +177,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
 
    /**
     * Use this method to get notified upon row selection changes
+    *
     * @param listener The listener to get notified
     */
    public void setFocusedRowChangedListener(FocusedTableRowChangedListener<Model> listener) {
@@ -191,6 +189,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
     * In case the list is the same reference that this {@link TableManager} was initialized with and there is only a
     * modification in it, e.g. new item or data update inside the items, you can call {@link #refresh()} and the table will
     * be refreshed to display the up to date ata
+    *
     * @param modelList The new list
     */
    public void replaceModelList(java.util.List<Model> modelList) {
@@ -219,6 +218,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
 
    /**
     * Get a reference to the selected model in the table. May be <code>null</code> if there is no selection
+    *
     * @return The selected model in table
     */
    public Model getSelectedModel() {
@@ -240,7 +240,7 @@ public class TableManager<Column extends TableColumnIfc, Model extends TableMode
             parentWidth -= scrollPane.getVerticalScrollBar().getWidth();
          }
 
-         int colWidth = (int)(column.getWidth() * parentWidth);
+         int colWidth = (int) (column.getWidth() * parentWidth);
          tableColumn.setPreferredWidth(colWidth);
          tableColumn.setWidth(colWidth);
       }

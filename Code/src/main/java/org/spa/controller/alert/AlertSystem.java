@@ -16,24 +16,22 @@ import java.util.function.BiConsumer;
 /**
  * This class responsible for scheduling a task that runs every 5 minutes and checks if there
  * is any item which is out of stock or about to be out of stock
+ *
  * @author Haim Adrian
  * @since 16-May-20
  */
 public class AlertSystem implements Service, ItemsWarehouseObserver {
+   static final int INITIAL_DELAY_SECONDS = 2;
    private static final Logger logger = LoggerFactory.getLogger(AlertSystem.class);
    private static final long ALERT_SYSTEM_CHECK_RATE_MINUTES = 5;
-   static final int INITIAL_DELAY_SECONDS = 2;
-
-   private AlertConfig alertConfig;
-
    private final List<AlertSystemObserver> observers;
-   private ScheduledExecutorService alertSystemCheck;
-   private ExecutorService notifier;
-
    /**
     * Map between alert's key (The Item ID) to the alert
     */
    private final Map<String, Alert> alerts;
+   private AlertConfig alertConfig;
+   private ScheduledExecutorService alertSystemCheck;
+   private ExecutorService notifier;
 
    /**
     * Constructs a new {@link AlertSystem}
@@ -66,7 +64,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
 
       // Schedule our job to run within 2 seconds and then every 5 minutes
       logger.info("Scheduling AlertSystemCheckJob to run every " + ALERT_SYSTEM_CHECK_RATE_MINUTES + " minutes");
-      alertSystemCheck.scheduleAtFixedRate(new AlertSystemCheckJob(), INITIAL_DELAY_SECONDS, ALERT_SYSTEM_CHECK_RATE_MINUTES*60, TimeUnit.SECONDS);
+      alertSystemCheck.scheduleAtFixedRate(new AlertSystemCheckJob(), INITIAL_DELAY_SECONDS, ALERT_SYSTEM_CHECK_RATE_MINUTES * 60, TimeUnit.SECONDS);
 
       // Register for events about items, to get notified if they are deleted or added
       SPAApplication.getInstance().getItemsWarehouse().registerObserver(this);
@@ -105,6 +103,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
 
    /**
     * Acknowledge an alert (remove it from alert system)
+    *
     * @param alertKey The key of the alert to acknowledge
     */
    public void acknowledge(String alertKey) {
@@ -138,6 +137,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
 
    /**
     * When you need to listen to events (when we generate an alert), register yourself using this method
+    *
     * @param observer The listener. See {@link AlertSystemObserver}
     */
    public void registerAlertObserver(AlertSystemObserver observer) {
@@ -146,6 +146,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
 
    /**
     * When you do not which to get notified when alerts are generated, you use this method to unregister yourself
+    *
     * @param observer A listener who has previously registered
     */
    public void unregisterAlertObserver(AlertSystemObserver observer) {
@@ -154,6 +155,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
 
    /**
     * Use this method to notify observers asynchronously when there is a need to raise alert
+    *
     * @param item The item to alert about
     * @param matchingThreshold A threshold to use for the alert
     */

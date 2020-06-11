@@ -11,6 +11,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import static org.spa.ui.util.Fonts.PLAIN_FONT;
 
 /**
  * Some utilities to create controls, tweak the look and feel, center dialogs, etc.
+ *
  * @author Haim Adrian
  * @since 12-May-20
  */
@@ -30,11 +33,11 @@ public class Controls {
 
    public static final Border RED_LINE_BORDER = BorderFactory.createLineBorder(Color.RED, 5);
    public static final int SEPARATOR_THICKNESS = 2;
-
+   public static final Color acceptButtonColor = new Color(54, 88, 128);
    private static final Logger logger = LoggerFactory.getLogger(Controls.class);
    public static Color background;
-   private static Color tooltipBack;
    public static Color textColor;
+   private static Color tooltipBack;
 
    private Controls() {
       // Disallow instantiation of this class
@@ -126,7 +129,7 @@ public class Controls {
     * The label is aligned against the leading edge of its display area,
     * and centered vertically.
     *
-    * @param text  The text to be displayed by the label.
+    * @param text The text to be displayed by the label.
     */
    public static JLabel createLabel(String text) {
       return createLabel(text, null, SwingConstants.LEADING);
@@ -138,8 +141,8 @@ public class Controls {
     * and centered vertically.
     * The text is on the trailing edge of the image.
     *
-    * @param text  The text to be displayed by the label.
-    * @param icon  The image to be displayed by the label.
+    * @param text The text to be displayed by the label.
+    * @param icon The image to be displayed by the label.
     */
    public static JLabel createLabel(String text, Icon icon) {
       return createLabel(text, icon, SwingConstants.LEFT);
@@ -151,15 +154,15 @@ public class Controls {
     * The label is centered vertically in its display area.
     * The text is on the trailing edge of the image.
     *
-    * @param text  The text to be displayed by the label.
-    * @param icon  The image to be displayed by the label.
-    * @param horizontalAlignment  One of the following constants
-    *           defined in <code>SwingConstants</code>:
-    *           <code>LEFT</code>,
-    *           <code>CENTER</code>,
-    *           <code>RIGHT</code>,
-    *           <code>LEADING</code> or
-    *           <code>TRAILING</code>.
+    * @param text The text to be displayed by the label.
+    * @param icon The image to be displayed by the label.
+    * @param horizontalAlignment One of the following constants
+    * defined in <code>SwingConstants</code>:
+    * <code>LEFT</code>,
+    * <code>CENTER</code>,
+    * <code>RIGHT</code>,
+    * <code>LEADING</code> or
+    * <code>TRAILING</code>.
     */
    public static JLabel createLabel(String text, Icon icon, int horizontalAlignment) {
       return createLabel(text, icon, horizontalAlignment, PLAIN_FONT);
@@ -171,15 +174,15 @@ public class Controls {
     * The label is centered vertically in its display area.
     * The text is on the trailing edge of the image.
     *
-    * @param text  The text to be displayed by the label.
-    * @param icon  The image to be displayed by the label.
-    * @param horizontalAlignment  One of the following constants
-    *           defined in <code>SwingConstants</code>:
-    *           <code>LEFT</code>,
-    *           <code>CENTER</code>,
-    *           <code>RIGHT</code>,
-    *           <code>LEADING</code> or
-    *           <code>TRAILING</code>.
+    * @param text The text to be displayed by the label.
+    * @param icon The image to be displayed by the label.
+    * @param horizontalAlignment One of the following constants
+    * defined in <code>SwingConstants</code>:
+    * <code>LEFT</code>,
+    * <code>CENTER</code>,
+    * <code>RIGHT</code>,
+    * <code>LEADING</code> or
+    * <code>TRAILING</code>.
     * @param font The font to set to the label. See {@link Fonts}
     */
    public static JLabel createLabel(String text, Icon icon, int horizontalAlignment, Font font) {
@@ -197,7 +200,7 @@ public class Controls {
     * The label is aligned against the leading edge of its display area,
     * and centered vertically.
     *
-    * @param text  The text to be displayed by the label.
+    * @param text The text to be displayed by the label.
     */
    public static JLabel createTitle(String text) {
       return createTitle(text, null, SwingConstants.LEADING);
@@ -209,8 +212,8 @@ public class Controls {
     * and centered vertically.
     * The text is on the trailing edge of the image.
     *
-    * @param text  The text to be displayed by the label.
-    * @param icon  The image to be displayed by the label.
+    * @param text The text to be displayed by the label.
+    * @param icon The image to be displayed by the label.
     */
    public static JLabel createTitle(String text, Icon icon) {
       return createTitle(text, icon, SwingConstants.LEFT);
@@ -222,15 +225,15 @@ public class Controls {
     * The label is centered vertically in its display area.
     * The text is on the trailing edge of the image.
     *
-    * @param text  The text to be displayed by the label.
-    * @param icon  The image to be displayed by the label.
-    * @param horizontalAlignment  One of the following constants
-    *           defined in <code>SwingConstants</code>:
-    *           <code>LEFT</code>,
-    *           <code>CENTER</code>,
-    *           <code>RIGHT</code>,
-    *           <code>LEADING</code> or
-    *           <code>TRAILING</code>.
+    * @param text The text to be displayed by the label.
+    * @param icon The image to be displayed by the label.
+    * @param horizontalAlignment One of the following constants
+    * defined in <code>SwingConstants</code>:
+    * <code>LEFT</code>,
+    * <code>CENTER</code>,
+    * <code>RIGHT</code>,
+    * <code>LEADING</code> or
+    * <code>TRAILING</code>.
     */
    public static JLabel createTitle(String text, Icon icon, int horizontalAlignment) {
       JLabel label = new JLabel(text, icon, horizontalAlignment);
@@ -264,6 +267,44 @@ public class Controls {
       button.setDefaultCapable(isDefault);
       button.setFont(Fonts.BOLD_FONT);
       return button;
+   }
+
+   /**
+    * Make a flat style for button with a highlight when hovering over it
+    *
+    * @param button The button to stylize
+    */
+   public static void setFlatStyle(AbstractButton button) {
+      setFlatStyle(button, true);
+   }
+
+   /**
+    * Make a flat style for button where you can control whether to set a highlight when hovering over it or not
+    *
+    * @param button The button to stylize
+    * @param putHoverEffect Set a mouse hover highlight effect?
+    */
+   public static void setFlatStyle(AbstractButton button, boolean putHoverEffect) {
+      button.setBorderPainted(false);
+      button.setFocusPainted(false);
+      button.setContentAreaFilled(false);
+      button.setBackground(background.brighter());
+
+      if (putHoverEffect) {
+         button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+               // Show background so there will be an highlight
+               button.setOpaque(true);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+               // Transparent background
+               button.setOpaque(false);
+            }
+         });
+      }
    }
 
    /**
@@ -459,9 +500,9 @@ public class Controls {
       comp.setFont(font);
       for (Component child : comp.getComponents()) {
          if (child instanceof Container) {
-            setFontToComponents((Container)child, font);
+            setFontToComponents((Container) child, font);
          } else if (child instanceof JComponent) {
-            setFontToComponents((JComponent)child, font);
+            setFontToComponents((JComponent) child, font);
          }
       }
    }
@@ -470,39 +511,61 @@ public class Controls {
       comp.setFont(font);
       for (Component child : comp.getComponents()) {
          if (child instanceof Container) {
-            setFontToComponents((Container)child, font);
+            setFontToComponents((Container) child, font);
          } else if (child instanceof JComponent) {
-            setFontToComponents((JComponent)child, font);
+            setFontToComponents((JComponent) child, font);
+         }
+      }
+   }
+
+   public static void setBackgroundToComponents(Container comp, Color color) {
+      comp.setBackground(color);
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            setBackgroundToComponents((Container) child, color);
+         } else if (child instanceof JComponent) {
+            setBackgroundToComponents((JComponent) child, color);
+         }
+      }
+   }
+
+   public static void setBackgroundToComponents(JComponent comp, Color color) {
+      comp.setBackground(color);
+      for (Component child : comp.getComponents()) {
+         if (child instanceof Container) {
+            setBackgroundToComponents((Container) child, color);
+         } else if (child instanceof JComponent) {
+            setBackgroundToComponents((JComponent) child, color);
          }
       }
    }
 
    public static void increaseComponentWidth(Container comp, Class<?> typeToSearch, double proportion) {
       if (typeToSearch.isAssignableFrom(comp.getClass())) {
-         setComponentSize((JComponent) comp, (int)(comp.getPreferredSize().width * proportion), comp.getPreferredSize().height);
-         ((JComponent)comp).setFont(Fonts.BOLD_FONT);
+         setComponentSize((JComponent) comp, (int) (comp.getPreferredSize().width * proportion), comp.getPreferredSize().height);
+         ((JComponent) comp).setFont(Fonts.BOLD_FONT);
       }
 
       for (Component child : comp.getComponents()) {
          if (child instanceof Container) {
-            increaseComponentWidth((Container)child, typeToSearch, proportion);
+            increaseComponentWidth((Container) child, typeToSearch, proportion);
          } else if (child instanceof JComponent) {
-            increaseComponentWidth((JComponent)child, typeToSearch, proportion);
+            increaseComponentWidth((JComponent) child, typeToSearch, proportion);
          }
       }
    }
 
    public static void increaseComponentWidth(JComponent comp, Class<?> typeToSearch, double proportion) {
       if (typeToSearch.isAssignableFrom(comp.getClass())) {
-         setComponentSize((JComponent) comp, (int)(comp.getPreferredSize().width * proportion), comp.getPreferredSize().height);
-         ((JComponent)comp).setFont(Fonts.BOLD_FONT);
+         setComponentSize((JComponent) comp, (int) (comp.getPreferredSize().width * proportion), comp.getPreferredSize().height);
+         ((JComponent) comp).setFont(Fonts.BOLD_FONT);
       }
 
       for (Component child : comp.getComponents()) {
          if (child instanceof Container) {
-            increaseComponentWidth((Container)child, typeToSearch, proportion);
+            increaseComponentWidth((Container) child, typeToSearch, proportion);
          } else if (child instanceof JComponent) {
-            increaseComponentWidth((JComponent)child, typeToSearch, proportion);
+            increaseComponentWidth((JComponent) child, typeToSearch, proportion);
          }
       }
    }

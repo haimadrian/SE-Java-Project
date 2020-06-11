@@ -31,10 +31,10 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
    public StretchedImageCellRenderer(int margin, String adsAttributeName) {
       this.margin = margin;
       this.adsAttributeName = adsAttributeName;
-      originalBorder = getBorder();
 
       // Get the focus border of the LAF we use
-      focusBorder = (Border)UIManager.get("Table.focusCellHighlightBorder");
+      focusBorder = (Border) UIManager.get("Table.focusCellHighlightBorder");
+      originalBorder = BorderFactory.createEmptyBorder();
    }
 
    @Override
@@ -46,14 +46,14 @@ public class StretchedImageCellRenderer extends DefaultTableCellRenderer {
       Object actualValue = value;
       String ads = "";
       if (value instanceof TableCellValue) {
-         actualValue = ((TableCellValue<?>)value).getValue();
+         actualValue = ((TableCellValue<?>) value).getValue();
 
          if (!adsAttributeName.isEmpty()) {
-            ads = String.valueOf(((TableCellValue<?>)value).getItem().getAttributeValue(adsAttributeName));
+            ads = String.valueOf(((TableCellValue<?>) value).getItem().getAttributeValue(adsAttributeName));
          }
       }
 
-      Image image = ((ImageIcon)actualValue).getImage();
+      Image image = ((ImageIcon) actualValue).getImage();
       if (image == null) {
          return this;
       }

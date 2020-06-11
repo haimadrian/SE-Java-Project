@@ -18,7 +18,7 @@ public class ImageCellRenderer extends DefaultTableCellRenderer {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
       setText("");
-      setIcon((ImageIcon)value);
+      setIcon((ImageIcon) value);
 
       return this;
    }

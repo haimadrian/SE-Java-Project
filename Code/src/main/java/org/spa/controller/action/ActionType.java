@@ -1,7 +1,6 @@
 package org.spa.controller.action;
 
 import org.spa.controller.action.impl.*;
-import org.spa.controller.action.impl.StockReportAction;
 
 /**
  * @author Haim Adrian, Lior Shor, Idan Pollak
@@ -26,7 +25,7 @@ public enum ActionType {
    }
 
    public <R, T extends Action<R>> T newInstance() throws IllegalAccessException, InstantiationException {
-      T action = (T)clazz.newInstance();
+      T action = (T) clazz.newInstance();
       return action;
    }
 }

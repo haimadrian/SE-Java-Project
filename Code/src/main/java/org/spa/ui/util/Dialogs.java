@@ -34,6 +34,7 @@ public class Dialogs {
 
    /**
     * Show the waiting dialog with a progress bar and custom text.
+    *
     * @param owner Owner window
     * @param text Text to display
     * @param listener Get notified when the cancel button is clicked
@@ -69,7 +70,7 @@ public class Dialogs {
          waitingDialog.getContentPane().add(waitBar, BorderLayout.CENTER);
          waitingDialog.getContentPane().add(btnWaitingDialogCancel, BorderLayout.SOUTH);
          waitingDialog.getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-         ((JComponent)waitingDialog.getContentPane()).setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+         ((JComponent) waitingDialog.getContentPane()).setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
 
          waitingDialog.pack();
          waitingDialog.setResizable(false);
@@ -81,6 +82,7 @@ public class Dialogs {
 
    /**
     * Shows a waiting dialog
+    *
     * @param owner the owning window
     * @param message the message to be displayed in the dialog
     */
@@ -215,7 +217,7 @@ public class Dialogs {
       dlg.dispose();
       dialogShown = false;
 
-      if (opt.getValue() == null || !(opt.getValue() instanceof Integer) || ((Integer)opt.getValue()).intValue() != acceptOption) {
+      if (opt.getValue() == null || !(opt.getValue() instanceof Integer) || ((Integer) opt.getValue()).intValue() != acceptOption) {
          return false;
       }
 
@@ -228,6 +230,8 @@ public class Dialogs {
     * event is raised when the Cancel button of waiting dialog is clicked.
     */
    public interface CancelListener {
-      default boolean waitingCancelled() { return true; }
+      default boolean waitingCancelled() {
+         return true;
+      }
    }
 }

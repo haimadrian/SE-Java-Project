@@ -24,9 +24,9 @@ public class DateCellRenderer extends TextCellRenderer {
    @Override
    protected String getCellText(Object value) {
       if (value instanceof Date) {
-         return formatter.format((Date)value);
+         return formatter.format((Date) value);
       } else if (value instanceof TemporalAccessor) {
-         return formatter.format((TemporalAccessor)value);
+         return formatter.format((TemporalAccessor) value);
       }
 
       return super.getCellText(value);

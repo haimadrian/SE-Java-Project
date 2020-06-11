@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Test class for {@link AlertSystem}
+ *
  * @author Haim Adrian
  * @since 05-Jun-20
  */
@@ -63,7 +64,7 @@ public class AlertSystemTest extends BaseTest {
       assertEmpty("No alerts supposed to be triggered when we acknowledged an alert", alertSystemObserver.triggeredAlerts);
       assertNotEmpty("There supposed to be an acknowledged alert notification", alertSystemObserver.acknowledgedAlerts);
       assertEquals("Acknowledged alert supposed to have key: " + alert1.getKey(), alert1.getKey(), alertSystemObserver.acknowledgedAlerts.get(0).getKey());
-      int count = (int)alertSystem.getAlerts().stream().filter(alert -> alert.getKey().equals(alert1.getKey())).count();
+      int count = (int) alertSystem.getAlerts().stream().filter(alert -> alert.getKey().equals(alert1.getKey())).count();
       assertEquals("Acknowledged alert supposed to be removed from alert system", 0, count);
    }
 

@@ -8,7 +8,10 @@ import org.spa.common.util.log.factory.LoggerFactory;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * in the application.<br/>
  * Note that this cache is persistent. Use the {@link #start()} to load stored images from local disk and use {@link #stop()}
  * to save non-existing images at the local disk
+ *
  * @author Haim Adrian
  * @since 16-May-20
  */
@@ -38,17 +42,30 @@ public class ImagesCache {
       return instance;
    }
 
+   private static Class<?> getCallingClass() {
+      try {
+         // 1 - this method
+         // 2 - a calling method inside this class
+         // 3 - the caller to the calling method
+         return Class.forName(Thread.currentThread().getStackTrace()[3].getClassName());
+      } catch (ClassNotFoundException e) {
+         logger.error("Could not find class.. This should never happen and still..", e);
+         return null;
+      }
+   }
+
    /**
     * Use this method to find an image in the resources of the application or from disk. This method is
     * efficient as it will put in cache a new image in case we could find it, so next time you call it the
     * image will be retrieved from in-memory.
+    *
     * @param imageName The path to the image. Can be name of the image in case it sits as a resource with the same structure of calling class, or disk path.
     * @return The image or <code>null</code> in case it could not be found
     */
    public ImageIcon getImage(String imageName) {
-      ImageIcon image = cache.get(imageName);
+      String legalImageName = StringUtils.toLegalFileName(imageName);
+      ImageIcon image = cache.get(legalImageName);
       if (image == null) {
-         String legalImageName = StringUtils.toLegalFileName(imageName);
          try {
             // Use our class to resolve the same package
             Class<?> callingClass = getCallingClass();
@@ -66,31 +83,19 @@ public class ImagesCache {
             if (resource != null) {
                try {
                   image = new ImageIcon(ImageIO.read(resource));
-                  image.setDescription(imageName); // So we will use this description in tooltips
-                  cache.put(imageName, image);
+                  image.setDescription(legalImageName); // So we will use this description in tooltips
+                  cache.put(legalImageName, image);
                } finally {
                   resource.close();
                }
             }
          } catch (Exception e) {
             image = null;
-            logger.error("Could not find resource: " + imageName);
+            logger.error("Could not find resource: " + legalImageName);
          }
       }
 
       return image;
-   }
-
-   private static Class<?> getCallingClass() {
-      try {
-         // 1 - this method
-         // 2 - a calling method inside this class
-         // 3 - the caller to the calling method
-         return Class.forName(Thread.currentThread().getStackTrace()[3].getClassName());
-      } catch (ClassNotFoundException e) {
-         logger.error("Could not find class.. This should never happen and still..", e);
-         return null;
-      }
    }
 
    /**
@@ -119,7 +124,7 @@ public class ImagesCache {
          File currImageFile = new File(imagesDir, imageName);
          if (!currImageFile.exists()) {
             try {
-               ImageIO.write((BufferedImage)image.getImage(), imageName.substring(imageName.indexOf('.') + 1), currImageFile);
+               ImageIO.write((BufferedImage) image.getImage(), imageName.substring(imageName.lastIndexOf('.') + 1), currImageFile);
                imagesCount.incrementAndGet();
             } catch (Exception e) {
                logger.error("Error has occurred while saving image to local disk: " + currImageFile);
@@ -131,6 +136,7 @@ public class ImagesCache {
 
    /**
     * Use this method when you need to load an image from file and cache it in the {@link ImagesCache}
+    *
     * @param imageNameForCache What name should we map this image to in the cache
     * @param file The image file to load.
     * @return the loaded image or null in case we have failed to load it
@@ -150,6 +156,7 @@ public class ImagesCache {
 
    /**
     * Use this method when you need to load an image from file and cache it in the {@link ImagesCache}
+    *
     * @param imageNameForCache What name should we map this image to in the cache
     * @param url The image url to download and load into cache.
     * @return the loaded image or null in case we have failed to load it

@@ -7,14 +7,13 @@ import org.spa.common.SPAApplication;
 import org.spa.common.util.JsonUtils;
 import org.spa.common.util.log.Logger;
 import org.spa.common.util.log.factory.LoggerFactory;
-import org.spa.controller.item.WarehouseItem;
 import org.spa.model.Item;
-import org.spa.model.Order;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -37,7 +36,7 @@ public class ItemRepository implements Repository<Item> {
          if (FILE.exists()) {
             logger.info("Reading items from file");
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(FILE))))) {
-              ItemsList itemsFromFile = JsonUtils.readValue(reader, ItemsList.class);
+               ItemsList itemsFromFile = JsonUtils.readValue(reader, ItemsList.class);
                if (itemsFromFile != null) {
                   itemsFromFile.getItems().forEach(item -> items.put(item.getId(), item));
                   logger.info(items.size() + " items have been read");
@@ -60,19 +59,19 @@ public class ItemRepository implements Repository<Item> {
 
    @Override
    public Item create(Item item) {
-     items.put(item.getId(),item);
-     return item;
+      items.put(item.getId(), item);
+      return item;
    }
 
    @Override
    public Item update(Item item) {
-      items.put(item.getId(),item);
+      items.put(item.getId(), item);
       return item;
    }
 
    @Override
    public Item delete(Item item) {
-     return items.remove(item.getId());
+      return items.remove(item.getId());
    }
 
    @Override
@@ -93,6 +92,40 @@ public class ItemRepository implements Repository<Item> {
          }
       }
    }
+
+   private void generateDummyData() {
+      int idCounter = 1;
+      Item dummy = new Item("" + idCounter++, "CPU",
+            "Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor",
+            "9th Gen Intel Processor\n" +
+                  "Intel UHD Graphics 630\n" +
+                  "Only Compatible with Intel 300 Series Motherboard\n" +
+                  "Socket LGA 1151 (300 Series)\n" +
+                  "3.6 GHz Max Turbo Frequency 5.0 GHz\n" +
+                  "Unlocked Processor\n" +
+                  "DDR4 Support\n" +
+                  "Intel Optane Memory and SSD Supported\n" +
+                  "Cooling device not included - Processor Only\n" +
+                  "Intel Turbo Boost Technology 2.0 and Intel vPro technology offer pro-level performance for gaming, creating, and overall productivity",
+            600,
+            12,
+            0,
+            1);
+
+      Item dummy2 = new Item("" + idCounter++, "SSD",
+            "Crucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1",
+            "Sequential reads/writes up to 560/510 MB/s and random reads/writes up to 95k/90k on all file types\n" +
+                  "Accelerated by Micron 3D NAND technology\n" +
+                  "Integrated Power Loss Immunity preserves all your saved work",
+            114.9,
+            17,
+            2,
+            1);
+
+      items.put(dummy.getId(), dummy);
+      items.put(dummy2.getId(), dummy2);
+   }
+
    public static class ItemsList {
       @JsonProperty
       private ArrayList<Item> items;
@@ -109,38 +142,5 @@ public class ItemRepository implements Repository<Item> {
       public List<Item> getItems() {
          return items;
       }
-   }
-
-   private void generateDummyData() {
-      int idCounter = 1;
-      Item dummy = new Item("" + idCounter++,"CPU",
-              "Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor",
-              "9th Gen Intel Processor\n" +
-                      "Intel UHD Graphics 630\n" +
-                      "Only Compatible with Intel 300 Series Motherboard\n" +
-                      "Socket LGA 1151 (300 Series)\n" +
-                      "3.6 GHz Max Turbo Frequency 5.0 GHz\n" +
-                      "Unlocked Processor\n" +
-                      "DDR4 Support\n" +
-                      "Intel Optane Memory and SSD Supported\n" +
-                      "Cooling device not included - Processor Only\n" +
-                      "Intel Turbo Boost Technology 2.0 and Intel vPro technology offer pro-level performance for gaming, creating, and overall productivity",
-              600,
-              12,
-              0,
-              1);
-
-      Item dummy2 = new Item("" + idCounter++,"SSD",
-              "Crucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1",
-              "Sequential reads/writes up to 560/510 MB/s and random reads/writes up to 95k/90k on all file types\n" +
-                      "Accelerated by Micron 3D NAND technology\n" +
-                      "Integrated Power Loss Immunity preserves all your saved work",
-              114.9,
-              17,
-              2,
-              1);
-
-      items.put(dummy.getId(), dummy);
-      items.put(dummy2.getId(), dummy2);
    }
 }

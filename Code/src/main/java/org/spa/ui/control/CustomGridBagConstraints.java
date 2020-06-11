@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 public class CustomGridBagConstraints extends GridBagConstraints {
    public static final Insets ZERO_INSETS = new Insets(0, 0, 0, 0);
    private static final Logger logger = LoggerFactory.getLogger(CustomGridBagConstraints.class);
+
    /**
     * Create a {@link CustomGridBagConstraints} object that has: gridx set to 0 <br>
     * gridy set to 0 <br>

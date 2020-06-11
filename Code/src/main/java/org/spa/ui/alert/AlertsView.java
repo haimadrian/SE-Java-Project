@@ -32,16 +32,13 @@ import static org.spa.ui.util.Controls.createButton;
  */
 public class AlertsView implements SPAExplorerIfc<Alert> {
    private static final Logger logger = LoggerFactory.getLogger(AlertsView.class);
-
-   private JDialog alertsDialog;
    private final Window parent;
    private final ButtonWithBadge alertsButton;
    private final AlertSystem alertSystem;
-
    private final JPanel workArea;
    private final JLabel title;
    private final JButton clearButton;
-
+   private JDialog alertsDialog;
    /**
     * The table where we display alerts at
     */
@@ -59,6 +56,7 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
       ImageIcon image = ImagesCache.getInstance().getImage("alert-icon.png");
       Image scaledImage = image.getImage().getScaledInstance(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, Image.SCALE_SMOOTH);
       alertsButton = new ButtonWithBadge(new ImageIcon(scaledImage));
+      Controls.setFlatStyle(alertsButton);
       alertsButton.setToolTipText("View Alerts");
       alertsButton.setSize(HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE, HomePage.HOME_PAGE_BUTTON_IMAGE_SIZE);
       alertsButton.setCountForBadge(alertSystem.count());
@@ -84,9 +82,9 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
       workArea.setBorder(BorderFactory.createLineBorder(Color.gray, 1, true));
       workArea.setLayout(new BoxLayout(workArea, BoxLayout.PAGE_AXIS));
       workArea.add(title);
-      workArea.add(Box.createRigidArea(new Dimension(0,5)));
+      workArea.add(Box.createRigidArea(new Dimension(0, 5)));
       workArea.add(tableManager.getMainPanel());
-      workArea.add(Box.createRigidArea(new Dimension(0,5)));
+      workArea.add(Box.createRigidArea(new Dimension(0, 5)));
       workArea.add(buttonsPanel);
    }
 
@@ -116,7 +114,8 @@ public class AlertsView implements SPAExplorerIfc<Alert> {
             alertsButton.setCountForBadge(alertSystem.count());
             SwingUtilities.invokeLater(() -> {
                try {
-                  tableModelList.add(new AlertViewInfo(alert.getKey(), alert.getMessage(), alert.getDate(), alert.getSeverity().name()));
+                  tableModelList.clear();
+                  alertSystem.getAlerts().forEach(alert1 -> tableModelList.add(new AlertViewInfo(alert1.getKey(), alert1.getMessage(), alert1.getDate(), alert1.getSeverity().name())));
                   tableManager.refresh();
                } catch (Throwable t) {
                   logger.error("Error has occurred while trying to add alert to table. severity=" + alert.getSeverity(), t);

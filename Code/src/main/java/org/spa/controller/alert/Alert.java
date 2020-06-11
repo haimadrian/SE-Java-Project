@@ -1,57 +1,30 @@
 package org.spa.controller.alert;
 
 /**
+ * An interface created to represent alert in the application
+ *
  * @author Haim Adrian
- * @since 15-May-20
+ * @since 11-Jun-20
  */
-public class Alert {
-   private final String key;
-   private String message;
-   private long date;
-   private Severity severity;
+public interface Alert {
+   /**
+    * The key of the alert - This is the item ID which we raise an alert about its stock
+    * @return The key of this alert
+    */
+   String getKey();
 
-   public Alert(String key, String message, long date, Severity severity) {
-      this.key = key;
-      this.message = message;
-      this.date = date;
-      this.severity = severity;
-   }
+   /**
+    * @return The alert message to display to the user
+    */
+   String getMessage();
 
-   public String getKey() {
-      return key;
-   }
+   /**
+    * @return When the alert raised
+    */
+   long getDate();
 
-   public String getMessage() {
-      return message;
-   }
-
-   public void setMessage(String message) {
-      this.message = message;
-   }
-
-   public long getDate() {
-      return date;
-   }
-
-   public void setDate(long date) {
-      this.date = date;
-   }
-
-   public Severity getSeverity() {
-      return severity;
-   }
-
-   public void setSeverity(Severity severity) {
-      this.severity = severity;
-   }
-
-   @Override
-   public String toString() {
-      return "Alert{" +
-            "key='" + key + '\'' +
-            ", message='" + message + '\'' +
-            ", date=" + date +
-            ", severity=" + severity +
-            '}';
-   }
+   /**
+    * @return The {@link Severity} of the alert
+    */
+   Severity getSeverity();
 }

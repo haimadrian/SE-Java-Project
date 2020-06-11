@@ -1,5 +1,7 @@
 package org.spa.view.alert;
 
+import org.spa.controller.alert.Alert;
+import org.spa.controller.alert.Severity;
 import org.spa.view.table.TableModelIfc;
 
 import java.util.Date;
@@ -8,7 +10,7 @@ import java.util.Date;
  * @author Haim Adrian
  * @since 15-May-20
  */
-public class AlertViewInfo implements TableModelIfc {
+public class AlertViewInfo implements TableModelIfc, Alert {
    private final String key;
    private final String message;
    private final long date;
@@ -43,20 +45,24 @@ public class AlertViewInfo implements TableModelIfc {
       // Not editable.
    }
 
+   @Override
    public String getKey() {
       return key;
    }
 
+   @Override
    public String getMessage() {
       return message;
    }
 
+   @Override
    public long getDate() {
       return date;
    }
 
-   public SeverityViewInfo getSeverity() {
-      return severity;
+   @Override
+   public Severity getSeverity() {
+      return Severity.valueOf(severity.name());
    }
 
    @Override

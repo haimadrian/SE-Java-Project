@@ -2,11 +2,13 @@ package org.spa.controller.report;
 
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.order.Order;
+import org.spa.model.report.EconomicReport;
+import org.spa.model.report.OrderReport;
+import org.spa.model.report.StockReport;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
@@ -16,9 +18,10 @@ public class ReportSystem {
    public ReportSystem() {
    }
 
-   public String generateStockReport(List<WarehouseItem> items) {
+   public String generateStockReport() {
+      StockReport stockReport = new StockReport();
       StringBuilder reportString = new StringBuilder();
-      for (WarehouseItem item : items) {
+      for (WarehouseItem item : stockReport.getItems()) {
          reportString.append("Item name:\t").append(item.getName()).append("\n").append("Quantity:\t").append(item.getCount()).append("\n");
       }
       return reportString.toString();
@@ -29,7 +32,7 @@ public class ReportSystem {
       StringBuilder reportString = new StringBuilder();
       economicReport.getTotalProfitPerItem().forEach((itemName, profit) ->
             reportString.append("Item name: ").append(itemName).append("\tprofit ").append(profit).append("\n\n"));
-      reportString.append("\nTotal profit: ").append(economicReport.getTotalProfit());
+      reportString.append("\nTotal profit: ").append(decimalFormat.format(economicReport.getTotalProfit()));
       return reportString.toString();
 
    }
@@ -44,7 +47,7 @@ public class ReportSystem {
          reportString.append("Order ID: ").append(order.getOrderId()).append("\tOrder date: ").append(sdf.format(convertedDate)).append("\n");
          order.getItems().forEach(item -> {
             double discountPrice = item.getPrice() * item.getDiscountPercent() / 100;
-            reportString.append("\tItem name: " + item.getName() + "\tQuantity:\t" + item.getCount() + "\tTotal Price:\t" + (item.getPrice() - discountPrice) + "\n");
+            reportString.append("\tItem name: ").append(item.getName()).append("\tQuantity:\t").append(item.getCount()).append("\tTotal Price:\t").append(decimalFormat.format(item.getPrice() - discountPrice)).append("\n");
          });
          reportString.append("\n\n");
       });

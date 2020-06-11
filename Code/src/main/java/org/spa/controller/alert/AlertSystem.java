@@ -2,10 +2,12 @@ package org.spa.controller.alert;
 
 import org.spa.controller.SPAApplication;
 import org.spa.controller.Service;
+import org.spa.controller.item.Item;
 import org.spa.controller.item.ItemsWarehouseObserver;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.util.log.Logger;
 import org.spa.controller.util.log.factory.LoggerFactory;
+import org.spa.model.AlertImpl;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -22,7 +24,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
    static final int INITIAL_DELAY_SECONDS = 2;
    private static final Logger logger = LoggerFactory.getLogger(AlertSystem.class);
    private static final long ALERT_SYSTEM_CHECK_RATE_MINUTES = 5;
-   private final List<AlertSystemObserver> observers;
+   private final Set<AlertSystemObserver> observers;
    /**
     * Map between alert's key (The Item ID) to the alert
     */
@@ -35,7 +37,7 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
     * Constructs a new {@link AlertSystem}
     */
    public AlertSystem() {
-      observers = new ArrayList<>();
+      observers = new HashSet<>();
       alertConfig = new AlertConfig();
       alerts = new HashMap<>();
    }
@@ -157,13 +159,13 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
     * @param item The item to alert about
     * @param matchingThreshold A threshold to use for the alert
     */
-   private void raiseAlert(WarehouseItem item, Threshold matchingThreshold) {
+   private void raiseAlert(Item item, Threshold matchingThreshold) {
       String key = item.getId();
       String message = "Only " + item.getCount() + " left in stock for '" + item.getName() + "' (Item ID=" + item.getId() + ")";
       String severity = matchingThreshold.getSeverity().name();
       Date date = new Date(System.currentTimeMillis());
 
-      Alert alert = new Alert(key, message, date.getTime(), Severity.valueOf(severity));
+      Alert alert = new AlertImpl(key, message, date.getTime(), Severity.valueOf(severity));
       alerts.put(key, alert);
 
       notifyAboutAlert(alert, (observer, theAlert) -> observer.onAlertTriggered(this, theAlert));

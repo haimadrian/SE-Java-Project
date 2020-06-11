@@ -52,6 +52,8 @@ public class UserRepository implements Repository<User> {
    private void createSysAdminIfMissing() {
       if (users.values().stream().noneMatch(SystemAdmin.class::isInstance)) {
          users.put("Idan", new SystemAdmin("Idan", "1234"));
+         users.put("Lior", new SystemAdmin("Lior", "1234"));
+         users.put("Haim", new SystemAdmin("Haim", "1234"));
       }
    }
 

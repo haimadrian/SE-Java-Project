@@ -1,4 +1,4 @@
-package org.spa.controller.report;
+package org.spa.model.report;
 
 import org.spa.controller.SPAApplication;
 import org.spa.controller.item.WarehouseItem;

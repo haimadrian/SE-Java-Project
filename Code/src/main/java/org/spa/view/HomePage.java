@@ -30,7 +30,10 @@ import org.spa.view.util.ImagesCache;
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.util.List;
 import java.util.*;
 
@@ -43,23 +46,23 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
    public static final ImageIcon MAGNIFYING_IMAGE = ImagesCache.getInstance().getImage("magnifying-icon.png");
    private static final Logger logger = LoggerFactory.getLogger(HomePage.class);
    private final UserManagementService userManagement;
-   private JButton reports;
-   private JButton login;
-   private JButton logout;
-   private JButton orders;
-   private JButton register;
-   private JButton searchBtn;
-   private JCheckBox darkMode;
-   private JComboBox sortTable;
-   private CategoryTree categoryTree;
-   private JTextField searchBar;
-   private JFrame mainForm;
-   private ShoppingCartView shoppingCart;
-   private AlertsView alerts;
-   private JLabel lblUsername;
-   private ImageIcon spaLogo;
-   private ItemsWarehouse itemsWarehouse;
-   private List<WarehouseItem> modifiedItemList;
+   private final JButton reports;
+   private final JButton login;
+   private final JButton logout;
+   private final JButton orders;
+   private final JButton register;
+   private final JButton searchBtn;
+   private final JCheckBox darkMode;
+   private final JComboBox<String> sortTable;
+   private final CategoryTree categoryTree;
+   private final JTextField searchBar;
+   private final JFrame mainForm;
+   private final ShoppingCartView shoppingCart;
+   private final AlertsView alerts;
+   private final JLabel lblUsername;
+   private final ImageIcon spaLogo;
+   private final ItemsWarehouse itemsWarehouse;
+   private final List<WarehouseItem> modifiedItemList;
    private TableManager<ItemColumn, ItemViewInfoHome> tableManager;
    private java.util.List<ItemViewInfoHome> tableModelList;
 
@@ -86,21 +89,19 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
             refreshTable();
          }
       });
-      categoryTree.getCategoryTree().addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-         public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-            modifiedItemList.clear();
-            TreePath newLeadSelectionPath = evt.getNewLeadSelectionPath();
-            if (newLeadSelectionPath != null) {
-               String node = newLeadSelectionPath.getLastPathComponent().toString();
-               itemsWarehouse.getItems().stream().forEach(item -> {
-                  if (item.getCategory().matches(node)) {
-                     modifiedItemList.add(item);
-                  }
-               });
-               tableModelList.clear();
-               modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(new ItemViewInfo(item))));
-               tableManager.refresh();
-            }
+      categoryTree.getCategoryTree().addTreeSelectionListener(evt -> {
+         modifiedItemList.clear();
+         TreePath newLeadSelectionPath = evt.getNewLeadSelectionPath();
+         if (newLeadSelectionPath != null) {
+            String node = newLeadSelectionPath.getLastPathComponent().toString();
+            itemsWarehouse.getItems().forEach(item -> {
+               if (item.getCategory().matches(node)) {
+                  modifiedItemList.add(item);
+               }
+            });
+            tableModelList.clear();
+            modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(new ItemViewInfo(item))));
+            tableManager.refresh();
          }
       });
 
@@ -135,45 +136,21 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
       login.setToolTipText("Login");
       Controls.setComponentSize(login, HOME_PAGE_BUTTON_SIZE + 2, HOME_PAGE_BUTTON_SIZE);
       Controls.setFlatStyle(login);
-      login.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            new LoginView(parent);
-         }
-
-      });
-      logout.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent actionEvent) {
-            SPAApplication.getInstance().getUserManagementService().logout();
-            logout.setVisible(false);
-            reports.setVisible(false);
-            login.setVisible(true);
-            orders.setVisible(false);
-            register.setVisible(false);
-         }
+      login.addActionListener(e -> new LoginView(parent));
+      logout.addActionListener(actionEvent -> {
+         SPAApplication.getInstance().getUserManagementService().logout();
+         logout.setVisible(false);
+         reports.setVisible(false);
+         login.setVisible(true);
+         orders.setVisible(false);
+         register.setVisible(false);
       });
 
-      reports.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent actionEvent) {
-            new ReportView(mainForm, "Order");
-         }
-      });
+      reports.addActionListener(actionEvent -> new ReportView(mainForm, "Order"));
 
-      orders.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent actionEvent) {
-            new OrdersView(mainForm);
-         }
-      });
+      orders.addActionListener(actionEvent -> new OrdersView(mainForm));
 
-      register.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent actionEvent) {
-            new Registration(mainForm);
-         }
-      });
+      register.addActionListener(actionEvent -> new Registration(mainForm));
 
       shoppingCart = new ShoppingCartView(mainForm);
       alerts = new AlertsView(mainForm);
@@ -188,20 +165,17 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
       searchBtn = new JButton(new ImageIcon(scaledImage));
       Controls.setFlatStyle(searchBtn, false);
       searchBtn.setPreferredSize(new Dimension(40, 40));
-      ActionListener searchActionListener = new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            modifiedItemList.clear();
-            String searchString = "(?i).*" + searchBar.getText() + ".*";
-            itemsWarehouse.getItems().forEach(item -> {
-               if ((item.getName().matches(searchString)) || (item.getDescription().matches(searchString))) {
-                  modifiedItemList.add(item);
-               }
-            });
-            tableModelList.clear();
-            modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(new ItemViewInfo(item))));
-            tableManager.refresh();
-         }
+      ActionListener searchActionListener = e -> {
+         modifiedItemList.clear();
+         String searchString = "(?i).*" + searchBar.getText() + ".*";
+         itemsWarehouse.getItems().forEach(item -> {
+            if ((item.getName().matches(searchString)) || (item.getDescription().matches(searchString))) {
+               modifiedItemList.add(item);
+            }
+         });
+         tableModelList.clear();
+         modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(new ItemViewInfo(item))));
+         tableManager.refresh();
       };
       searchBtn.addActionListener(searchActionListener);
       searchBar.addActionListener(searchActionListener);
@@ -219,38 +193,37 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
       darkMode.setToolTipText("You must restart the application so changes will take effect");
       darkMode.addChangeListener(e -> Controls.setIsDarkMode(darkMode.isSelected()));
 
-      String sortArray[] = { "Sort by: None", "Price: Low to high", "Price: High to low", "Name: Alphabetically" };
-      sortTable = new JComboBox(sortArray);
+      String[] sortArray = { "Sort by: None", "Price: Low to high", "Price: High to low", "Name: Alphabetically" };
+      sortTable = new JComboBox<>(sortArray);
       if (Controls.isDarkMode()) {
          sortTable.setBackground(Color.black);
          sortTable.setForeground(Color.white);
       }
       sortTable.setFont(Fonts.PLAIN_FONT);
-      sortTable.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            tableModelList.clear();
-            if (modifiedItemList.size() == 0)
-               modifiedItemList.addAll(itemsWarehouse.getItems());
-            switch (sortTable.getSelectedIndex()) {
-               case 1: { //Low to high
-                  modifiedItemList.sort(new SortbyPriceLowToHigh());
-               }
-               break;
-
-               case 2: { //High to low
-                  modifiedItemList.sort(new SortbyPriceHighToLow());
-                  break;
-               }
-               case 3: { //Alphabetic
-                  Collections.sort(modifiedItemList, (item1, item2) -> item1.getName().compareToIgnoreCase(item2.getName()));
-               }
-               default: {
-                  break;
-               }
+      sortTable.addActionListener(e -> {
+         tableModelList.clear();
+         if (modifiedItemList.size() == 0)
+            modifiedItemList.addAll(itemsWarehouse.getItems());
+         switch (sortTable.getSelectedIndex()) {
+            case 1: { //Low to high
+               modifiedItemList.sort(new SortbyPriceLowToHigh());
             }
-            modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(new ItemViewInfo(item))));
-            tableManager.refresh();
+            break;
+
+            case 2: { //High to low
+               modifiedItemList.sort(new SortbyPriceHighToLow());
+               break;
+            }
+            case 3: { //Alphabetic
+               modifiedItemList.sort((item1, item2) -> item1.getName().compareToIgnoreCase(item2.getName()));
+               break;
+            }
+            default: {
+               break;
+            }
          }
+         modifiedItemList.forEach(item -> tableModelList.add(new ItemViewInfoHome(new ItemViewInfo(item))));
+         tableManager.refresh();
       });
       itemsWarehouse.registerObserver(this);
       add(sortTable);

@@ -6,11 +6,6 @@ import org.jdatepicker.impl.UtilDateModel;
 import org.spa.controller.action.ActionException;
 import org.spa.controller.action.ActionManager;
 import org.spa.controller.action.ActionType;
-import org.spa.controller.item.WarehouseItem;
-import org.spa.controller.order.Order;
-import org.spa.controller.report.EconomicReport;
-import org.spa.controller.report.OrderReport;
-import org.spa.controller.report.StockReport;
 import org.spa.controller.util.log.Logger;
 import org.spa.controller.util.log.factory.LoggerFactory;
 import org.spa.view.control.PrintSupport;
@@ -20,9 +15,12 @@ import org.spa.view.util.Fonts;
 import org.spa.view.util.ImagesCache;
 
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.util.List;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 
 public class ReportView {
@@ -192,61 +190,47 @@ public class ReportView {
          datePanel1.setVisible(true);
          datePanel2.setVisible(true);
          reportText.setText("");
-         datePanel1.getModel().addChangeListener(changeEvent -> {    //If user change the first date panel
+
+         ChangeListener dateChangeListener = changeEvent -> {
             reportText.setText("");
-            Map<String, Object> params = new HashMap<>();
             Date dateStart = (Date) datePanel1.getModel().getValue();
             Date dateEnd = (Date) datePanel2.getModel().getValue();
-            params.put("dateStart", dateStart);
-            params.put("dateEnd", dateEnd);
-            if (!dateStart.after(dateEnd)) {
-               OrderReport stockReport = new OrderReport(dateStart, dateEnd);
-               Map<String, Order> orders = stockReport.getOrders();
+            if ((dateStart != null && dateEnd != null) && (!dateStart.after(dateEnd))) {
                try {
+                  Map<String, Object> params = new HashMap<>();
+                  params.put("dateStart", dateStart);
+                  params.put("dateEnd", dateEnd);
                   reportText.setText(ActionManager.executeAction(ActionType.GenerateOrdersReport, params));
                } catch (ActionException e) {
-                  e.printStackTrace();
+                  logger.error("Error has occurred:", e);
                }
             }
-         });//If user change the second date panel
-         datePanel2.getModel().addChangeListener(changeEvent -> {
-            reportText.setText("");
-            Map<String, Object> params = new HashMap<>();
-            Date dateStart = (Date) datePanel1.getModel().getValue();
-            Date dateEnd = (Date) datePanel2.getModel().getValue();
-            params.put("dateStart", dateStart);
-            params.put("dateEnd", dateEnd);
-            if (!dateStart.after(dateEnd)) {
-               OrderReport stockReport = new OrderReport(dateStart, dateEnd);
-               params.putAll(stockReport.getOrders());
-               try {
-                  reportText.setText(ActionManager.executeAction(ActionType.GenerateOrdersReport, params));
-               } catch (ActionException e) {
-                  e.printStackTrace();
-               }
-            }
-         });
+         };
+
+         //If user change the first date panel
+         datePanel1.getModel().addChangeListener(dateChangeListener);
+
+         //If user change the second date panel
+         datePanel2.getModel().addChangeListener(dateChangeListener);
       }
       switch (kindOfReport) {
          case "Stock": {
             stockEconomicReportsRelocation(layout, contentPane);
-            StockReport stockReport = new StockReport();
-            List<WarehouseItem> items = stockReport.getItems();
             try {
                reportText.setText(ActionManager.executeAction(ActionType.GenerateStockReport));
             } catch (ActionException e) {
-               e.printStackTrace();
+               logger.error("Error has occurred:", e);
             }
             break;
          }
          case "Economic": {
             stockEconomicReportsRelocation(layout, contentPane);
-            EconomicReport economicReport = new EconomicReport();
             try {
                reportText.setText(ActionManager.executeAction(ActionType.GenerateEconomicReport));
             } catch (ActionException e) {
-               e.printStackTrace();
+               logger.error("Error has occurred:", e);
             }
+            break;
          }
          default:
             break;

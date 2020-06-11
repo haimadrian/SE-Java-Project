@@ -12,13 +12,44 @@ import org.spa.model.ItemImpl;
  */
 @JsonDeserialize(as = ItemImpl.class)
 public interface Item {
+   /**
+    * @return Unique ID of this item
+    */
    String getId();
+
+   /**
+    * @return Name of this item
+    */
    String getName();
+
+   /**
+    * @return The category that this item belongs to. e.g. CPU
+    */
    String getCategory();
+
+   /**
+    * @return Some description about this item. Can be long, multi-line string
+    */
    String getDescription();
+
+   /**
+    * @return The price of this item. This is the original price that the store's management paid on the item
+    */
    double getPrice();
+
+   /**
+    * @return Profit percentage - How much money, in percentage with respect to the price, the store's management earns
+    */
    double getProfitPercent();
+
+   /**
+    * @return Discount percentage - How much money, in percentage with respect to the price+profit, the store's management gives
+    */
    double getDiscountPercent();
+
+   /**
+    * @return How many occurrences of this item there are
+    */
    int getCount();
 
    /**

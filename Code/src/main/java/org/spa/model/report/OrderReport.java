@@ -1,9 +1,8 @@
-package org.spa.controller.report;
+package org.spa.model.report;
 
 import org.spa.controller.SPAApplication;
 import org.spa.controller.order.Order;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +18,8 @@ public class OrderReport extends Report {
 
    public Map<String, Order> getOrders() {
       Map<String, Order> orderMap = new HashMap<>();
-      SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().stream().forEach(order ->
+      SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().forEach(order ->
       {
-         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
          Date convertedDate = new Date(order.getOrderTime());
          if (dateStart.before(convertedDate) && dateEnd.after(convertedDate))
             orderMap.put(order.getOrderId(), order);

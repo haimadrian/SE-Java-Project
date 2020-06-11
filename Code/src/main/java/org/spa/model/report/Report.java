@@ -1,4 +1,4 @@
-package org.spa.controller.report;
+package org.spa.model.report;
 
 import java.util.Random;
 
@@ -7,8 +7,7 @@ public class Report {
 
    public Report() {
       Random rand = new Random();
-      Integer randomID = rand.nextInt(9999999);
-      this.reportID = randomID.toString();
+      this.reportID = String.valueOf(rand.nextInt(9999999));
    }
 
    public String getReportID() {

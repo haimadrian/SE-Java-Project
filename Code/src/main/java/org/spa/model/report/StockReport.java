@@ -1,6 +1,6 @@
 package org.spa.model.report;
 
-import org.spa.common.SPAApplication;
+import org.spa.controller.SPAApplication;
 import org.spa.controller.item.WarehouseItem;
 
 import java.util.List;

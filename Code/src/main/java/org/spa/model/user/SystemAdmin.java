@@ -2,7 +2,8 @@ package org.spa.model.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.spa.common.User;
+import org.spa.controller.user.User;
+import org.spa.controller.user.UserType;
 
 import java.util.Date;
 
@@ -43,5 +44,10 @@ public class SystemAdmin extends AbstractUser implements User {
    @Override
    public Date getRegistrationDate() {
       return new Date(System.currentTimeMillis());
+   }
+
+   @Override
+   public UserType getUserType() {
+      return UserType.SysAdmin;
    }
 }

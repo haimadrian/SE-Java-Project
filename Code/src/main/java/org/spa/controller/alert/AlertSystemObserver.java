@@ -1,7 +1,5 @@
 package org.spa.controller.alert;
 
-import org.spa.model.Alert;
-
 /**
  * Whoever wants to listen to the {@link AlertSystem} should implement this interface and register itself as
  * observer of the alert system class.

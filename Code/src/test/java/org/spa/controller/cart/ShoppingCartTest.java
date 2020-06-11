@@ -4,7 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.spa.BaseTest;
-import org.spa.common.SPAApplication;
+import org.spa.controller.SPAApplication;
+import org.spa.controller.item.Item;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.util.DummyDataForItemsWarehouse;
@@ -132,7 +133,7 @@ public class ShoppingCartTest extends BaseTest {
       assertEquals("Cart supposed to update listeners about item that was updated", 1, scObserver.updatedItems.size());
       assertEquals("Cart was not supposed to update listeners about item that was added", 0, scObserver.addedItems.size());
       assertEquals("Cart supposed to update listeners about item with ID=1 that was updated", "1", scObserver.updatedItems.get(0).getId());
-      WarehouseItem itemWithId1 = shoppingCart.getItems().stream().filter(item -> item.getId().equals("1")).collect(Collectors.toList()).get(0);
+      Item itemWithId1 = shoppingCart.getItems().stream().filter(item -> item.getId().equals("1")).collect(Collectors.toList()).get(0);
       assertEquals("Cart supposed to have an item with count=1 as we have overridden 2 with new count: 1", 1, itemWithId1.getCount());
    }
 
@@ -158,7 +159,7 @@ public class ShoppingCartTest extends BaseTest {
       assertEquals("Nothing should be added to cart", 0, scObserver.addedItems.size());
       assertEquals("Nothing should be updated to cart", 0, scObserver.updatedItems.size());
       assertEquals("Nothing should be removed from cart", 0, scObserver.removedItems.size());
-      WarehouseItem itemWithId1 = shoppingCart.getItems().stream().filter(item -> item.getId().equals("1")).collect(Collectors.toList()).get(0);
+      Item itemWithId1 = shoppingCart.getItems().stream().filter(item -> item.getId().equals("1")).collect(Collectors.toList()).get(0);
       assertEquals("Item with ID #1 wasn't supposed to be affected by the exception", 2, itemWithId1.getCount());
       int newCountInWarehouse = itemsWarehouse.getItem("1").getCount();
       assertEquals("Item count in warehouse supposed to stay the same as before the illegal update", countInWarehouseBeforeIllegalUpdate, newCountInWarehouse);

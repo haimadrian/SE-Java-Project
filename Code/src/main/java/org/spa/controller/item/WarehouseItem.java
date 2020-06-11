@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author Haim Adrian
  * @since 16-May-20
  */
-public class WarehouseItem {
+public class WarehouseItem implements Item {
    private final String id;
    private final String name;
    private String category;
@@ -44,11 +44,11 @@ public class WarehouseItem {
    }
 
    /**
-    * Constructs a copy of a {@link WarehouseItem}
+    * Constructs a copy of an {@link Item}
     *
     * @param another The item to copy data from
     */
-   public WarehouseItem(WarehouseItem another) {
+   public WarehouseItem(Item another) {
       this.id = another.getId();
       this.category = another.getCategory();
       this.name = another.getName();
@@ -59,35 +59,7 @@ public class WarehouseItem {
       this.count = another.getCount();
    }
 
-
-   /**
-    * @return The price after adding it the profit and discount values
-    */
-   public double getActualPrice() {
-      return getPriceWithProfit() - getDiscountValue();
-   }
-
-   /**
-    * @return The price after adding it the profit value
-    */
-   public double getPriceWithProfit() {
-      return getPrice() + getProfitValue();
-   }
-
-   /**
-    * @return The profit of this item
-    */
-   public double getProfitValue() {
-      return getPrice() * (getProfitPercent() / 100.0);
-   }
-
-   /**
-    * @return The discount of this item
-    */
-   public double getDiscountValue() {
-      return getPriceWithProfit() * (getDiscountPercent() / 100.0);
-   }
-
+   @Override
    public String getCategory() {
       return category;
    }
@@ -96,14 +68,17 @@ public class WarehouseItem {
       this.category = category;
    }
 
+   @Override
    public String getId() {
       return id;
    }
 
+   @Override
    public String getName() {
       return name;
    }
 
+   @Override
    public String getDescription() {
       return description;
    }
@@ -112,6 +87,7 @@ public class WarehouseItem {
       this.description = description;
    }
 
+   @Override
    public double getPrice() {
       return price;
    }
@@ -120,6 +96,7 @@ public class WarehouseItem {
       this.price = price;
    }
 
+   @Override
    public double getProfitPercent() {
       return profitPercent;
    }
@@ -128,6 +105,7 @@ public class WarehouseItem {
       this.profitPercent = profitPercent;
    }
 
+   @Override
    public double getDiscountPercent() {
       return discountPercent;
    }
@@ -136,6 +114,7 @@ public class WarehouseItem {
       this.discountPercent = discountPercent;
    }
 
+   @Override
    public int getCount() {
       return count;
    }

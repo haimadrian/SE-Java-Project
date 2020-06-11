@@ -1,6 +1,7 @@
 package org.spa.model.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.spa.controller.user.UserType;
 
 import java.util.Date;
 
@@ -41,5 +42,8 @@ public class Admin extends Customer {
       this.positionPercentage = positionPercentage;
    }
 
-
+   @Override
+   public UserType getUserType() {
+      return UserType.Admin;
+   }
 }

@@ -1,16 +1,17 @@
 package org.spa.controller.order;
 
-import org.spa.common.Repository;
-import org.spa.common.util.log.Logger;
-import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.Service;
-import org.spa.controller.item.WarehouseItem;
+import org.spa.controller.item.Item;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.model.Item;
-import org.spa.model.Order;
+import org.spa.controller.util.log.Logger;
+import org.spa.controller.util.log.factory.LoggerFactory;
+import org.spa.model.Repository;
 import org.spa.model.dal.OrderRepository;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class OrderSystem implements Service {
@@ -23,10 +24,6 @@ public class OrderSystem implements Service {
       ordersMap = new HashMap<>(1000);
       orderRepository = new OrderRepository();
       selectionModel = new SelectionModelManager<>();
-   }
-
-   private static Item warehouseItemToItem(WarehouseItem item) {
-      return new Item(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
    }
 
    public SelectionModelManager<Order> getSelectionModel() {
@@ -68,15 +65,31 @@ public class OrderSystem implements Service {
       return ordersMap.remove(orderId);
    }
 
-   public Order createOrder(String userId, Iterable<WarehouseItem> items) {
-      String orderId = UUID.randomUUID().toString();
-      List<Item> modelItems = new ArrayList<>();
-      items.forEach(item -> modelItems.add(warehouseItemToItem(item)));
+   public Order createOrder(String userId, List<Item> items) {
+      Order order = orderRepository.create(new Order() {
+         @Override
+         public String getOrderId() {
+            return UUID.randomUUID().toString();
+         }
 
-      logger.info("Creating order: " + orderId + " for user '" + userId + "'");
+         @Override
+         public long getOrderTime() {
+            return System.currentTimeMillis();
+         }
 
-      Order order = new Order(orderId, System.currentTimeMillis(), userId, modelItems);
-      ordersMap.put(orderId, order);
+         @Override
+         public String getUserId() {
+            return userId;
+         }
+
+         @Override
+         public List<? extends Item> getItems() {
+            return items;
+         }
+      });
+
+      logger.info("Creating order: " + order.getOrderId() + " for user '" + userId + "'");
+      ordersMap.put(order.getOrderId(), order);
       return order;
    }
 }

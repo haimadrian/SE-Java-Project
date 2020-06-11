@@ -4,8 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.spa.BaseTest;
-import org.spa.common.SPAApplication;
-import org.spa.model.Alert;
+import org.spa.controller.SPAApplication;
 import org.spa.util.DummyDataForItemsWarehouse;
 
 import java.util.ArrayList;

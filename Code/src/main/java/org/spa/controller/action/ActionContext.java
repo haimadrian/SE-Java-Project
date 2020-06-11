@@ -1,12 +1,12 @@
 package org.spa.controller.action;
 
-import org.spa.common.SPAApplication;
-import org.spa.controller.UserManagementService;
+import org.spa.controller.SPAApplication;
 import org.spa.controller.alert.AlertSystem;
 import org.spa.controller.cart.ShoppingCart;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.order.OrderSystem;
 import org.spa.controller.report.ReportSystem;
+import org.spa.controller.user.UserManagementService;
 
 import java.util.HashMap;
 import java.util.Map;

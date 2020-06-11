@@ -4,10 +4,10 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.spa.common.util.log.Level;
-import org.spa.common.util.log.Logger;
-import org.spa.common.util.log.factory.LogType;
-import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.util.log.Level;
+import org.spa.controller.util.log.Logger;
+import org.spa.controller.util.log.factory.LogType;
+import org.spa.controller.util.log.factory.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;

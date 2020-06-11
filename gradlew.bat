@@ -8,7 +8,7 @@
 @rem Set local scope for the variables with windows NT shell
 if "%OS%"=="Windows_NT" setlocal
 
-set DIRNAME=./../../Code
+set DIRNAME=./Code
 set APP_BASE_NAME=%~n0
 set APP_HOME=%DIRNAME%
 

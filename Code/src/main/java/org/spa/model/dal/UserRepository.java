@@ -2,12 +2,12 @@ package org.spa.model.dal;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.spa.common.Repository;
-import org.spa.common.SPAApplication;
-import org.spa.common.User;
-import org.spa.common.util.JsonUtils;
-import org.spa.common.util.log.Logger;
-import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.SPAApplication;
+import org.spa.controller.user.User;
+import org.spa.controller.util.JsonUtils;
+import org.spa.controller.util.log.Logger;
+import org.spa.controller.util.log.factory.LoggerFactory;
+import org.spa.model.Repository;
 import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.SystemAdmin;
@@ -33,7 +33,7 @@ public class UserRepository implements Repository<User> {
    }
 
    @Override
-   public List<User> selectAll() {
+   public List<? extends User> selectAll() {
       if (users.isEmpty()) {
          readUsersFromFile(CUSTOMER_FILE, CustomerList.class);
          readUsersFromFile(ADMIN_FILE, AdminList.class);
@@ -102,7 +102,7 @@ public class UserRepository implements Repository<User> {
    }
 
    @Override
-   public void saveAll(Iterable<User> users) {
+   public void saveAll(Iterable<? extends User> users) {
       users.forEach(this::update);
 
       ArrayList<Admin> admins = new ArrayList<>();

@@ -1,9 +1,7 @@
 package org.spa.controller.report;
 
 import org.spa.controller.item.WarehouseItem;
-import org.spa.model.Order;
-import org.spa.model.report.EconomicReport;
-import org.spa.model.report.OrderReport;
+import org.spa.controller.order.Order;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

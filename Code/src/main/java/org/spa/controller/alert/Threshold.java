@@ -1,7 +1,5 @@
 package org.spa.controller.alert;
 
-import org.spa.model.Severity;
-
 /**
  * @author Haim Adrian
  * @since 16-May-20

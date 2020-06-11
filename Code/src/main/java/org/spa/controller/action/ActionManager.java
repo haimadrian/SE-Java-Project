@@ -1,7 +1,7 @@
 package org.spa.controller.action;
 
-import org.spa.common.util.log.Logger;
-import org.spa.common.util.log.factory.LoggerFactory;
+import org.spa.controller.util.log.Logger;
+import org.spa.controller.util.log.factory.LoggerFactory;
 
 import java.util.Map;
 

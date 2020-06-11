@@ -1,15 +1,13 @@
 package org.spa.controller.item;
 
-import org.spa.common.Repository;
-import org.spa.common.util.log.Logger;
-import org.spa.common.util.log.factory.LoggerFactory;
 import org.spa.controller.Service;
 import org.spa.controller.selection.SelectionModelManager;
-import org.spa.model.Item;
+import org.spa.controller.util.log.Logger;
+import org.spa.controller.util.log.factory.LoggerFactory;
+import org.spa.model.Repository;
 import org.spa.model.dal.ItemRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Haim Adrian
@@ -29,14 +27,6 @@ public class ItemsWarehouse implements Service {
       observers = new HashSet<>();
    }
 
-   private static WarehouseItem itemToWarehouseItem(Item item) {
-      return new WarehouseItem(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
-   }
-
-   private static Item warehouseItemToItem(WarehouseItem item) {
-      return new Item(item.getId(), item.getCategory(), item.getName(), item.getDescription(), item.getPrice(), item.getProfitPercent(), item.getDiscountPercent(), item.getCount());
-   }
-
    public SelectionModelManager<WarehouseItem> getSelectionModel() {
       return selectionModel;
    }
@@ -49,7 +39,7 @@ public class ItemsWarehouse implements Service {
       logger.info("Starting ItemsWarehouse - Select items from repository");
 
       // Load data into memory
-      itemRepository.selectAll().forEach(item -> idToItem.put(item.getId(), itemToWarehouseItem(item)));
+      itemRepository.selectAll().forEach(item -> idToItem.put(item.getId(), new WarehouseItem(item)));
    }
 
    /**
@@ -60,7 +50,7 @@ public class ItemsWarehouse implements Service {
       logger.info("Stopping ItemsWarehouse - Save items to repository");
 
       // Save data to repository
-      itemRepository.saveAll(idToItem.values().stream().map(ItemsWarehouse::warehouseItemToItem).collect(Collectors.toList()));
+      itemRepository.saveAll(idToItem.values());
    }
 
    /**
@@ -89,7 +79,7 @@ public class ItemsWarehouse implements Service {
     */
    public void addItem(WarehouseItem warehouseItem) {
       idToItem.put(warehouseItem.getId(), warehouseItem);
-      itemRepository.create(warehouseItemToItem(warehouseItem));
+      itemRepository.create(warehouseItem);
       logger.info("Item added to warehouse: " + warehouseItem);
       notifyItemAdded(warehouseItem);
    }
@@ -103,7 +93,7 @@ public class ItemsWarehouse implements Service {
    public WarehouseItem removeItem(String id) {
       WarehouseItem item = idToItem.remove(id);
       if (item != null) {
-         itemRepository.delete(warehouseItemToItem(item));
+         itemRepository.delete(item);
          logger.info("Removed item from warehouse: " + item);
          notifyItemDeleted(item);
       }
@@ -124,7 +114,7 @@ public class ItemsWarehouse implements Service {
             logger.debug(() -> "Tried to update amount of an item with the same value. oldCount=" + oldCount + ", newCount=" + amount);
          } else {
             item.setCount(amount);
-            itemRepository.update(warehouseItemToItem(item));
+            itemRepository.update(item);
             notifyItemUpdated(item);
             logger.info("Item count updated: " + item + ", old count was " + oldCount);
          }
@@ -142,7 +132,7 @@ public class ItemsWarehouse implements Service {
          item.setProfitPercent(warehouseItem.getProfitPercent());
          item.setDiscountPercent(warehouseItem.getDiscountPercent());
          item.setCount(warehouseItem.getCount());
-         itemRepository.update(warehouseItemToItem(item));
+         itemRepository.update(item);
          logger.info("item Updated in warehouse: " + item);
          notifyItemUpdated(item);
       }

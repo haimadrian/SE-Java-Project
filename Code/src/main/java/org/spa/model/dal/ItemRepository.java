@@ -2,12 +2,13 @@ package org.spa.model.dal;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.spa.common.Repository;
-import org.spa.common.SPAApplication;
-import org.spa.common.util.JsonUtils;
-import org.spa.common.util.log.Logger;
-import org.spa.common.util.log.factory.LoggerFactory;
-import org.spa.model.Item;
+import org.spa.controller.SPAApplication;
+import org.spa.controller.item.Item;
+import org.spa.controller.util.JsonUtils;
+import org.spa.controller.util.log.Logger;
+import org.spa.controller.util.log.factory.LoggerFactory;
+import org.spa.model.ItemImpl;
+import org.spa.model.Repository;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class ItemRepository implements Repository<Item> {
    }
 
    @Override
-   public List<Item> selectAll() {
+   public List<? extends Item> selectAll() {
       if (items.isEmpty()) {
          if (FILE.exists()) {
             logger.info("Reading items from file");
@@ -59,13 +60,13 @@ public class ItemRepository implements Repository<Item> {
 
    @Override
    public Item create(Item item) {
-      items.put(item.getId(), item);
+      items.put(item.getId(), new ItemImpl(item));
       return item;
    }
 
    @Override
    public Item update(Item item) {
-      items.put(item.getId(), item);
+      items.put(item.getId(), new ItemImpl(item));
       return item;
    }
 
@@ -75,7 +76,7 @@ public class ItemRepository implements Repository<Item> {
    }
 
    @Override
-   public void saveAll(Iterable<Item> items) {
+   public void saveAll(Iterable<? extends Item> items) {
       items.forEach(this::update);
 
       // Remove the dummy values so we will not store them to disk.
@@ -95,7 +96,7 @@ public class ItemRepository implements Repository<Item> {
 
    private void generateDummyData() {
       int idCounter = 1;
-      Item dummy = new Item("" + idCounter++, "CPU",
+      ItemImpl dummy = new ItemImpl("" + idCounter++, "CPU",
             "Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor",
             "9th Gen Intel Processor\n" +
                   "Intel UHD Graphics 630\n" +
@@ -112,7 +113,7 @@ public class ItemRepository implements Repository<Item> {
             0,
             1);
 
-      Item dummy2 = new Item("" + idCounter++, "SSD",
+      ItemImpl dummy2 = new ItemImpl("" + idCounter++, "SSD",
             "Crucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1",
             "Sequential reads/writes up to 560/510 MB/s and random reads/writes up to 95k/90k on all file types\n" +
                   "Accelerated by Micron 3D NAND technology\n" +
@@ -128,18 +129,18 @@ public class ItemRepository implements Repository<Item> {
 
    public static class ItemsList {
       @JsonProperty
-      private ArrayList<Item> items;
+      private ArrayList<? extends Item> items;
 
       public ItemsList() {
          items = new ArrayList<>();
       }
 
       @JsonCreator
-      public ItemsList(@JsonProperty(value = "items") ArrayList<Item> items) {
+      public ItemsList(@JsonProperty(value = "items") ArrayList<? extends Item> items) {
          this.items = items;
       }
 
-      public List<Item> getItems() {
+      public List<? extends Item> getItems() {
          return items;
       }
    }

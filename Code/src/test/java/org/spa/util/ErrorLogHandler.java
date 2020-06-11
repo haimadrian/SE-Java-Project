@@ -1,7 +1,7 @@
 package org.spa.util;
 
-import org.spa.common.util.log.ComponentLogHandler;
-import org.spa.common.util.log.Logger;
+import org.spa.controller.util.log.ComponentLogHandler;
+import org.spa.controller.util.log.Logger;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -2,13 +2,14 @@ package org.spa.model.dal;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.spa.common.Repository;
-import org.spa.common.SPAApplication;
-import org.spa.common.util.JsonUtils;
-import org.spa.common.util.log.Logger;
-import org.spa.common.util.log.factory.LoggerFactory;
-import org.spa.model.Item;
-import org.spa.model.Order;
+import org.spa.controller.SPAApplication;
+import org.spa.controller.order.Order;
+import org.spa.controller.util.JsonUtils;
+import org.spa.controller.util.log.Logger;
+import org.spa.controller.util.log.factory.LoggerFactory;
+import org.spa.model.ItemImpl;
+import org.spa.model.OrderImpl;
+import org.spa.model.Repository;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class OrderRepository implements Repository<Order> {
    }
 
    @Override
-   public List<Order> selectAll() {
+   public List<? extends Order> selectAll() {
       if (orders.isEmpty()) {
          if (FILE.exists()) {
             logger.info("Reading orders from file");
@@ -61,13 +62,13 @@ public class OrderRepository implements Repository<Order> {
 
    @Override
    public Order create(Order order) {
-      orders.put(order.getOrderId(), new Order(order));
+      orders.put(order.getOrderId(), new OrderImpl(order));
       return order;
    }
 
    @Override
    public Order update(Order order) {
-      orders.put(order.getOrderId(), new Order(order));
+      orders.put(order.getOrderId(), new OrderImpl(order));
       return order;
    }
 
@@ -77,7 +78,7 @@ public class OrderRepository implements Repository<Order> {
    }
 
    @Override
-   public void saveAll(Iterable<Order> orders) {
+   public void saveAll(Iterable<? extends Order> orders) {
       orders.forEach(this::update);
 
       // Remove the dummy values so we will not store them to disk.
@@ -97,8 +98,8 @@ public class OrderRepository implements Repository<Order> {
 
    private void generateDummyData() {
       int idCounter = 1;
-      List<Item> dummy = new ArrayList<>();
-      dummy.add(new Item("" + idCounter++, "CPU",
+      List<ItemImpl> dummy = new ArrayList<>();
+      dummy.add(new ItemImpl("" + idCounter++, "CPU",
             "Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor",
             "9th Gen Intel Processor\n" +
                   "Intel UHD Graphics 630\n" +
@@ -115,7 +116,7 @@ public class OrderRepository implements Repository<Order> {
             0,
             1));
 
-      dummy.add(new Item("" + idCounter++, "SSD",
+      dummy.add(new ItemImpl("" + idCounter++, "SSD",
             "Crucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1",
             "Sequential reads/writes up to 560/510 MB/s and random reads/writes up to 95k/90k on all file types\n" +
                   "Accelerated by Micron 3D NAND technology\n" +
@@ -125,7 +126,7 @@ public class OrderRepository implements Repository<Order> {
             2,
             1));
 
-      dummy.add(new Item("" + idCounter++, "GPU",
+      dummy.add(new ItemImpl("" + idCounter++, "GPU",
             "EVGA GeForce RTX 2080 SUPER XC ULTRA GAMING Video Card, 08G-P4-3183-KR, 8GB GDDR6, RGB LED, Metal Backplate",
             "Real Boost Clock: 1845 MHz; Memory Detail: 8192MB GDDR6.\n" +
                   "Real-Time RAY TRACING in games for cutting-edge, hyper-realistic graphics.\n" +
@@ -136,8 +137,8 @@ public class OrderRepository implements Repository<Order> {
             0,
             1));
 
-      List<Item> dummy2 = new ArrayList<>();
-      dummy2.add(new Item("" + idCounter++, "CPU",
+      List<ItemImpl> dummy2 = new ArrayList<>();
+      dummy2.add(new ItemImpl("" + idCounter++, "CPU",
             "ASUS ROG STRIX Z490-F GAMING LGA 1200 (Intel 10th Gen)",
             "Intel Z490 SATA 6Gb/s ATX Intel Motherboard (16 Power Stages, DDR4 4600, Intel 2.5Gb Ethernet, USB 3.2 Front Panel Type-C, Dual M.2 and AURA Sync)\n" +
                   "Intel LGA 1200 socket: Designed to unleash the maximum performance of 10th Gen Intel Core processors\n" +
@@ -152,7 +153,7 @@ public class OrderRepository implements Repository<Order> {
             2,
             1));
 
-      dummy2.add(new Item("" + idCounter++, "SSD",
+      dummy2.add(new ItemImpl("" + idCounter++, "SSD",
             "Crucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1",
             "Sequential reads/writes up to 560/510 MB/s and random reads/writes up to 95k/90k on all file types\n" +
                   "Accelerated by Micron 3D NAND technology\n" +
@@ -162,7 +163,7 @@ public class OrderRepository implements Repository<Order> {
             2,
             1));
 
-      dummy2.add(new Item("" + idCounter++, "GPU",
+      dummy2.add(new ItemImpl("" + idCounter++, "GPU",
             "MSI GeForce RTX 2080 TI GAMING X TRIO Video Card",
             "11GB 352-Bit GDDR6\n" +
                   "Core Clock 1350 MHz\n" +
@@ -175,8 +176,8 @@ public class OrderRepository implements Repository<Order> {
             0,
             1));
 
-      Order order1 = new Order("#11111", System.currentTimeMillis(), "Lior", dummy);
-      Order order2 = new Order("#22222", System.currentTimeMillis(), "Idan", dummy2);
+      OrderImpl order1 = new OrderImpl("#11111", System.currentTimeMillis(), "Lior", dummy);
+      OrderImpl order2 = new OrderImpl("#22222", System.currentTimeMillis(), "Idan", dummy2);
 
       orders.put(order1.getOrderId(), order1);
       orders.put(order2.getOrderId(), order2);
@@ -184,18 +185,18 @@ public class OrderRepository implements Repository<Order> {
 
    public static class OrdersList {
       @JsonProperty
-      private ArrayList<Order> orders;
+      private ArrayList<? extends Order> orders;
 
       public OrdersList() {
          orders = new ArrayList<>();
       }
 
       @JsonCreator
-      public OrdersList(@JsonProperty(value = "orders") ArrayList<Order> orders) {
+      public OrdersList(@JsonProperty(value = "orders") ArrayList<? extends Order> orders) {
          this.orders = orders;
       }
 
-      public List<Order> getOrders() {
+      public List<? extends Order> getOrders() {
          return orders;
       }
    }

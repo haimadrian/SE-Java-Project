@@ -1,7 +1,5 @@
 package org.spa.controller.alert;
 
-import org.spa.model.Severity;
-
 import java.util.ArrayList;
 import java.util.List;
 

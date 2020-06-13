@@ -120,6 +120,8 @@ public class ReportView {
          orderReport.setEnabled(true);
          stockReport.setEnabled(false);
          title.setText(kindOfReport + " Report");
+         reportText.setText("");
+
          generateReport(layout, contentPane);
       });
       buttonsPanel.add(orderReport);
@@ -129,6 +131,8 @@ public class ReportView {
          orderReport.setEnabled(false);
          stockReport.setEnabled(true);
          title.setText(kindOfReport + " Report");
+         reportText.setText("");
+
          componentLocation(layout, contentPane);
       });
       buttonsPanel.add(economicReport);
@@ -138,6 +142,7 @@ public class ReportView {
          orderReport.setEnabled(true);
          stockReport.setEnabled(true);
          title.setText(kindOfReport + " Report");
+         reportText.setText("");
          generateReport(layout, contentPane);
       });
    }
@@ -192,7 +197,6 @@ public class ReportView {
          reportText.setText("");
 
          ChangeListener dateChangeListener = changeEvent -> {
-            reportText.setText("");
             Date dateStart = (Date) datePanel1.getModel().getValue();
             Date dateEnd = (Date) datePanel2.getModel().getValue();
             if ((dateStart != null && dateEnd != null) && (!dateStart.after(dateEnd))) {

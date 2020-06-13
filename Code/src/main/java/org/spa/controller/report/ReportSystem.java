@@ -31,10 +31,9 @@ public class ReportSystem {
       EconomicReport economicReport = new EconomicReport();
       StringBuilder reportString = new StringBuilder();
       economicReport.getTotalProfitPerItem().forEach((itemName, profit) ->
-            reportString.append("Item name: ").append(itemName).append("\tprofit ").append(profit).append("\n\n"));
+            reportString.append("Item name: ").append(itemName).append("\t\tprofit: ").append(profit).append("\n\n"));
       reportString.append("\nTotal profit: ").append(decimalFormat.format(economicReport.getTotalProfit()));
       return reportString.toString();
-
    }
 
    public String generateOrdersReport(Date dateStart, Date dateEnd) {

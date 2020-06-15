@@ -16,12 +16,12 @@ import static org.spa.driver.SPAMain.FRAME_ICON_NAME;
 public class ResetPassword {
 
    private final Window owner;
-   private final User currentUser;
+   private final String currentUserId;
    private JFrame frame;
 
-   public ResetPassword(Window owner, User u) {
+   public ResetPassword(Window owner, String userId) {
       this.owner = owner;
-      currentUser = u;
+      currentUserId = userId;
       frame = new JFrame("Reset Password");
       frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
       frame.setSize(350, 200);
@@ -66,19 +66,16 @@ public class ResetPassword {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-
-            String newPass = new String(newPasswordText.getPassword());
-            String reEnterPass = new String(reEnterPasswordText.getPassword());
-
-            if (newPass.length() == 0 || reEnterPass.length() == 0)
-               res.setText("Fill the empty fields!");
-            else if (newPass.equals(reEnterPass)) {
+            if(SPAApplication.getInstance().getUserManagementService().resetPassword(new String (newPasswordText.getPassword()), new String(reEnterPasswordText.getPassword()), currentUserId)){
                showMessageDialog(null, "Password changed successfully!");
-               SPAApplication.getInstance().getUserManagementService().updateUser(currentUser, newPass);
                frame.dispose();
                frame = null;
                new LoginView(owner);
-            } else {
+            }
+            else if (newPasswordText.getPassword().length == 0 || reEnterPassword.getText().length() == 0) {
+               res.setText("Fill the empty fields!");
+            }
+            else {
                res.setText("Password do not match!");
             }
          }

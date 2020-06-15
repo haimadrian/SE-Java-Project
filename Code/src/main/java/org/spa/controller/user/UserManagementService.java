@@ -1,22 +1,25 @@
 package org.spa.controller.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.spa.controller.SPAApplication;
 import org.spa.controller.Service;
+import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.util.log.Logger;
 import org.spa.controller.util.log.factory.LoggerFactory;
 import org.spa.model.Repository;
 import org.spa.model.dal.UserRepository;
+import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Guest;
 import org.spa.model.user.SystemAdmin;
+import org.spa.view.util.ImagesCache;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.File;
+import java.util.*;
 
 public class UserManagementService implements Service {
 
-   private static final Logger logger = LoggerFactory.getLogger(UserManagementService.class);
+   private static Logger logger = LoggerFactory.getLogger(UserManagementService.class);
    private final Map<String, User> userMap;
    private final Repository<User> userRepository;
    private final Set<UserManagementServiceObserver> observers;
@@ -46,9 +49,6 @@ public class UserManagementService implements Service {
       userRepository.saveAll(userMap.values());
    }
 
-   public Map<String, User> getUserMap() {
-      return userMap;
-   }
 
    public User login(String userId, String pass) {
       User u = userMap.get(userId.toLowerCase());
@@ -116,12 +116,82 @@ public class UserManagementService implements Service {
       userMap.put(user.getUserId().toLowerCase(), userRepository.update(u));
    }
 
+   public void deleteUser(User user){
+      User deletedUser = userMap.remove(user.getUserId().toLowerCase());
+      userRepository.delete(deletedUser);
+   }
+
    public boolean isExist(String userId) {
       return (userMap.containsKey(userId.toLowerCase()));
    }
 
    public User getUser(String userId) {
       return userMap.get(userId.toLowerCase());
+   }
+
+   public boolean register(String userId, String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer, UserType userType, String selectedUserType) {
+      if(userId.isEmpty() || password.isEmpty() || password.isEmpty() || secretAnswer.isEmpty()){
+         return false;
+      }
+      else if(isExist(userId)){
+         return false;
+      }
+      else if(userType == UserType.Guest){
+         Customer customer = new Customer(userId, password, phoneNumber, birthDate, registrationDate, secretQuestion, secretAnswer);
+         createUser(customer);
+         return true;
+      }
+      else if(userType == UserType.SysAdmin){
+         String data = selectedUserType;
+         switch (data) {
+            case "System Admin":
+               SystemAdmin systemAdmin = new SystemAdmin(userId, password);
+               createUser(systemAdmin);
+               break;
+            case "Admin":
+               Admin admin = new Admin(userId, password, phoneNumber, birthDate, registrationDate, secretQuestion, secretAnswer, 10000, 100);
+               createUser(admin);
+               break;
+            case "Customer":
+               Customer customer = new Customer(userId, password, phoneNumber, birthDate, registrationDate, secretQuestion, secretAnswer);
+               createUser(customer);
+               break;
+         }
+         return true;
+      }
+      return false;
+   }
+
+   public String forgotPasswordDisplayQuestion(String userId){
+      User user = getUser(userId);
+      if(user == null){
+         return "";
+      }
+      else if(user instanceof Customer){
+         return ((Customer) user).getSecretQuestion();
+      }
+      return "";
+   }
+
+   public boolean forgotPasswordCheckAnswer(String userId, String answer){
+      User user = getUser(userId);
+      if (user instanceof Customer) {
+         if(((Customer) user).getSecretAnswer().equals(answer)){
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public boolean resetPassword(String newPass, String reEnterPass, String userId){
+      if(newPass.isEmpty() || reEnterPass.isEmpty()){
+         return false;
+      }
+      if(newPass.equals(reEnterPass)){
+         updateUser(getUser(userId), newPass);
+         return true;
+      }
+      return false;
    }
 
    public void registerObserver(UserManagementServiceObserver observer) {
@@ -135,6 +205,28 @@ public class UserManagementService implements Service {
    private void notifyUserLogin() {
       for (UserManagementServiceObserver observer : observers) {
          observer.userLogin(loggedInUser);
+      }
+   }
+
+   /**
+    * @return A reference for unit tests to let them modify this singleton such that we can execute several tests
+    */
+   UserManagementService.UserManagementServiceTestAccessor getTestAccessor() {
+      return new UserManagementService.UserManagementServiceTestAccessor();
+   }
+
+   class UserManagementServiceTestAccessor {
+
+      public void setLogger(Logger logger) {
+         UserManagementService.logger = logger;
+      }
+
+      public void clearUserMap() {
+         userMap.clear();
+      }
+
+      public int UserMapCount() {
+         return userMap.size();
       }
    }
 }

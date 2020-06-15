@@ -1,9 +1,6 @@
 package org.spa.controller.user;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.spa.controller.SPAApplication;
 import org.spa.controller.Service;
-import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.util.log.Logger;
 import org.spa.controller.util.log.factory.LoggerFactory;
 import org.spa.model.Repository;
@@ -12,9 +9,6 @@ import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Guest;
 import org.spa.model.user.SystemAdmin;
-import org.spa.view.util.ImagesCache;
-
-import java.io.File;
 import java.util.*;
 
 public class UserManagementService implements Service {
@@ -48,7 +42,6 @@ public class UserManagementService implements Service {
       //save data to storage
       userRepository.saveAll(userMap.values());
    }
-
 
    public User login(String userId, String pass) {
       User u = userMap.get(userId.toLowerCase());
@@ -205,28 +198,6 @@ public class UserManagementService implements Service {
    private void notifyUserLogin() {
       for (UserManagementServiceObserver observer : observers) {
          observer.userLogin(loggedInUser);
-      }
-   }
-
-   /**
-    * @return A reference for unit tests to let them modify this singleton such that we can execute several tests
-    */
-   UserManagementService.UserManagementServiceTestAccessor getTestAccessor() {
-      return new UserManagementService.UserManagementServiceTestAccessor();
-   }
-
-   class UserManagementServiceTestAccessor {
-
-      public void setLogger(Logger logger) {
-         UserManagementService.logger = logger;
-      }
-
-      public void clearUserMap() {
-         userMap.clear();
-      }
-
-      public int UserMapCount() {
-         return userMap.size();
       }
    }
 }

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class UserManagementService implements Service {
 
-   private static Logger logger = LoggerFactory.getLogger(UserManagementService.class);
+   private static final Logger logger = LoggerFactory.getLogger(UserManagementService.class);
    private final Map<String, User> userMap;
    private final Repository<User> userRepository;
    private final Set<UserManagementServiceObserver> observers;

@@ -189,11 +189,8 @@ public class OrdersView {
          if (isAdmin) {
             orderSystem.getOrdersMap().values().forEach(order -> tableModelList.add(orderToOrderViewInfo(order)));
          } else {
-            for (Order order : orderSystem.getOrdersMap().values()) {
-               if (order.getUserId().equals(loggedInUser.getUserId())) {
-                  tableModelList.add(orderToOrderViewInfo(order));
-               }
-            }
+            List<Order> orders = SPAApplication.getInstance().getOrderSystem().findOrdersOfUser(loggedInUser.getUserId());
+            orders.stream().forEach(order -> tableModelList.add(orderToOrderViewInfo(order)));
          }
          try {
             tableManager.refresh();

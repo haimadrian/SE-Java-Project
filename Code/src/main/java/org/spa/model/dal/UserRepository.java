@@ -97,14 +97,14 @@ public class UserRepository implements Repository<User> {
    }
 
    @Override
-   public User update(User item) {
-      users.put(item.getUserId(), item);
-      return item;
+   public User update(User user) {
+      users.put(user.getUserId(), user);
+      return user;
    }
 
    @Override
-   public User delete(User item) {
-      return users.remove(item.getUserId());
+   public User delete(User user) {
+      return users.remove(user.getUserId());
    }
 
    @Override

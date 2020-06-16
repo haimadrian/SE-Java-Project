@@ -9,7 +9,9 @@ import org.spa.model.report.StockReport;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class ReportSystem {
@@ -37,11 +39,11 @@ public class ReportSystem {
    }
 
    public String generateOrdersReport(Date dateStart, Date dateEnd) {
+      SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
       StringBuilder reportString = new StringBuilder();
       OrderReport orderReport = new OrderReport(dateStart, dateEnd);
       Map<String, Order> orders = orderReport.getOrders();
       orders.values().forEach(order -> {
-         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd,yyyy HH:mm");
          Date convertedDate = new Date(order.getOrderTime());
          reportString.append("Order ID: ").append(order.getOrderId()).append("\tOrder date: ").append(sdf.format(convertedDate)).append("\n");
          order.getItems().forEach(item -> {

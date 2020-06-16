@@ -80,7 +80,7 @@ public class Registration
          "What is your preffered hobbie ?" };
    private String userTypes[]
          = { "System Admin",
-         "Manager",
+         "Admin",
          "Customer" };
 
    // constructor, to initialize the components
@@ -293,40 +293,22 @@ public class Registration
    public void actionPerformed(ActionEvent e) {
 
       if (e.getSource() == sub) {
+         String userType = (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Guest? null : (String)tusertype.getSelectedItem());
          if (term.isSelected()) {
-            if (tname.getText().equals("") || tpassword.getPassword().length == 0
-                  || tanswer.getText().equals("") || tmno.getText().equals("")) {
-               res.setText("Please fill the empty fields");
-            } else if (SPAApplication.getInstance().getUserManagementService().isExist(tname.getText())) {
-               res.setText("Username Already Exist");
-            } else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == (UserType.Guest)) {
-               Customer customer = new Customer(tname.getText(), new String(tpassword.getPassword()), tmno.getText(),
-                     new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
-                     new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String) tanswer.getText());
-               SPAApplication.getInstance().getUserManagementService().createUser(customer);
-               showMessageDialog(null, "Registration Completed Successfully");
-               dispose();
-               new LoginView(owner);
-            } else if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == (UserType.SysAdmin)) {
-               String data = (String) tusertype.getSelectedItem();
-               switch (data) {
-                  case "System Admin":
-                     SystemAdmin sa = new SystemAdmin(tname.getText(), new String(tpassword.getPassword()));
-                     SPAApplication.getInstance().getUserManagementService().createUser(sa);
-                     break;
-                  case "Manager":
-                     Admin admin = new Admin(tname.getText(), new String(tpassword.getPassword()), tmno.getText(),
-                           new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
-                           new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String) tanswer.getText(), 0, 0);
-                     SPAApplication.getInstance().getUserManagementService().createUser(admin);
-                     break;
-                  case "Customer":
-                     Customer customer = new Customer(tname.getText(), new String(tpassword.getPassword()), tmno.getText(),
-                           new Date(comboBoxValueToInt(year), comboBoxValueToInt(month), comboBoxValueToInt(day)),
-                           new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(), (String) tanswer.getText());
-                     SPAApplication.getInstance().getUserManagementService().createUser(customer);
-                     break;
+            if(!SPAApplication.getInstance().getUserManagementService().
+                    register(tname.getText(), new String(tpassword.getPassword()),
+                            tmno.getText(), new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
+                            new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(),
+                            (String) tanswer.getText(), SPAApplication.getInstance().getUserManagementService().getLoggedInUserType(), userType)) {
+               if (tname.getText().isEmpty() || tpassword.getPassword().length == 0
+                       || tanswer.getText().isEmpty() || tmno.getText().isEmpty()) {
+                  res.setText("Please fill the empty fields");
                }
+                  else {
+                  res.setText("Username Already Exist");
+               }
+            }
+            else {
                showMessageDialog(null, "Registration Completed Successfully");
                dispose();
                new LoginView(owner);

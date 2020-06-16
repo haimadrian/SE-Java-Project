@@ -70,12 +70,10 @@ public class ForgotPassword {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            User u = SPAApplication.getInstance().getUserManagementService().getUser(userText.getText());
-            String userQuestion = "";
-            if (u == null) {
+            String userQuestion = SPAApplication.getInstance().getUserManagementService().forgotPasswordDisplayQuestion(userText.getText());
+            if (userQuestion.equals("")) {
                res.setText("Wrong UserId!");
-            } else if (u instanceof Customer) {
-               userQuestion = ((Customer) u).getSecretQuestion();
+            } else {
                question.setText(userQuestion);
                userText.setVisible(false);
                userLabel.setVisible(false);
@@ -89,24 +87,18 @@ public class ForgotPassword {
 
       OK.addActionListener(okActionListener);
       userText.addActionListener(okActionListener);
-      submit.addActionListener(okActionListener);
-
 
       submit.addActionListener(new ActionListener() {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            User u = SPAApplication.getInstance().getUserManagementService().getUser(userText.getText());
-            String userAnswer = "";
-            if (u instanceof Customer) {
-               userAnswer = ((Customer) u).getSecretAnswer();
-            }
-            if (userAnswer.equals(answer.getText())) {
+            if(SPAApplication.getInstance().getUserManagementService().forgotPasswordCheckAnswer(userText.getText(), answer.getText())){
                frame.dispose();
                frame = null;
-               new ResetPassword(owner, u);
-            } else {
-               res.setBounds(60, 8, 230, 25);
+               new ResetPassword(owner, userText.getText());
+            }
+             else {
+               res.setBounds(60, 5, 230, 20);
                res.setText("Wrong answer, try again!");
                answer.setText("");
             }

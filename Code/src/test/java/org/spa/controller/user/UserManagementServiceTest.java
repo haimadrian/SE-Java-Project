@@ -51,19 +51,19 @@ public class UserManagementServiceTest extends BaseTest {
     @Test
     public void TestLogin_CustomerUserIdExistWithMatchedPassword_LoginReturnLoggedInCustomer() {
         assertNotNull("Customer with matched id and pass trying to Login,should not return null", userManagementService.login(customer.getUserId(), customer.getPassword()));
-        assertEquals("LoggedIn user type returned should be Customer", customer.getUserType(), UserType.Customer);
+        assertEquals("LoggedIn user type returned should be Customer", UserType.Customer, customer.getUserType());
     }
 
     @Test
     public void TestLogin_AdminUserIdExistWithMatchedPassword_LoginReturnLoggedInAdmin() {
         assertNotNull("Admin with matched id and pass trying to Login,should not return null", userManagementService.login(admin.getUserId(), admin.getPassword()));
-        assertEquals("loggedIn user type returned should be Admin", admin.getUserType(), UserType.Admin);
+        assertEquals("loggedIn user type returned should be Admin", UserType.Admin, admin.getUserType());
     }
 
     @Test
     public void TestLogin_SysAdminUserIdExistWithMatchedPassword_LoginReturnLoggedInSysAdmin() {
         assertNotNull("System Admin with matched id and pass trying to Login,should not return null", userManagementService.login(sysAdmin.getUserId(), sysAdmin.getKey()));
-        assertEquals("LoggedIn user type returned should be SysAdmin", sysAdmin.getUserType(), UserType.SysAdmin);
+        assertEquals("LoggedIn user type returned should be SysAdmin", UserType.SysAdmin, sysAdmin.getUserType());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class UserManagementServiceTest extends BaseTest {
 
     @Test
     public void TestForgotPasswordDisplayQuestion() {
-        assertEquals("On Forgot Password when userId inserted, check if the User's question is displayed", userManagementService.forgotPasswordDisplayQuestion(customer.getUserId()), "What is your favourite color ?");
+        assertEquals("On Forgot Password when userId inserted, check if the User's question is displayed", "What is your favourite color ?", userManagementService.forgotPasswordDisplayQuestion(customer.getUserId()));
     }
 
     @Test

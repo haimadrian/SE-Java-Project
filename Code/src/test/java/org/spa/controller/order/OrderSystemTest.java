@@ -37,7 +37,7 @@ public class OrderSystemTest extends BaseTest {
     public void TestCreateOrder() {
         int ordersTableSize = orderSystem.getOrdersMap().size();
         Order order = orderSystem.createOrder("A", new ArrayList<>(items));
-        assertEquals("Check if OrdersMap size is plus 1 after creating order", orderSystem.getOrdersMap().size(),ordersTableSize + 1);
+        assertEquals("Check if OrdersMap size is plus 1 after creating order", ordersTableSize + 1, orderSystem.getOrdersMap().size());
         orderSystem.deleteOrder(order.getOrderId());
     }
 
@@ -53,7 +53,7 @@ public class OrderSystemTest extends BaseTest {
         Order order = orderSystem.createOrder("Tomer", new ArrayList<>(items));
         int ordersTableSize = orderSystem.getOrdersMap().size();
         orderSystem.deleteOrder(order.getOrderId());
-        assertEquals("Check if OrdersMap size is minus 1 after deleting order", orderSystem.getOrdersMap().size(),ordersTableSize - 1);
+        assertEquals("Check if OrdersMap size is minus 1 after deleting order", ordersTableSize - 1, orderSystem.getOrdersMap().size());
     }
 
     @Test

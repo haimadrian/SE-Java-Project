@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.spa.BaseTest;
 import org.spa.controller.SPAApplication;
+import org.spa.controller.item.Item;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.controller.order.Order;
@@ -70,11 +71,23 @@ public class ReportSystemTest extends BaseTest {
     }
     @Test
     public void TestGenerateEconomicReport(){
+        String orderId = ordersMap.keySet().stream().findFirst().get();
         EconomicReport economicReport = new EconomicReport();
+        Map<String, Double> profitPerItem = new HashMap<>();
+        Order order = orderSystem.findOrder(orderId);
+        profitPerItem = economicReport.getProfitPerItem(profitPerItem);
+        Item item = order.getItems().get(0);
         double expenses = economicReport.getExpenses();
         double profit = economicReport.getIncoming();
-        //assertEquals("Expenses should be ",);
-
+        assertNotSame("Expenses should be different from profit ",expenses,profit);
+        assertEquals("Profit of this item should be the same - 2 orders",item.getActualPrice()*item.getCount()*2,profitPerItem.get(item.getName()));
+        profitPerItem = economicReport.getExpensesPerItem(profitPerItem);
+        item = order.getItems().get(0);
+        assertEquals("Total profit from the item should be the same",profitPerItem.get(item.getName()),
+                ((item.getActualPrice()*item.getCount()*2)+(item.getPrice()-item.getProfitValue()+item.getDiscountValue()) * item.getCount()*(-1)));
+        profitPerItem.clear();
+        profitPerItem = economicReport.getExpensesPerItem(profitPerItem);
+        assertEquals("Expenses should have the same value",profitPerItem.get(item.getName()),(item.getPrice()-item.getProfitValue()+item.getDiscountValue()) * item.getCount()*(-1));
     }
     @Test
     public void TestGenerateOrdersReport(){

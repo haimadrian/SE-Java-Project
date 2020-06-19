@@ -38,6 +38,6 @@ public class DummyOrders {
         orderSystem.createOrder("Lior", items1);
         orderSystem.createOrder("Haim", items2);
         orderSystem.createOrder("David", items3);
-        orderSystem.createOrder("Ben", items2);
+        orderSystem.createOrder("Ben", items3);
     }
 }

@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.spa.driver.SPAMain.FRAME_ICON_NAME;
+
 
 public class ReportView {
    public static final int PAD = 10;
@@ -53,6 +55,7 @@ public class ReportView {
       frame.setLayout(layout);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setSize(868, 600);
+      frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
       Controls.centerDialog(parent, frame);
       panel = new JPanel();
       buttonsPanel = new JPanel();

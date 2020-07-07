@@ -78,7 +78,6 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
       JLabel imageContainer = new JLabel(spaLogo);
       imageContainer.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       categoryTree = new CategoryTree();
-      categoryTree.getCategoryTree().setBorder(((JComponent) tableManager.getMainPanel().getComponent(0)).getBorder());
       modifiedItemList = new ArrayList<>();
       imageContainer.addMouseListener(new MouseAdapter() {
          @Override
@@ -236,7 +235,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
       add(register);
       add(shoppingCart.getNavigatingComponent());
       add(alerts.getNavigatingComponent());
-      add(categoryTree.getCategoryTree());
+      add(categoryTree.getContainer());
       add(tableManager.getMainPanel());
       add(searchBtn);
       add(searchBar);
@@ -347,18 +346,18 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
       layout.putConstraint(SpringLayout.WEST, lblUsername, -lblUsername.getPreferredSize().width, SpringLayout.EAST, contentPane);
       layout.putConstraint(SpringLayout.NORTH, darkMode, 5, SpringLayout.SOUTH, lblUsername);
       layout.putConstraint(SpringLayout.WEST, darkMode, 0, SpringLayout.WEST, lblUsername);
-      layout.putConstraint(SpringLayout.NORTH, categoryTree.getCategoryTree(), PAD, SpringLayout.SOUTH, imageContainer);
-      layout.putConstraint(SpringLayout.WEST, categoryTree.getCategoryTree(), 0, SpringLayout.WEST, contentPane);
-      layout.putConstraint(SpringLayout.EAST, categoryTree.getCategoryTree(), 250, SpringLayout.WEST, contentPane);
-      layout.putConstraint(SpringLayout.SOUTH, categoryTree.getCategoryTree(), 0, SpringLayout.SOUTH, contentPane);
+      layout.putConstraint(SpringLayout.NORTH, categoryTree.getContainer(), PAD, SpringLayout.SOUTH, imageContainer);
+      layout.putConstraint(SpringLayout.WEST, categoryTree.getContainer(), 0, SpringLayout.WEST, contentPane);
+      layout.putConstraint(SpringLayout.EAST, categoryTree.getContainer(), 250, SpringLayout.WEST, contentPane);
+      layout.putConstraint(SpringLayout.SOUTH, categoryTree.getContainer(), 0, SpringLayout.SOUTH, contentPane);
       layout.putConstraint(SpringLayout.SOUTH, searchBar, 0, SpringLayout.SOUTH, imageContainer);
-      layout.putConstraint(SpringLayout.WEST, searchBar, 0, SpringLayout.EAST, categoryTree.getCategoryTree());
+      layout.putConstraint(SpringLayout.WEST, searchBar, 0, SpringLayout.EAST, categoryTree.getContainer());
       layout.putConstraint(SpringLayout.EAST, searchBar, 0, SpringLayout.WEST, alerts);
       layout.putConstraint(SpringLayout.NORTH, searchBtn, 0, SpringLayout.NORTH, searchBar);
       layout.putConstraint(SpringLayout.WEST, searchBtn, -searchBtn.getPreferredSize().width, SpringLayout.EAST, searchBar);
       layout.putConstraint(SpringLayout.SOUTH, searchBtn, 0, SpringLayout.SOUTH, searchBar);
       layout.putConstraint(SpringLayout.NORTH, tableManager.getMainPanel(), PAD, SpringLayout.SOUTH, imageContainer);
-      layout.putConstraint(SpringLayout.WEST, tableManager.getMainPanel(), 0, SpringLayout.EAST, categoryTree.getCategoryTree());
+      layout.putConstraint(SpringLayout.WEST, tableManager.getMainPanel(), 0, SpringLayout.EAST, categoryTree.getContainer());
       layout.putConstraint(SpringLayout.EAST, tableManager.getMainPanel(), 0, SpringLayout.EAST, contentPane);
       layout.putConstraint(SpringLayout.SOUTH, tableManager.getMainPanel(), 0, SpringLayout.SOUTH, contentPane);
       layout.putConstraint(SpringLayout.NORTH, sortTable, 0, SpringLayout.NORTH, searchBar);

@@ -7,15 +7,18 @@ import org.spa.controller.item.WarehouseItem;
 import org.spa.view.util.Fonts;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import java.awt.*;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CategoryTree implements ItemsWarehouseObserver {
    private final JTree categoryTree;
+   private final JScrollPane scrollPane;
    private final ItemsWarehouse itemsWarehouse;
    private List<WarehouseItem> itemsRepository;
    private Set<String> itemsCategories;
@@ -28,6 +31,14 @@ public class CategoryTree implements ItemsWarehouseObserver {
       categoryTree.setShowsRootHandles(true);
       categoryTree.setRootVisible(false);
       categoryTree.setFont(Fonts.BIG_FONT);
+
+      scrollPane = new JScrollPane(categoryTree);
+
+      scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+      scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+      scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+      scrollPane.setMinimumSize(new Dimension(200, Integer.MAX_VALUE));
+      scrollPane.setPreferredSize(new Dimension(20, 600));
 
       DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) categoryTree.getCellRenderer();
       renderer.setLeafIcon(null);
@@ -52,6 +63,10 @@ public class CategoryTree implements ItemsWarehouseObserver {
 
    public JTree getCategoryTree() {
       return categoryTree;
+   }
+
+   public JComponent getContainer() {
+      return scrollPane;
    }
 
    @Override

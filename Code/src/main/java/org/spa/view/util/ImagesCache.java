@@ -146,7 +146,7 @@ public class ImagesCache {
 
       try (FileInputStream fileInput = new FileInputStream(file)) {
          result = new ImageIcon(ImageIO.read(fileInput));
-         cache.put(imageNameForCache, result);
+         cache.put(StringUtils.toLegalFileName(imageNameForCache), result);
       } catch (Exception e) {
          logger.error("Error has occurred while loading image from local disk: " + file);
       }
@@ -166,9 +166,9 @@ public class ImagesCache {
 
       try {
          result = new ImageIcon(ImageIO.read(url));
-         cache.put(imageNameForCache, result);
+         cache.put(StringUtils.toLegalFileName(imageNameForCache), result);
       } catch (Exception e) {
-         logger.error("Error has occurred while downloading image from URL: " + url);
+         logger.error("Error has occurred while downloading image from URL: " + url, e);
       }
 
       return result;

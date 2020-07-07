@@ -15,7 +15,6 @@ public class AlertConfig {
       thresholds.add(new Threshold(0, 2, Severity.HIGH));
       thresholds.add(new Threshold(2, 5, Severity.MEDIUM));
       thresholds.add(new Threshold(5, 10, Severity.LOW));
-      thresholds.add(new Threshold(10, Double.MAX_VALUE, Severity.NORMAL));
    }
 
    public List<Threshold> getThresholds() {

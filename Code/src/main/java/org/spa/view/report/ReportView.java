@@ -94,6 +94,8 @@ public class ReportView {
       title = new JLabel();
       reportText = new JTextArea();
       reportText.setEditable(false);
+      reportText.setLineWrap(true);
+      reportText.setWrapStyleWord(true);
       scrollBar = new JScrollPane(reportText);
       selectStartDateLbl = new JLabel("Select starting day:");
       selectDayEndLbl = new JLabel("Select ending day:");

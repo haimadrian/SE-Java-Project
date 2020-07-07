@@ -14,7 +14,6 @@ set APP_HOME=%DIRNAME%
 
 @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS="-Xmx64m"
-set GRADLE_OPTS="--info"
 
 @rem Find java.exe
 if defined JAVA_HOME goto findJavaFromJavaHome
@@ -52,7 +51,7 @@ if not "%OS%" == "Windows_NT" goto win9xME_args
 
 :win9xME_args
 @rem Slurp the command line arguments.
-set CMD_LINE_ARGS=clean build --info
+set CMD_LINE_ARGS=--info clean build 
 set _SKIP=2
 
 :win9xME_args_slurp

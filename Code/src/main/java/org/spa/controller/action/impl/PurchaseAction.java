@@ -15,6 +15,7 @@ public class PurchaseAction extends AbstractAction<Void> {
          Thread.sleep(TimeUnit.SECONDS.toMillis(3));
       } catch (InterruptedException ignore) {
       }
+
       context.getShoppingCart().clear(false);
 
       return null;

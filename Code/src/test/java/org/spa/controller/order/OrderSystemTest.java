@@ -7,6 +7,7 @@ import org.spa.BaseTest;
 import org.spa.controller.SPAApplication;
 import org.spa.controller.item.WarehouseItem;
 import org.spa.util.DummyDataForItemsWarehouse;
+import org.spa.util.DummyOrders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.spa.driver.SPAMain.FRAME_ICON_NAME;
-
 
 public class ReportView {
    public static final int PAD = 10;
@@ -55,7 +53,6 @@ public class ReportView {
       frame.setLayout(layout);
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       frame.setSize(868, 600);
-      frame.setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
       Controls.centerDialog(parent, frame);
       panel = new JPanel();
       buttonsPanel = new JPanel();
@@ -123,8 +120,6 @@ public class ReportView {
          orderReport.setEnabled(true);
          stockReport.setEnabled(false);
          title.setText(kindOfReport + " Report");
-         reportText.setText("");
-
          generateReport(layout, contentPane);
       });
       buttonsPanel.add(orderReport);
@@ -134,8 +129,6 @@ public class ReportView {
          orderReport.setEnabled(false);
          stockReport.setEnabled(true);
          title.setText(kindOfReport + " Report");
-         reportText.setText("");
-
          componentLocation(layout, contentPane);
       });
       buttonsPanel.add(economicReport);
@@ -145,7 +138,6 @@ public class ReportView {
          orderReport.setEnabled(true);
          stockReport.setEnabled(true);
          title.setText(kindOfReport + " Report");
-         reportText.setText("");
          generateReport(layout, contentPane);
       });
    }
@@ -200,6 +192,7 @@ public class ReportView {
          reportText.setText("");
 
          ChangeListener dateChangeListener = changeEvent -> {
+            reportText.setText("");
             Date dateStart = (Date) datePanel1.getModel().getValue();
             Date dateEnd = (Date) datePanel2.getModel().getValue();
             if ((dateStart != null && dateEnd != null) && (!dateStart.after(dateEnd))) {

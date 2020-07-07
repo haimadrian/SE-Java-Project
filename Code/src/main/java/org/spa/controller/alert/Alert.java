@@ -9,6 +9,7 @@ package org.spa.controller.alert;
 public interface Alert {
    /**
     * The key of the alert - This is the item ID which we raise an alert about its stock
+    *
     * @return The key of this alert
     */
    String getKey();

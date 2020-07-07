@@ -15,9 +15,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CategoryTree implements ItemsWarehouseObserver {
-   private JTree categoryTree;
+   private final JTree categoryTree;
+   private final ItemsWarehouse itemsWarehouse;
    private List<WarehouseItem> itemsRepository;
-   private ItemsWarehouse itemsWarehouse;
    private Set<String> itemsCategories;
 
    public CategoryTree() {

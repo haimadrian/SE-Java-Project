@@ -43,6 +43,14 @@ public class OrdersView {
       frame.setVisible(true);
    }
 
+   public static OrderViewInfo orderToOrderViewInfo(Order order) {
+      if (order == null) {
+         return null;
+      }
+
+      return new OrderViewInfo(order.getOrderId(), order.getOrderTime(), order.getUserId(), order.getItems());
+   }
+
    public static class TitlePane extends JPanel {
 
       public TitlePane() {
@@ -59,8 +67,8 @@ public class OrdersView {
    }
 
    public class ManagementViewPane extends JPanel {
-      private TitlePane title;
-      private OrdersPanel ordersPanel;
+      private final TitlePane title;
+      private final OrdersPanel ordersPanel;
 
       public ManagementViewPane() {
          setLayout(new GridBagLayout());
@@ -78,14 +86,6 @@ public class OrdersView {
          gbc.weighty = 0.92;
          add((ordersPanel = new OrdersPanel()), gbc);
       }
-   }
-
-   public static OrderViewInfo orderToOrderViewInfo(Order order) {
-      if (order == null) {
-         return null;
-      }
-
-      return new OrderViewInfo(order.getOrderId(), order.getOrderTime(), order.getUserId(), order.getItems());
    }
 
    public class OrdersPanel extends JPanel {

@@ -12,7 +12,7 @@ import java.awt.print.PrinterJob;
  */
 public class PrintSupport implements Printable {
 
-   private Component print_component;
+   private final Component print_component;
 
    public PrintSupport(Component comp) {
       this.print_component = comp;

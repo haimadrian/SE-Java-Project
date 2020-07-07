@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OrderReport extends Report {
-   private Date dateStart;
-   private Date dateEnd;
+   private final Date dateStart;
+   private final Date dateEnd;
 
    public OrderReport(Date dateStart, Date dateEnd) {
       this.dateStart = dateStart;
@@ -27,10 +27,10 @@ public class OrderReport extends Report {
          if (dateStart.before(convertedDate) && dateEnd.after(convertedDate))
             finalOrderMap.put(order.getOrderId(), order);
       });
-      orderMap=orderMap.entrySet().stream()
-              .sorted(Map.Entry.comparingByKey())
-              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                      (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+      orderMap = orderMap.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                  (oldValue, newValue) -> oldValue, LinkedHashMap::new));
       return orderMap;
    }
 }

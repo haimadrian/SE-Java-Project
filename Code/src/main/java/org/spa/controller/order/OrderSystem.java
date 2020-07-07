@@ -92,10 +92,14 @@ public class OrderSystem implements Service {
       ordersMap.put(order.getOrderId(), order);
       return order;
    }
-   OrderSystemTestAccessor getTestAccessor() {return new OrderSystemTestAccessor();}
+
+   OrderSystemTestAccessor getTestAccessor() {
+      return new OrderSystemTestAccessor();
+   }
+
    class OrderSystemTestAccessor {
       public void createOrder(Order order) {
-         OrderSystem.this.ordersMap.put(order.getOrderId(),order);
+         OrderSystem.this.ordersMap.put(order.getOrderId(), order);
       }
    }
 }

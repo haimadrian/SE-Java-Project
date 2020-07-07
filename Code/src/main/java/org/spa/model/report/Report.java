@@ -3,7 +3,7 @@ package org.spa.model.report;
 import java.util.Random;
 
 public class Report {
-   private String reportID;
+   private final String reportID;
 
    public Report() {
       Random rand = new Random();

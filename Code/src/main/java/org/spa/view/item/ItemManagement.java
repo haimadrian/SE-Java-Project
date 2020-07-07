@@ -38,7 +38,6 @@ public class ItemManagement extends JFrame implements ActionListener {
 
    private final WarehouseItem warehouseItem;
    private final ItemsWarehouse itemsWarehouse;
-   private String itemId;
    private final Map<String, Object> params;
    private final int y;
    private final Container container;
@@ -65,6 +64,7 @@ public class ItemManagement extends JFrame implements ActionListener {
    private final JLabel output;
    private final JLabel id;
    private final JLabel idValue;
+   private String itemId;
 
    public ItemManagement() {
       this(null);

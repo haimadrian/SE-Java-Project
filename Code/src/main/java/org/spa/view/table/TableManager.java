@@ -1,6 +1,5 @@
 package org.spa.view.table;
 
-import org.spa.view.util.Controls;
 import org.spa.view.util.Fonts;
 
 import javax.swing.*;

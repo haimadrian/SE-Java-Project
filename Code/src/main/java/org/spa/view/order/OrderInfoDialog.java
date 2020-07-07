@@ -24,9 +24,9 @@ import static org.spa.view.util.Controls.*;
 public class OrderInfoDialog extends JFrame {
    private static final Logger logger = LoggerFactory.getLogger(OrderInfoDialog.class);
    private final OrderViewInfo order;
+   private final OrderViewInfo orderItems;
    private TableManager<ItemColumn, ItemViewInfo> tableManager;
    private List<ItemViewInfo> tableModelList;
-   private OrderViewInfo orderItems;
 
    public OrderInfoDialog(OrderViewInfo order) {
       this.order = order;

@@ -90,9 +90,7 @@ public class LoginView {
             } else {
                res.setText("Invalid Username or password!");
                userText.setText("");
-               ;
                passwordText.setText("");
-               ;
             }
          }
       };

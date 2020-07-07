@@ -2,9 +2,6 @@ package org.spa.view.login;
 
 import org.spa.controller.SPAApplication;
 import org.spa.controller.user.UserType;
-import org.spa.model.user.Admin;
-import org.spa.model.user.Customer;
-import org.spa.model.user.SystemAdmin;
 import org.spa.view.util.Controls;
 import org.spa.view.util.ImagesCache;
 
@@ -24,33 +21,31 @@ public class Registration
 
    private final Window owner;
    // Components of the Form
-   private Container c;
-   private JLabel title;
-   private JLabel name;
-   private JTextField tname;
-   private JLabel password;
-   private JPasswordField tpassword;
-   private JLabel mno;
-   private JTextField tmno;
-   private JLabel gender;
-   private JRadioButton male;
-   private JRadioButton female;
-   private ButtonGroup gengp;
-   private JLabel question;
-   private JComboBox tquestion;
-   private JLabel dob;
-   private JComboBox day;
-   private JComboBox month;
-   private JComboBox year;
-   private JLabel answer;
-   private JTextArea tanswer;
-   private JLabel usertype;
-   private JComboBox tusertype;
-   private JCheckBox term;
-   private JButton sub;
-   private JButton reset;
-   private JLabel res;
-   private String days[]
+   private final Container c;
+   private final JLabel title;
+   private final JLabel name;
+   private final JTextField tname;
+   private final JLabel password;
+   private final JPasswordField tpassword;
+   private final JLabel mno;
+   private final JTextField tmno;
+   private final JLabel gender;
+   private final JRadioButton male;
+   private final JRadioButton female;
+   private final ButtonGroup gengp;
+   private final JLabel question;
+   private final JComboBox tquestion;
+   private final JLabel dob;
+   private final JComboBox day;
+   private final JComboBox month;
+   private final JComboBox year;
+   private final JLabel answer;
+   private final JTextArea tanswer;
+   private final JCheckBox term;
+   private final JButton sub;
+   private final JButton reset;
+   private final JLabel res;
+   private final String[] days
          = { "1", "2", "3", "4", "5",
          "6", "7", "8", "9", "10",
          "11", "12", "13", "14", "15",
@@ -58,11 +53,11 @@ public class Registration
          "21", "22", "23", "24", "25",
          "26", "27", "28", "29", "30",
          "31" };
-   private String months[]
+   private final String[] months
          = { "01", "02", "03", "04",
          "05", "06", "07", "08",
          "09", "10", "11", "12" };
-   private String years[]
+   private final String[] years
          = { "1966", "1967", "1968", "1969",
          "1970", "1971", "1972", "1973",
          "1974", "1975", "1976", "1977",
@@ -73,15 +68,17 @@ public class Registration
          "1994", "1995", "1996", "1997",
          "1998", "1999", "2000", "2001",
          "2002", "2003", "2004", "2005" };
-   private String questions[]
+   private final String[] questions
          = { "What is your favourite color ?",
          "What is your Mom's old last name ?",
          "What is the name of your best friend ?",
          "What is your preffered hobbie ?" };
-   private String userTypes[]
+   private final String[] userTypes
          = { "System Admin",
          "Admin",
          "Customer" };
+   private JLabel usertype;
+   private JComboBox tusertype;
 
    // constructor, to initialize the components
    // with default values.
@@ -293,22 +290,20 @@ public class Registration
    public void actionPerformed(ActionEvent e) {
 
       if (e.getSource() == sub) {
-         String userType = (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Guest? null : (String)tusertype.getSelectedItem());
+         String userType = (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == UserType.Guest ? null : (String) tusertype.getSelectedItem());
          if (term.isSelected()) {
-            if(!SPAApplication.getInstance().getUserManagementService().
-                    register(tname.getText(), new String(tpassword.getPassword()),
-                            tmno.getText(), new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
-                            new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(),
-                            (String) tanswer.getText(), SPAApplication.getInstance().getUserManagementService().getLoggedInUserType(), userType)) {
+            if (!SPAApplication.getInstance().getUserManagementService().
+                  register(tname.getText(), new String(tpassword.getPassword()),
+                        tmno.getText(), new Date(comboBoxValueToInt(year) + "/" + comboBoxValueToInt(month) + "/" + comboBoxValueToInt(day)),
+                        new Date(System.currentTimeMillis()), (String) tquestion.getSelectedItem(),
+                        (String) tanswer.getText(), SPAApplication.getInstance().getUserManagementService().getLoggedInUserType(), userType)) {
                if (tname.getText().isEmpty() || tpassword.getPassword().length == 0
-                       || tanswer.getText().isEmpty() || tmno.getText().isEmpty()) {
+                     || tanswer.getText().isEmpty() || tmno.getText().isEmpty()) {
                   res.setText("Please fill the empty fields");
-               }
-                  else {
+               } else {
                   res.setText("Username Already Exist");
                }
-            }
-            else {
+            } else {
                showMessageDialog(null, "Registration Completed Successfully");
                dispose();
                new LoginView(owner);

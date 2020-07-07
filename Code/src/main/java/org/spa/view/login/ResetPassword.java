@@ -1,7 +1,6 @@
 package org.spa.view.login;
 
 import org.spa.controller.SPAApplication;
-import org.spa.controller.user.User;
 import org.spa.view.util.Controls;
 import org.spa.view.util.ImagesCache;
 
@@ -66,16 +65,14 @@ public class ResetPassword {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            if(SPAApplication.getInstance().getUserManagementService().resetPassword(new String (newPasswordText.getPassword()), new String(reEnterPasswordText.getPassword()), currentUserId)){
+            if (SPAApplication.getInstance().getUserManagementService().resetPassword(new String(newPasswordText.getPassword()), new String(reEnterPasswordText.getPassword()), currentUserId)) {
                showMessageDialog(null, "Password changed successfully!");
                frame.dispose();
                frame = null;
                new LoginView(owner);
-            }
-            else if (newPasswordText.getPassword().length == 0 || reEnterPassword.getText().length() == 0) {
+            } else if (newPasswordText.getPassword().length == 0 || reEnterPassword.getText().length() == 0) {
                res.setText("Fill the empty fields!");
-            }
-            else {
+            } else {
                res.setText("Password do not match!");
             }
          }

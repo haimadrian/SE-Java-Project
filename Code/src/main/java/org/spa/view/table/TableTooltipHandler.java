@@ -31,6 +31,7 @@ public class TableTooltipHandler extends MouseAdapter {
 
    /**
     * Constructs a new {@link TableTooltipHandler}
+    *
     * @param table The table to implement a tooltip for
     */
    public TableTooltipHandler(JTable table) {

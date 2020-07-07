@@ -9,9 +9,7 @@ import org.spa.model.report.StockReport;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 public class ReportSystem {

@@ -9,6 +9,7 @@ import org.spa.model.user.Admin;
 import org.spa.model.user.Customer;
 import org.spa.model.user.Guest;
 import org.spa.model.user.SystemAdmin;
+
 import java.util.*;
 
 public class UserManagementService implements Service {
@@ -49,7 +50,7 @@ public class UserManagementService implements Service {
          switch (u.getUserType()) {
             case Admin:
             case Customer: {
-               if (((Customer)u).getPassword().equals(pass)) {
+               if (((Customer) u).getPassword().equals(pass)) {
                   this.loggedInUser = u;
                   notifyUserLogin();
                   logger.info(u.getUserId() + " Logged in");
@@ -109,7 +110,7 @@ public class UserManagementService implements Service {
       userMap.put(user.getUserId().toLowerCase(), userRepository.update(u));
    }
 
-   public void deleteUser(User user){
+   public void deleteUser(User user) {
       User deletedUser = userMap.remove(user.getUserId().toLowerCase());
       userRepository.delete(deletedUser);
    }
@@ -123,18 +124,15 @@ public class UserManagementService implements Service {
    }
 
    public boolean register(String userId, String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer, UserType userType, String selectedUserType) {
-      if(userId.isEmpty() || password.isEmpty() || password.isEmpty() || secretAnswer.isEmpty()){
+      if (userId.isEmpty() || password.isEmpty() || password.isEmpty() || secretAnswer.isEmpty()) {
          return false;
-      }
-      else if(isExist(userId)){
+      } else if (isExist(userId)) {
          return false;
-      }
-      else if(userType == UserType.Guest){
+      } else if (userType == UserType.Guest) {
          Customer customer = new Customer(userId, password, phoneNumber, birthDate, registrationDate, secretQuestion, secretAnswer);
          createUser(customer);
          return true;
-      }
-      else if(userType == UserType.SysAdmin){
+      } else if (userType == UserType.SysAdmin) {
          String data = selectedUserType;
          switch (data) {
             case "System Admin":
@@ -155,32 +153,31 @@ public class UserManagementService implements Service {
       return false;
    }
 
-   public String forgotPasswordDisplayQuestion(String userId){
+   public String forgotPasswordDisplayQuestion(String userId) {
       User user = getUser(userId);
-      if(user == null){
+      if (user == null) {
          return "";
-      }
-      else if(user instanceof Customer){
+      } else if (user instanceof Customer) {
          return ((Customer) user).getSecretQuestion();
       }
       return "";
    }
 
-   public boolean forgotPasswordCheckAnswer(String userId, String answer){
+   public boolean forgotPasswordCheckAnswer(String userId, String answer) {
       User user = getUser(userId);
       if (user instanceof Customer) {
-         if(((Customer) user).getSecretAnswer().equals(answer)){
+         if (((Customer) user).getSecretAnswer().equals(answer)) {
             return true;
          }
       }
       return false;
    }
 
-   public boolean resetPassword(String newPass, String reEnterPass, String userId){
-      if(newPass.isEmpty() || reEnterPass.isEmpty()){
+   public boolean resetPassword(String newPass, String reEnterPass, String userId) {
+      if (newPass.isEmpty() || reEnterPass.isEmpty()) {
          return false;
       }
-      if(newPass.equals(reEnterPass)){
+      if (newPass.equals(reEnterPass)) {
          updateUser(getUser(userId), newPass);
          return true;
       }

@@ -27,11 +27,11 @@ import java.util.function.Consumer;
  */
 
 public class ButtonColumn extends DefaultCellEditor implements TableCellRenderer, TableCellEditor {
+   private final Border originalBorder;
+   private final JButton renderButton;
+   private final JButton editButton;
    private int mnemonic;
-   private Border originalBorder;
    private Border focusBorder;
-   private JButton renderButton;
-   private JButton editButton;
    private Object editorValue;
    private JTable table;
 

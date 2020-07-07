@@ -13,9 +13,9 @@ import java.util.List;
 public class OrderViewInfo implements TableModelIfc, Order {
 
    private final String orderId;
-   private long orderTime;
-   private List<? extends Item> items;
-   private String userId;
+   private final long orderTime;
+   private final List<? extends Item> items;
+   private final String userId;
 
    public OrderViewInfo(String orderId, long orderTime, String userId, List<? extends Item> items) {
       this.orderId = orderId;

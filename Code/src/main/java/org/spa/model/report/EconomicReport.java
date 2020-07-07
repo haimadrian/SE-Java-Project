@@ -9,13 +9,14 @@ import java.util.Map;
 public class EconomicReport extends Report {
    private double incoming;
    private double expenses;
+
    public EconomicReport() {
       super();
    }
 
    public double getIncoming() {
       Map<String, Order> ordersMap = SPAApplication.getInstance().getOrderSystem().getOrdersMap();
-      ordersMap.values().forEach(order -> order.getItems().forEach(item -> incoming+=item.getActualPrice() * item.getCount()));
+      ordersMap.values().forEach(order -> order.getItems().forEach(item -> incoming += item.getActualPrice() * item.getCount()));
       return incoming;
    }
 
@@ -23,7 +24,7 @@ public class EconomicReport extends Report {
       SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item ->
             expenses += (item.getPrice() * item.getCount()));
       SPAApplication.getInstance().getShoppingCart().getItems().forEach(item ->
-              expenses+= (item.getPrice()  * item.getCount()));
+            expenses += (item.getPrice() * item.getCount()));
       return expenses;
    }
 
@@ -32,7 +33,7 @@ public class EconomicReport extends Report {
          Double currItemExpense = item.getPrice() * item.getCount();
          expensesPerItem.merge(item.getName(), currItemExpense, Double::sum);
       });
-      SPAApplication.getInstance().getShoppingCart().getItems().forEach(item ->{
+      SPAApplication.getInstance().getShoppingCart().getItems().forEach(item -> {
          Double currItemExpense = item.getPrice() * item.getCount();
          expensesPerItem.merge(item.getName(), currItemExpense, Double::sum);
       });
@@ -43,13 +44,14 @@ public class EconomicReport extends Report {
       SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().forEach(order -> order.getItems().forEach((item -> {
          Double currItemExpense = item.getActualPrice() * item.getCount();
          profitPerItem.merge(item.getName(), currItemExpense, Double::sum);
-            })));
+      })));
       return profitPerItem;
    }
 
    public double getTotalProfit() {
       return getIncoming() - getExpenses();
    }
+
    public Map<String, Double> getTotalProfitPerItem() {
       Map<String, Double> profitPerItem = new HashMap<>();
       profitPerItem = getExpensesPerItem(profitPerItem);

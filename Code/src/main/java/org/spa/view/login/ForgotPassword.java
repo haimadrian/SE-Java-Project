@@ -1,8 +1,6 @@
 package org.spa.view.login;
 
 import org.spa.controller.SPAApplication;
-import org.spa.controller.user.User;
-import org.spa.model.user.Customer;
 import org.spa.view.util.Controls;
 import org.spa.view.util.ImagesCache;
 
@@ -92,12 +90,11 @@ public class ForgotPassword {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            if(SPAApplication.getInstance().getUserManagementService().forgotPasswordCheckAnswer(userText.getText(), answer.getText())){
+            if (SPAApplication.getInstance().getUserManagementService().forgotPasswordCheckAnswer(userText.getText(), answer.getText())) {
                frame.dispose();
                frame = null;
                new ResetPassword(owner, userText.getText());
-            }
-             else {
+            } else {
                res.setBounds(60, 5, 230, 20);
                res.setText("Wrong answer, try again!");
                answer.setText("");

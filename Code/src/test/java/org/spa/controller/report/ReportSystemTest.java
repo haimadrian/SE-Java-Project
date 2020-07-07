@@ -91,7 +91,7 @@ public class ReportSystemTest extends BaseTest {
         generatedReportString.append(SPAApplication.getInstance().getReportSystem().generateOrdersReport(dateStart,dateEnd));
         ordersMap.values().forEach(order ->
         {
-            Order order1 = orderSystem.findOrder("111111");
+            Order order1 = orderSystem.findOrder("11111");
             Date convertedDate = new Date(order1.getOrderTime());
             testingString.append("Order ID: ").append(order1.getOrderId()).append("\tOrder date: ").append(sdf.format(convertedDate)).append("\n");
             order1.getItems().forEach(item ->{

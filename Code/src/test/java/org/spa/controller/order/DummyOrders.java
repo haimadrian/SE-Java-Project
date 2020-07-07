@@ -5,6 +5,7 @@ import org.spa.controller.item.Item;
 import org.spa.controller.item.ItemsWarehouse;
 import org.spa.util.DummyDataForItemsWarehouse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class DummyOrders {
         OrderSystem orderSystem = SPAApplication.getInstance().getOrderSystem();
         List<Item> items1 = new ArrayList<>();
         if (shouldClearBefore) {
-            Map<String, Order> ordersMap = orderSystem.getOrdersMap();
+            Map<String, Order> ordersMap = new HashMap<>(orderSystem.getOrdersMap());
             ordersMap.values().forEach(order -> orderSystem.deleteOrder(order.getOrderId()));
         }
         OrderSystem.OrderSystemTestAccessor testAccessor = SPAApplication.getInstance().getOrderSystem().getTestAccessor();

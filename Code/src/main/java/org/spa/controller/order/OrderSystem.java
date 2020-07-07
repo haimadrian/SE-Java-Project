@@ -95,7 +95,7 @@ public class OrderSystem implements Service {
    OrderSystemTestAccessor getTestAccessor() {return new OrderSystemTestAccessor();}
    class OrderSystemTestAccessor {
       public void createOrder(Order order) {
-         OrderSystem.this.ordersMap.put("111111",order);
+         OrderSystem.this.ordersMap.put(order.getOrderId(),order);
       }
    }
 }

@@ -23,31 +23,30 @@ import java.util.zip.GZIPOutputStream;
  * @since 28-May-20
  */
 public class OrderRepository implements Repository<Order> {
-   private static final File FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Orders.json");
+   private static final String FILE_NAME = "Orders.json";
+   private static final File DIR = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Orders");
    private static final Logger logger = LoggerFactory.getLogger(OrderRepository.class);
 
    private final Map<String, Order> orders = new HashMap<>();
 
    public OrderRepository() {
-      FILE.getParentFile().mkdirs();
+      DIR.mkdirs();
    }
 
    @Override
    public List<? extends Order> selectAll() {
       if (orders.isEmpty()) {
-         if (FILE.exists()) {
-            logger.info("Reading orders from file");
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(FILE))))) {
+         for (File currFile : DIR.listFiles((dir, name) -> name.endsWith("json"))) {
+            logger.info("Reading orders from file: " + currFile);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(currFile))))) {
                OrdersList ordersFromFile = JsonUtils.readValue(reader, OrdersList.class);
                if (ordersFromFile != null) {
                   ordersFromFile.getOrders().forEach(order -> orders.put(order.getOrderId(), order));
-                  logger.info(orders.size() + " orders have been read");
+                  logger.info(ordersFromFile.getOrders().size() + " orders have been read");
                }
             } catch (Exception e) {
                logger.error("Error has occurred while reading orders from file", e);
             }
-         } else {
-            logger.info("Orders file does not exist. Nothing to read");
          }
       }
 
@@ -77,13 +76,10 @@ public class OrderRepository implements Repository<Order> {
    public void saveAll(Iterable<? extends Order> orders) {
       orders.forEach(this::update);
 
-      // Remove the dummy values so we will not store them to disk.
-      this.orders.remove("#11111");
-      this.orders.remove("#22222");
-
       if (!this.orders.isEmpty()) {
          logger.info("Saving " + this.orders.size() + " orders to file");
-         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(FILE))))) {
+         File outFile = new File(DIR, FILE_NAME);
+         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
             JsonUtils.writeValue(writer, new OrdersList(new ArrayList<>(this.orders.values())));
             logger.info("Orders saved");
          } catch (Exception e) {

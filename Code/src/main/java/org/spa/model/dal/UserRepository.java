@@ -21,23 +21,26 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class UserRepository implements Repository<User> {
-   private static final File CUSTOMER_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Customers.json");
-   private static final File ADMIN_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Admins.json");
-   private static final File SYSADMIN_FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "SysAdmins.json");
+   private static final String CUSTOMER_FILE_NAME = "Customers.json";
+   private static final String ADMIN_FILE_NAME = "Admins.json";
+   private static final String SYSADMIN_FILE_NAME = "SysAdmins.json";
+   private static final File DIR = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Users");
    private static final Logger logger = LoggerFactory.getLogger(OrderRepository.class);
 
    private final Map<String, User> users = new HashMap<>();
 
    public UserRepository() {
-      CUSTOMER_FILE.getParentFile().mkdirs();
+      new File(DIR, "Customers").mkdirs();
+      new File(DIR, "Admins").mkdirs();
+      new File(DIR, "SysAdmins").mkdirs();
    }
 
    @Override
    public List<? extends User> selectAll() {
       if (users.isEmpty()) {
-         readUsersFromFile(CUSTOMER_FILE, CustomerList.class);
-         readUsersFromFile(ADMIN_FILE, AdminList.class);
-         readUsersFromFile(SYSADMIN_FILE, SysAdminList.class);
+         readUsersFromFile(new File(DIR, "Customers"), CustomerList.class);
+         readUsersFromFile(new File(DIR, "Admins"), AdminList.class);
+         readUsersFromFile(new File(DIR, "SysAdmins"), SysAdminList.class);
 
          createSysAdminIfMissing();
 
@@ -57,8 +60,8 @@ public class UserRepository implements Repository<User> {
       }
    }
 
-   private <T extends UserList<? extends User>> void readUsersFromFile(File currFile, Class<T> customerListClass) {
-      if (currFile.exists()) {
+   private <T extends UserList<? extends User>> void readUsersFromFile(File usersDir, Class<T> customerListClass) {
+      for (File currFile : usersDir.listFiles((dir, name) -> name.endsWith("json"))) {
          logger.info("Reading users from file: " + currFile);
          try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(currFile))))) {
             T usersFromFile = JsonUtils.readValue(reader, customerListClass);
@@ -68,8 +71,6 @@ public class UserRepository implements Repository<User> {
          } catch (Exception e) {
             logger.error("Error has occurred while reading users from file: " + currFile, e);
          }
-      } else {
-         logger.info("Users file does not exist. Nothing to read: " + currFile);
       }
    }
 
@@ -129,7 +130,8 @@ public class UserRepository implements Repository<User> {
          }
 
          if (!admins.isEmpty()) {
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(ADMIN_FILE))))) {
+            File outFile = new File(DIR, ADMIN_FILE_NAME);
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
                JsonUtils.writeValue(writer, new AdminList(admins));
             } catch (Exception e) {
                logger.error("Error has occurred while writing admins to file", e);
@@ -137,7 +139,8 @@ public class UserRepository implements Repository<User> {
          }
 
          if (!customers.isEmpty()) {
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(CUSTOMER_FILE))))) {
+            File outFile = new File(DIR, CUSTOMER_FILE_NAME);
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
                JsonUtils.writeValue(writer, new CustomerList(customers));
             } catch (Exception e) {
                logger.error("Error has occurred while writing customers to file", e);
@@ -145,7 +148,8 @@ public class UserRepository implements Repository<User> {
          }
 
          if (!sysadmins.isEmpty()) {
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(SYSADMIN_FILE))))) {
+            File outFile = new File(DIR, SYSADMIN_FILE_NAME);
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
                JsonUtils.writeValue(writer, new SysAdminList(sysadmins));
             } catch (Exception e) {
                logger.error("Error has occurred while writing sys-admins to file", e);

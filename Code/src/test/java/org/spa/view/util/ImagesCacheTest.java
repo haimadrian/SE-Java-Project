@@ -7,6 +7,7 @@ import org.spa.controller.util.log.factory.LogType;
 import org.spa.controller.util.log.factory.LoggerFactory;
 import org.spa.util.ErrorLogHandler;
 
+import javax.swing.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -40,10 +41,11 @@ public class ImagesCacheTest extends BaseTest {
    @Test
    public void TestLoadImageFromFile_FileDoesNotExist_FailureExpected() {
       // Act
-      ImagesCache.getInstance().loadImageFromFile(testImageName, new File("DoYouKnowRoni?.png"));
+      ImageIcon image = ImagesCache.getInstance().loadImageFromFile(testImageName, new File("DoYouKnowRoni?.png"));
 
       // Assert
       assertTrue("An error supposed to occur because we tried to load non existing image", errorLogHandler.hasError());
+      assertEquals("Default image should be: \"IMAGE_NOT_FOUND.png\"", "IMAGE_NOT_FOUND.png", image.getDescription());
    }
 
    @Test

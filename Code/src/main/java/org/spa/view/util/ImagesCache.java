@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ImagesCache {
    private static final ImagesCache instance = new ImagesCache();
+   private static final String IMAGE_NOT_FOUND = "IMAGE_NOT_FOUND.png";
    private static Logger logger = LoggerFactory.getLogger(ImagesCache.class);
 
    private final Map<String, ImageIcon> cache;
@@ -91,11 +92,11 @@ public class ImagesCache {
             }
          } catch (Exception e) {
             image = null;
-            logger.error("Could not find resource: " + legalImageName);
+            logger.error("Could not find resource: " + legalImageName, e);
          }
       }
 
-      return image;
+      return image == null ? getImage(IMAGE_NOT_FOUND) : image;
    }
 
    /**
@@ -148,7 +149,8 @@ public class ImagesCache {
          result = new ImageIcon(ImageIO.read(fileInput));
          cache.put(StringUtils.toLegalFileName(imageNameForCache), result);
       } catch (Exception e) {
-         logger.error("Error has occurred while loading image from local disk: " + file);
+         logger.error("Error has occurred while loading image from local disk: " + file, e);
+         result = getImage(IMAGE_NOT_FOUND);
       }
 
       return result;
@@ -169,6 +171,7 @@ public class ImagesCache {
          cache.put(StringUtils.toLegalFileName(imageNameForCache), result);
       } catch (Exception e) {
          logger.error("Error has occurred while downloading image from URL: " + url, e);
+         result = getImage(IMAGE_NOT_FOUND);
       }
 
       return result;

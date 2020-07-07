@@ -49,10 +49,10 @@ public class CategoryTree implements ItemsWarehouseObserver {
       itemsCategories = itemsRepository.stream().map(WarehouseItem::getCategory).collect(Collectors.toSet());
       DefaultTreeModel model = (DefaultTreeModel) categoryTree.getModel();
       DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
-      for (String category : itemsCategories) {
+      itemsCategories.stream().sorted().forEachOrdered(category -> {
          DefaultMutableTreeNode node = new DefaultMutableTreeNode(category);
          root.add(node);
-      }
+      });
       model.setRoot(root);
       model.reload(root);
    }

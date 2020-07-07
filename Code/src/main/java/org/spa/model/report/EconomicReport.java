@@ -9,50 +9,51 @@ import java.util.Map;
 public class EconomicReport extends Report {
    private double incoming;
    private double expenses;
-
    public EconomicReport() {
       super();
    }
 
    public double getIncoming() {
       Map<String, Order> ordersMap = SPAApplication.getInstance().getOrderSystem().getOrdersMap();
-      incoming = ordersMap.values().stream().flatMap(order -> order.getItems().stream()).mapToDouble(item -> item.getPriceWithProfit() * item.getCount()).sum();
+      ordersMap.values().forEach(order -> order.getItems().forEach(item -> incoming+=item.getActualPrice() * item.getCount()));
       return incoming;
    }
 
-   public double getExpenses() {// From the actual price we subtract the profit value to get the actual expense with discount included multiplied by the items count
+   public double getExpenses() {
       SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item ->
-            expenses += (item.getActualPrice() - item.getProfitValue()) * item.getCount());
-      //We also need to add the expenses of items that are now in the Orders
-      expenses += SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().stream().flatMap(order -> order.getItems().stream()).mapToDouble
-            (item -> (item.getActualPrice() - item.getProfitValue()) * item.getCount()).sum();
+            expenses += (item.getPrice() * item.getCount()));
+      SPAApplication.getInstance().getShoppingCart().getItems().forEach(item ->
+              expenses+= (item.getPrice()  * item.getCount()));
       return expenses;
    }
 
-   public Map<String, Double> getExpensesPerItem() {
-      Map<String, Double> expensesPerItem = new HashMap<>();
-      SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().forEach(order -> order.getItems().forEach(
-            (item -> expensesPerItem.put(item.getName(), Double.valueOf((-1) * (item.getActualPrice() - item.getProfitValue()) * item.getCount())))));
-      SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> expensesPerItem.put(item.getName(), Double.valueOf(((-1) * item.getActualPrice() - item.getProfitValue()) * item.getCount())));
+   public Map<String, Double> getExpensesPerItem(Map<String, Double> expensesPerItem) {
+      SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> {
+         Double currItemExpense = item.getPrice() * item.getCount();
+         expensesPerItem.merge(item.getName(), currItemExpense, Double::sum);
+      });
+      SPAApplication.getInstance().getShoppingCart().getItems().forEach(item ->{
+         Double currItemExpense = item.getPrice() * item.getCount();
+         expensesPerItem.merge(item.getName(), currItemExpense, Double::sum);
+      });
       return expensesPerItem;
    }
 
-   public Map<String, Double> getProfitPerItem() {
-      Map<String, Double> profitPerItem = new HashMap<>();
-      SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().forEach(order -> order.getItems().forEach(
-            (item -> profitPerItem.put(item.getName(), Double.valueOf(item.getPriceWithProfit() * item.getCount())))));
-      SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> profitPerItem.put(item.getName(), Double.valueOf(item.getPriceWithProfit() * item.getCount())));
+   public Map<String, Double> getProfitPerItem(Map<String, Double> profitPerItem) {
+      SPAApplication.getInstance().getOrderSystem().getOrdersMap().values().forEach(order -> order.getItems().forEach((item -> {
+         Double currItemExpense = item.getActualPrice() * item.getCount();
+         profitPerItem.merge(item.getName(), currItemExpense, Double::sum);
+            })));
       return profitPerItem;
    }
 
    public double getTotalProfit() {
       return getIncoming() - getExpenses();
    }
-
    public Map<String, Double> getTotalProfitPerItem() {
-      Map<String, Double> profitPerItem = getProfitPerItem();
-      Map<String, Double> expensesPerItem = getExpensesPerItem();
-      profitPerItem.putAll(expensesPerItem);
+      Map<String, Double> profitPerItem = new HashMap<>();
+      profitPerItem = getExpensesPerItem(profitPerItem);
+      profitPerItem = getProfitPerItem(profitPerItem);
       return profitPerItem;
    }
 }

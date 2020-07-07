@@ -23,30 +23,29 @@ import java.util.zip.GZIPOutputStream;
  * @since 16-May-20
  */
 public class ItemRepository implements Repository<Item> {
-   private static final File FILE = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Items.json");
+   private static final String FILE_NAME = "Items.json";
+   private static final File DIR = new File(new File(SPAApplication.getWorkingDirectory(), "Repository"), "Items");
    private static final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
    private final Map<String, Item> items = new HashMap<>();
 
    public ItemRepository() {
-      FILE.getParentFile().mkdirs();
+      DIR.mkdirs();
    }
 
    @Override
    public List<? extends Item> selectAll() {
       if (items.isEmpty()) {
-         if (FILE.exists()) {
-            logger.info("Reading items from file");
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(FILE))))) {
+         for (File currFile : DIR.listFiles((dir, name) -> name.endsWith("json"))) {
+            logger.info("Reading items from file: " + currFile);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(currFile))))) {
                ItemsList itemsFromFile = JsonUtils.readValue(reader, ItemsList.class);
                if (itemsFromFile != null) {
                   itemsFromFile.getItems().forEach(item -> items.put(item.getId(), item));
-                  logger.info(items.size() + " items have been read");
+                  logger.info(itemsFromFile.getItems().size() + " items have been read");
                }
             } catch (Exception e) {
                logger.error("Error has occurred while reading items from file", e);
             }
-         } else {
-            logger.info("Items file does not exist. Nothing to read");
          }
       }
 
@@ -78,7 +77,8 @@ public class ItemRepository implements Repository<Item> {
 
       if (!this.items.isEmpty()) {
          logger.info("Saving " + this.items.size() + " items to file");
-         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(FILE))))) {
+         File outFile = new File(DIR, FILE_NAME);
+         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
             JsonUtils.writeValue(writer, new ItemsList(new ArrayList<>(this.items.values())));
             logger.info("Items saved");
          } catch (Exception e) {

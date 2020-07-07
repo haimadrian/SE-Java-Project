@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'idea'
+    id "com.adarshr.test-logger" version "2.1.0"
 }
 
 group 'org.spa'

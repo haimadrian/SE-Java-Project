@@ -51,7 +51,7 @@ if not "%OS%" == "Windows_NT" goto win9xME_args
 
 :win9xME_args
 @rem Slurp the command line arguments.
-set CMD_LINE_ARGS=--info clean build 
+set CMD_LINE_ARGS=-i clean build 
 set _SKIP=2
 
 :win9xME_args_slurp

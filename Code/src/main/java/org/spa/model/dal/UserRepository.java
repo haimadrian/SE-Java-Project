@@ -130,7 +130,7 @@ public class UserRepository implements Repository<User> {
          }
 
          if (!admins.isEmpty()) {
-            File outFile = new File(DIR, ADMIN_FILE_NAME);
+            File outFile = new File(new File(DIR, "Admins"), ADMIN_FILE_NAME);
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
                JsonUtils.writeValue(writer, new AdminList(admins));
             } catch (Exception e) {
@@ -139,7 +139,7 @@ public class UserRepository implements Repository<User> {
          }
 
          if (!customers.isEmpty()) {
-            File outFile = new File(DIR, CUSTOMER_FILE_NAME);
+            File outFile = new File(new File(DIR, "Customers"), CUSTOMER_FILE_NAME);
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
                JsonUtils.writeValue(writer, new CustomerList(customers));
             } catch (Exception e) {
@@ -148,7 +148,7 @@ public class UserRepository implements Repository<User> {
          }
 
          if (!sysadmins.isEmpty()) {
-            File outFile = new File(DIR, SYSADMIN_FILE_NAME);
+            File outFile = new File(new File(DIR, "SysAdmins"), SYSADMIN_FILE_NAME);
             try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(outFile))))) {
                JsonUtils.writeValue(writer, new SysAdminList(sysadmins));
             } catch (Exception e) {

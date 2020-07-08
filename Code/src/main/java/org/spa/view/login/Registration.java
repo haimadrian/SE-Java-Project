@@ -107,7 +107,7 @@ public class Registration
 
       tname = new JTextField();
       tname.setFont(new Font("Arial", Font.PLAIN, 15));
-      tname.setSize(250, 25);
+      tname.setSize(257, 28);
       tname.setLocation(150, 100);
       c.add(tname);
 
@@ -119,7 +119,7 @@ public class Registration
 
       tpassword = new JPasswordField();
       tpassword.setFont(new Font("Arial", Font.PLAIN, 15));
-      tpassword.setSize(250, 25);
+      tpassword.setSize(257, 28);
       tpassword.setLocation(150, 150);
       c.add(tpassword);
 
@@ -144,7 +144,7 @@ public class Registration
          }
       };
       tmno.setFont(new Font("Arial", Font.PLAIN, 15));
-      tmno.setSize(250, 25);
+      tmno.setSize(257, 28);
       tmno.setLocation(150, 200);
       c.add(tmno);
 
@@ -180,19 +180,19 @@ public class Registration
 
       day = new JComboBox(days);
       day.setFont(new Font("Arial", Font.PLAIN, 15));
-      day.setSize(50, 25);
+      day.setSize(50, 28);
       day.setLocation(180, 300);
       c.add(day);
 
       month = new JComboBox(months);
       month.setFont(new Font("Arial", Font.PLAIN, 15));
-      month.setSize(60, 25);
+      month.setSize(60, 28);
       month.setLocation(235, 300);
       c.add(month);
 
       year = new JComboBox(years);
       year.setFont(new Font("Arial", Font.PLAIN, 15));
-      year.setSize(70, 25);
+      year.setSize(70, 28);
       year.setLocation(300, 300);
       c.add(year);
 
@@ -204,7 +204,7 @@ public class Registration
 
       tquestion = new JComboBox(questions);
       tquestion.setFont(new Font("Arial", Font.PLAIN, 15));
-      tquestion.setSize(250, 25);
+      tquestion.setSize(257, 28);
       tquestion.setLocation(150, 350);
       c.add(tquestion);
 
@@ -216,7 +216,7 @@ public class Registration
 
       tanswer = new JTextArea();
       tanswer.setFont(new Font("Arial", Font.PLAIN, 15));
-      tanswer.setSize(250, 60);
+      tanswer.setSize(257, 60);
       tanswer.setLocation(150, 400);
       tanswer.setLineWrap(true);
       c.add(tanswer);
@@ -230,7 +230,7 @@ public class Registration
 
          tusertype = new JComboBox(userTypes);
          tusertype.setFont(new Font("Arial", Font.PLAIN, 15));
-         tusertype.setSize(250, 25);
+         tusertype.setSize(257, 28);
          tusertype.setLocation(150, 475);
          c.add(tusertype);
       }
@@ -253,27 +253,27 @@ public class Registration
 
       term = new JCheckBox("Accept Terms And Conditions.");
       term.setFont(new Font("Arial", Font.PLAIN, 15));
-      term.setSize(250, 20);
-      term.setLocation(130, 505);
+      term.setSize(257, 20);
+      term.setLocation(125, 505);
       c.add(term);
 
       sub = new JButton("Submit");
       sub.setFont(new Font("Arial", Font.PLAIN, 15));
       sub.setSize(100, 30);
-      sub.setLocation(140, 535);
+      sub.setLocation(135, 535);
       sub.addActionListener(this);
       c.add(sub);
 
       reset = new JButton("Reset");
       reset.setFont(new Font("Arial", Font.PLAIN, 15));
       reset.setSize(100, 30);
-      reset.setLocation(255, 535);
+      reset.setLocation(250, 535);
       reset.addActionListener(this);
       c.add(reset);
 
       res = new JLabel("");
       res.setFont(new Font("Arial", Font.PLAIN, 20));
-      res.setSize(500, 25);
+      res.setSize(500, 28);
       res.setLocation(50, 65);
       c.add(res);
 
@@ -306,7 +306,9 @@ public class Registration
             } else {
                showMessageDialog(null, "Registration Completed Successfully");
                dispose();
-               new LoginView(owner);
+               if(SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() != UserType.SysAdmin) {
+                  new LoginView(owner);
+               }
             }
          } else {
             res.setText("Please accept the terms");

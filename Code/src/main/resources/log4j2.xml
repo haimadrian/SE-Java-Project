@@ -23,7 +23,7 @@
                 <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
             </Filters>
         </Console>
-        <RollingRandomAccessFile name="FileAppender" fileName="${logDir}\SPAApp.log" filePattern="${logDir}\SPAApp-%i.log" immediateFlush="false">
+        <RollingRandomAccessFile name="FileAppender" fileName="${logDir}\SPAApp.log" filePattern="${logDir}\SPAApp-%i.log" immediateFlush="true">
             <PatternLayout pattern="${mainLogPattern}" charset="UTF-8"/>
             <Policies>
                 <OnStartupTriggeringPolicy/>

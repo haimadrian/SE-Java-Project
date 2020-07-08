@@ -50,7 +50,7 @@ public class ItemInfoDialog extends JFrame {
 
       // Lay out the members from left to right.
       JPanel namePanel = createMemberPanelWithLabel("Name:", item.getName());
-      JPanel descPanel = createMemberPanelWithTextArea("Desc:", item.getDescription(), 200, 350);
+      JPanel descPanel = createMemberPanelWithTextArea("Description:", item.getDescription(), 200, 350);
       JPanel pricePanel;
       JPanel priceAfterDiscount = null;
       String priceText = "Price: " + decimalFormat.format(item.getPriceWithProfit()) + "$";

@@ -102,31 +102,31 @@ public class Registration
       name = new JLabel("Username");
       name.setFont(new Font("Arial", Font.PLAIN, 20));
       name.setSize(100, 20);
-      name.setLocation(50, 100);
+      name.setLocation(45, 100);
       c.add(name);
 
       tname = new JTextField();
       tname.setFont(new Font("Arial", Font.PLAIN, 15));
-      tname.setSize(257, 28);
-      tname.setLocation(150, 100);
+      tname.setSize(260, 30);
+      tname.setLocation(145, 100);
       c.add(tname);
 
       password = new JLabel("Password");
       password.setFont(new Font("Arial", Font.PLAIN, 20));
       password.setSize(100, 20);
-      password.setLocation(50, 150);
+      password.setLocation(45, 150);
       c.add(password);
 
       tpassword = new JPasswordField();
       tpassword.setFont(new Font("Arial", Font.PLAIN, 15));
-      tpassword.setSize(257, 28);
-      tpassword.setLocation(150, 150);
+      tpassword.setSize(260, 30);
+      tpassword.setLocation(145, 150);
       c.add(tpassword);
 
       mno = new JLabel("Mobile");
       mno.setFont(new Font("Arial", Font.PLAIN, 20));
       mno.setSize(100, 20);
-      mno.setLocation(50, 200);
+      mno.setLocation(45, 200);
       c.add(mno);
 
       tmno = new JTextField() {
@@ -144,28 +144,28 @@ public class Registration
          }
       };
       tmno.setFont(new Font("Arial", Font.PLAIN, 15));
-      tmno.setSize(257, 28);
-      tmno.setLocation(150, 200);
+      tmno.setSize(260, 30);
+      tmno.setLocation(145, 200);
       c.add(tmno);
 
       gender = new JLabel("Gender");
       gender.setFont(new Font("Arial", Font.PLAIN, 20));
       gender.setSize(100, 20);
-      gender.setLocation(50, 250);
+      gender.setLocation(45, 250);
       c.add(gender);
 
       male = new JRadioButton("Male");
       male.setFont(new Font("Arial", Font.PLAIN, 15));
       male.setSelected(true);
       male.setSize(75, 20);
-      male.setLocation(150, 250);
+      male.setLocation(145, 250);
       c.add(male);
 
       female = new JRadioButton("Female");
       female.setFont(new Font("Arial", Font.PLAIN, 15));
       female.setSelected(false);
       female.setSize(80, 20);
-      female.setLocation(225, 250);
+      female.setLocation(220, 250);
       c.add(female);
 
       gengp = new ButtonGroup();
@@ -175,49 +175,49 @@ public class Registration
       dob = new JLabel("Date Of Birth");
       dob.setFont(new Font("Arial", Font.PLAIN, 20));
       dob.setSize(130, 20);
-      dob.setLocation(50, 300);
+      dob.setLocation(45, 300);
       c.add(dob);
 
       day = new JComboBox(days);
       day.setFont(new Font("Arial", Font.PLAIN, 15));
-      day.setSize(50, 28);
-      day.setLocation(180, 300);
+      day.setSize(50, 30);
+      day.setLocation(175, 300);
       c.add(day);
 
       month = new JComboBox(months);
       month.setFont(new Font("Arial", Font.PLAIN, 15));
-      month.setSize(60, 28);
-      month.setLocation(235, 300);
+      month.setSize(60, 30);
+      month.setLocation(230, 300);
       c.add(month);
 
       year = new JComboBox(years);
       year.setFont(new Font("Arial", Font.PLAIN, 15));
-      year.setSize(70, 28);
-      year.setLocation(300, 300);
+      year.setSize(70, 30);
+      year.setLocation(295, 300);
       c.add(year);
 
       question = new JLabel("Question");
       question.setFont(new Font("Arial", Font.PLAIN, 20));
       question.setSize(100, 20);
-      question.setLocation(50, 350);
+      question.setLocation(45, 350);
       c.add(question);
 
       tquestion = new JComboBox(questions);
       tquestion.setFont(new Font("Arial", Font.PLAIN, 15));
-      tquestion.setSize(257, 28);
-      tquestion.setLocation(150, 350);
+      tquestion.setSize(260, 30);
+      tquestion.setLocation(145, 350);
       c.add(tquestion);
 
       answer = new JLabel("Answer");
       answer.setFont(new Font("Arial", Font.PLAIN, 20));
       answer.setSize(100, 20);
-      answer.setLocation(50, 400);
+      answer.setLocation(45, 400);
       c.add(answer);
 
       tanswer = new JTextArea();
       tanswer.setFont(new Font("Arial", Font.PLAIN, 15));
-      tanswer.setSize(257, 60);
-      tanswer.setLocation(150, 400);
+      tanswer.setSize(260, 60);
+      tanswer.setLocation(145, 400);
       tanswer.setLineWrap(true);
       c.add(tanswer);
 
@@ -225,13 +225,13 @@ public class Registration
          usertype = new JLabel("User Type");
          usertype.setFont(new Font("Arial", Font.PLAIN, 20));
          usertype.setSize(100, 20);
-         usertype.setLocation(50, 475);
+         usertype.setLocation(45, 475);
          c.add(usertype);
 
          tusertype = new JComboBox(userTypes);
          tusertype.setFont(new Font("Arial", Font.PLAIN, 15));
-         tusertype.setSize(257, 28);
-         tusertype.setLocation(150, 475);
+         tusertype.setSize(260, 30);
+         tusertype.setLocation(145, 475);
          c.add(tusertype);
       }
 
@@ -253,21 +253,21 @@ public class Registration
 
       term = new JCheckBox("Accept Terms And Conditions.");
       term.setFont(new Font("Arial", Font.PLAIN, 15));
-      term.setSize(257, 20);
-      term.setLocation(125, 505);
+      term.setSize(260, 20);
+      term.setLocation(120, 505);
       c.add(term);
 
       sub = new JButton("Submit");
       sub.setFont(new Font("Arial", Font.PLAIN, 15));
       sub.setSize(100, 30);
-      sub.setLocation(135, 535);
+      sub.setLocation(130, 535);
       sub.addActionListener(this);
       c.add(sub);
 
       reset = new JButton("Reset");
       reset.setFont(new Font("Arial", Font.PLAIN, 15));
       reset.setSize(100, 30);
-      reset.setLocation(250, 535);
+      reset.setLocation(245, 535);
       reset.addActionListener(this);
       c.add(reset);
 

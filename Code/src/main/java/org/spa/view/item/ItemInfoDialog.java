@@ -172,7 +172,11 @@ public class ItemInfoDialog extends JFrame {
 
       if (value != null) {
          if (isLabel) {
-            JLabel label2 = createLabel(value, Fonts.PLAIN_FONT);
+            // Use HTML to win the WordWrap of the value.
+            // The value might be very long (item's name) which makes it impossible to drag the splitter
+            // and the image is collapsed. When we use HTML, the label is dynamic and we can drag the splitter with
+            // no limitation
+            JLabel label2 = createLabel("<html>" + value + "</html>", Fonts.PLAIN_FONT);
             JPanel inner2 = new JPanel();
             inner2.setLayout(new BoxLayout(inner2, BoxLayout.X_AXIS));
             inner2.add(label2);

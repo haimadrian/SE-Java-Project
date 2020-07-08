@@ -85,7 +85,7 @@ public class Registration
    public Registration(Window owner) {
       this.owner = owner;
       setTitle("Registration");
-      setSize(450, 600);
+      setSize(450, 610);
       setDefaultCloseOperation(DISPOSE_ON_CLOSE);
       setResizable(false);
       setIconImage(ImagesCache.getInstance().getImage(FRAME_ICON_NAME).getImage());
@@ -101,7 +101,7 @@ public class Registration
 
       name = new JLabel("Username");
       name.setFont(new Font("Arial", Font.PLAIN, 20));
-      name.setSize(100, 20);
+      name.setSize(100, 30);
       name.setLocation(45, 100);
       c.add(name);
 
@@ -113,7 +113,7 @@ public class Registration
 
       password = new JLabel("Password");
       password.setFont(new Font("Arial", Font.PLAIN, 20));
-      password.setSize(100, 20);
+      password.setSize(100, 30);
       password.setLocation(45, 150);
       c.add(password);
 
@@ -125,7 +125,7 @@ public class Registration
 
       mno = new JLabel("Mobile");
       mno.setFont(new Font("Arial", Font.PLAIN, 20));
-      mno.setSize(100, 20);
+      mno.setSize(100, 30);
       mno.setLocation(45, 200);
       c.add(mno);
 
@@ -150,21 +150,21 @@ public class Registration
 
       gender = new JLabel("Gender");
       gender.setFont(new Font("Arial", Font.PLAIN, 20));
-      gender.setSize(100, 20);
+      gender.setSize(100, 30);
       gender.setLocation(45, 250);
       c.add(gender);
 
       male = new JRadioButton("Male");
       male.setFont(new Font("Arial", Font.PLAIN, 15));
       male.setSelected(true);
-      male.setSize(75, 20);
+      male.setSize(75, 30);
       male.setLocation(145, 250);
       c.add(male);
 
       female = new JRadioButton("Female");
       female.setFont(new Font("Arial", Font.PLAIN, 15));
       female.setSelected(false);
-      female.setSize(80, 20);
+      female.setSize(80, 30);
       female.setLocation(220, 250);
       c.add(female);
 
@@ -174,7 +174,7 @@ public class Registration
 
       dob = new JLabel("Date Of Birth");
       dob.setFont(new Font("Arial", Font.PLAIN, 20));
-      dob.setSize(130, 20);
+      dob.setSize(130, 30);
       dob.setLocation(45, 300);
       c.add(dob);
 
@@ -198,7 +198,7 @@ public class Registration
 
       question = new JLabel("Question");
       question.setFont(new Font("Arial", Font.PLAIN, 20));
-      question.setSize(100, 20);
+      question.setSize(100, 30);
       question.setLocation(45, 350);
       c.add(question);
 
@@ -210,7 +210,7 @@ public class Registration
 
       answer = new JLabel("Answer");
       answer.setFont(new Font("Arial", Font.PLAIN, 20));
-      answer.setSize(100, 20);
+      answer.setSize(100, 30);
       answer.setLocation(45, 400);
       c.add(answer);
 
@@ -224,7 +224,7 @@ public class Registration
       if (SPAApplication.getInstance().getUserManagementService().getLoggedInUserType() == (UserType.SysAdmin)) {
          usertype = new JLabel("User Type");
          usertype.setFont(new Font("Arial", Font.PLAIN, 20));
-         usertype.setSize(100, 20);
+         usertype.setSize(100, 30);
          usertype.setLocation(45, 475);
          c.add(usertype);
 
@@ -273,7 +273,7 @@ public class Registration
 
       res = new JLabel("");
       res.setFont(new Font("Arial", Font.PLAIN, 20));
-      res.setSize(500, 28);
+      res.setSize(500, 30);
       res.setLocation(50, 65);
       c.add(res);
 

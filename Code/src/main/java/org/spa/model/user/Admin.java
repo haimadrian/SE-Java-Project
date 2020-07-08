@@ -1,5 +1,6 @@
 package org.spa.model.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.spa.controller.user.UserType;
 
@@ -12,6 +13,7 @@ public class Admin extends Customer {
    @JsonProperty
    private double positionPercentage;
 
+   @JsonCreator
    public Admin(@JsonProperty(value = "userId") String userId,
                 @JsonProperty(value = "password") String password,
                 @JsonProperty(value = "phoneNumber") String phoneNumber,

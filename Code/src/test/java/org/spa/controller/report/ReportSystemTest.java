@@ -48,20 +48,41 @@ public class ReportSystemTest extends BaseTest {
       StockReport stockReport = new StockReport();
       List<WarehouseItem> testingList = stockReport.getItems();
       assertEquals("Supposed to be the same amount of items", testingList.size(), itemsWarehouse.getItems().size());
-      assertEquals("The output string should be the same", "Item name:\tIntel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor\n" +
-            "Quantity:\t10\n" +
-            "Item name:\tASUS ROG STRIX Z490-F GAMING LGA 1200 (Intel 10th Gen)\n" +
-            "Quantity:\t5\n" +
-            "Item name:\tCrucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1\n" +
-            "Quantity:\t1\n" +
-            "Item name:\tEVGA GeForce RTX 2060 KO ULTRA GAMING Video Card, 06G-P4-2068-KR, 6GB GDDR6, Dual Fans, Metal Backplate\n" +
-            "Quantity:\t20\n" +
-            "Item name:\tEVGA GeForce RTX 2080 SUPER XC ULTRA GAMING Video Card, 08G-P4-3183-KR, 8GB GDDR6, RGB LED, Metal Backplate\n" +
-            "Quantity:\t15\n" +
-            "Item name:\tEVGA GeForce RTX 2080 Ti GAMING Video Card, 11G-P4-2380-KR, 11GB GDDR6, RGB LED Logo, Metal Backplate\n" +
-            "Quantity:\t6\n" +
-            "Item name:\tMSI GeForce RTX 2080 TI GAMING X TRIO Video Card\n" +
-            "Quantity:\t2\n", outputString);
+      assertEquals("The output string should be the same", "Item name: Intel Core i9-9900K Coffee Lake 8-Core, 16-Thread, 95W BX80684I99900K Desktop Processor\n" +
+              "Quantity: 10\n" +
+              "\n" +
+              "-----------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+              "\n" +
+              "Item name: ASUS ROG STRIX Z490-F GAMING LGA 1200 (Intel 10th Gen)\n" +
+              "Quantity: 5\n" +
+              "\n" +
+              "-----------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+              "\n" +
+              "Item name: Crucial MX500 2.5\" 1TB SATA III 3D NAND Internal Solid State Drive (SSD) CT1000MX500SSD1\n" +
+              "Quantity: 1\n" +
+              "\n" +
+              "-----------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+              "\n" +
+              "Item name: EVGA GeForce RTX 2060 KO ULTRA GAMING Video Card, 06G-P4-2068-KR, 6GB GDDR6, Dual Fans, Metal Backplate\n" +
+              "Quantity: 20\n" +
+              "\n" +
+              "-----------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+              "\n" +
+              "Item name: EVGA GeForce RTX 2080 SUPER XC ULTRA GAMING Video Card, 08G-P4-3183-KR, 8GB GDDR6, RGB LED, Metal Backplate\n" +
+              "Quantity: 15\n" +
+              "\n" +
+              "-----------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+              "\n" +
+              "Item name: EVGA GeForce RTX 2080 Ti GAMING Video Card, 11G-P4-2380-KR, 11GB GDDR6, RGB LED Logo, Metal Backplate\n" +
+              "Quantity: 6\n" +
+              "\n" +
+              "-----------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+              "\n" +
+              "Item name: MSI GeForce RTX 2080 TI GAMING X TRIO Video Card\n" +
+              "Quantity: 2\n" +
+              "\n" +
+              "-----------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+              "\n", outputString);
    }
 
    @Test
@@ -80,7 +101,7 @@ public class ReportSystemTest extends BaseTest {
       assertEquals("Total profit from the item should be the same", test.values().stream().findFirst(), profitPerItem.values().stream().findFirst());
       profitPerItem.clear();
       profitPerItem = economicReport.getExpensesPerItem(profitPerItem);
-      assertEquals("Expenses should have the same value", -profitPerItem.get(item.getName()), (item.getPrice() * item.getCount() * (-1)));
+      assertEquals("Expenses should have the same value", -profitPerItem.get(item.getName()), (item.getPrice() * item.getCount()));
    }
 
    @Test
@@ -95,12 +116,12 @@ public class ReportSystemTest extends BaseTest {
       {
          Order order1 = orderSystem.findOrder("11111");
          Date convertedDate = new Date(order1.getOrderTime());
-         testingString.append("Order ID: ").append(order1.getOrderId()).append("\tOrder date: ").append(sdf.format(convertedDate)).append("\n");
+         testingString.append("Order ID: ").append(order1.getOrderId()).append("\nOrder date: ").append(sdf.format(convertedDate)).append("\n");
          order1.getItems().forEach(item -> {
             double discountPrice = item.getPrice() * item.getDiscountPercent() / 100;
-            testingString.append("\tItem name: ").append(item.getName()).append("\tQuantity:\t").append(item.getCount()).append("\tTotal Price:\t").append(decimalFormat.format(item.getPrice() - discountPrice)).append("\n");
+            testingString.append("Item name: ").append(item.getName()).append("\nQuantity: ").append(item.getCount()).append("\nTotal Price: ").append(decimalFormat.format(item.getPrice() - discountPrice)).append("\n");
          });
-         testingString.append("\n\n");
+         testingString.append("\n\n---------------------------------------------------------------------------------------------------------------------\n\n");
       });
       assertEquals("String output check", generatedReportString.toString(), testingString.toString());
       OrderReport orderReport2 = new OrderReport(dateEnd, dateStart);

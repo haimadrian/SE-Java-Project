@@ -22,19 +22,19 @@ public class EconomicReport extends Report {
 
    public double getExpenses() {
       SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item ->
-            expenses += (item.getPrice() * item.getCount()));
+            expenses += -(item.getPrice() * item.getCount()));
       SPAApplication.getInstance().getShoppingCart().getItems().forEach(item ->
-            expenses += (item.getPrice() * item.getCount()));
+            expenses += -(item.getPrice() * item.getCount()));
       return expenses;
    }
 
    public Map<String, Double> getExpensesPerItem(Map<String, Double> expensesPerItem) {
       SPAApplication.getInstance().getItemsWarehouse().getItems().forEach(item -> {
-         Double currItemExpense = item.getPrice() * item.getCount();
+         Double currItemExpense = -item.getPrice() * item.getCount();
          expensesPerItem.merge(item.getName(), currItemExpense, Double::sum);
       });
       SPAApplication.getInstance().getShoppingCart().getItems().forEach(item -> {
-         Double currItemExpense = item.getPrice() * item.getCount();
+         Double currItemExpense = -item.getPrice() * item.getCount();
          expensesPerItem.merge(item.getName(), currItemExpense, Double::sum);
       });
       return expensesPerItem;
@@ -49,7 +49,7 @@ public class EconomicReport extends Report {
    }
 
    public double getTotalProfit() {
-      return getIncoming() - getExpenses();
+      return getIncoming() + getExpenses();
    }
 
    public Map<String, Double> getTotalProfitPerItem() {

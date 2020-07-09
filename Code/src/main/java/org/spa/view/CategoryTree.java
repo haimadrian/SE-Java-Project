@@ -70,17 +70,17 @@ public class CategoryTree implements ItemsWarehouseObserver {
    }
 
    @Override
-   public void deleteItem(WarehouseItem item) {
+   public void onItemDeleted(WarehouseItem item) {
       createCategoryTree();
    }
 
    @Override
-   public void updateItem(WarehouseItem item) {
+   public void onItemUpdated(WarehouseItem item) {
       createCategoryTree();
    }
 
    @Override
-   public void addItem(WarehouseItem item) {
+   public void onItemAdded(WarehouseItem item) {
       createCategoryTree();
    }
 

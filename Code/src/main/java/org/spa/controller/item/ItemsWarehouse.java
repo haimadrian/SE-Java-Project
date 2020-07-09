@@ -162,19 +162,19 @@ public class ItemsWarehouse implements Service {
 
    private void notifyItemDeleted(WarehouseItem item) {
       for (ItemsWarehouseObserver observer : observers) {
-         observer.deleteItem(item);
+         observer.onItemDeleted(item);
       }
    }
 
    private void notifyItemUpdated(WarehouseItem item) {
       for (ItemsWarehouseObserver observer : observers) {
-         observer.updateItem(item);
+         observer.onItemUpdated(item);
       }
    }
 
    private void notifyItemAdded(WarehouseItem item) {
       for (ItemsWarehouseObserver observer : observers) {
-         observer.addItem(item);
+         observer.onItemAdded(item);
       }
    }
 

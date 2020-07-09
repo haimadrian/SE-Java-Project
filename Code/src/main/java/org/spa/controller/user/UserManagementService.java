@@ -124,7 +124,7 @@ public class UserManagementService implements Service {
    }
 
    public boolean register(String userId, String password, String phoneNumber, Date birthDate, Date registrationDate, String secretQuestion, String secretAnswer, UserType userType, String selectedUserType) {
-      if (userId.isEmpty() || password.isEmpty() || password.isEmpty() || secretAnswer.isEmpty()) {
+      if (userId.isEmpty() || password.isEmpty() || secretAnswer.isEmpty()) {
          return false;
       } else if (isExist(userId)) {
          return false;
@@ -194,7 +194,7 @@ public class UserManagementService implements Service {
 
    private void notifyUserLogin() {
       for (UserManagementServiceObserver observer : observers) {
-         observer.userLogin(loggedInUser);
+         observer.onUserLoggedIn(loggedInUser);
       }
    }
 }

@@ -285,7 +285,7 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
    }
 
    @Override
-   public void userLogin(User loggedInUser) {
+   public void onUserLoggedIn(User loggedInUser) {
       boolean isAdmin = (loggedInUser.getUserType() == UserType.SysAdmin) || (loggedInUser.getUserType() == UserType.Admin);
       if (isAdmin) {
          alerts.getNavigatingComponent().setVisible(true);
@@ -308,19 +308,19 @@ public class HomePage extends JPanel implements SPAExplorerIfc<WarehouseItem>, U
    }
 
    @Override
-   public void deleteItem(WarehouseItem item) {
+   public void onItemDeleted(WarehouseItem item) {
       modifiedItemList.clear();
       sortTable.setSelectedIndex(0);
    }
 
    @Override
-   public void updateItem(WarehouseItem item) {
+   public void onItemUpdated(WarehouseItem item) {
       modifiedItemList.clear();
       sortTable.setSelectedIndex(0);
    }
 
    @Override
-   public void addItem(WarehouseItem item) {
+   public void onItemAdded(WarehouseItem item) {
       modifiedItemList.clear();
       sortTable.setSelectedIndex(0);
    }

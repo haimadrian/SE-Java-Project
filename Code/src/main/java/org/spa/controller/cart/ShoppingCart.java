@@ -277,17 +277,17 @@ public class ShoppingCart implements Service, ItemsWarehouseObserver {
    }
 
    @Override
-   public void deleteItem(WarehouseItem item) {
+   public void onItemDeleted(WarehouseItem item) {
       remove(item.getId());
    }
 
    @Override
-   public void updateItem(WarehouseItem item) {
+   public void onItemUpdated(WarehouseItem item) {
       // Won't do
    }
 
    @Override
-   public void addItem(WarehouseItem item) {
+   public void onItemAdded(WarehouseItem item) {
       // Irrelevant for shopping cart
    }
 

@@ -199,17 +199,17 @@ public class AlertSystem implements Service, ItemsWarehouseObserver {
    }
 
    @Override
-   public void deleteItem(WarehouseItem item) {
+   public void onItemDeleted(WarehouseItem item) {
       acknowledge(item.getId());
    }
 
    @Override
-   public void updateItem(WarehouseItem item) {
+   public void onItemUpdated(WarehouseItem item) {
       // Won't do
    }
 
    @Override
-   public void addItem(WarehouseItem item) {
+   public void onItemAdded(WarehouseItem item) {
       raiseAlertIfNeeded(item);
    }
 

@@ -121,7 +121,7 @@ public class ReportSystemTest extends BaseTest {
             double discountPrice = item.getPrice() * item.getDiscountPercent() / 100;
             testingString.append("Item name: ").append(item.getName()).append("\nQuantity: ").append(item.getCount()).append("\nTotal Price: ").append(decimalFormat.format(item.getPrice() - discountPrice)).append("\n");
          });
-         testingString.append("\n\n---------------------------------------------------------------------------------------------------------------------\n\n");
+         testingString.append("\n\n--------------------------------------------------------------------------------------------------------------------\n\n");
       });
       assertEquals("String output check", generatedReportString.toString(), testingString.toString());
       OrderReport orderReport2 = new OrderReport(dateEnd, dateStart);

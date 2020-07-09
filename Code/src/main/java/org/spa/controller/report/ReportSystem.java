@@ -48,7 +48,7 @@ public class ReportSystem {
             double discountPrice = item.getPrice() * item.getDiscountPercent() / 100;
             reportString.append("Item name: ").append(item.getName()).append("\nQuantity: ").append(item.getCount()).append("\nTotal Price: ").append(decimalFormat.format(item.getPrice() - discountPrice)).append("\n");
          });
-         reportString.append("\n\n---------------------------------------------------------------------------------------------------------------------\n\n");
+         reportString.append("\n\n--------------------------------------------------------------------------------------------------------------------\n\n");
       });
       return reportString.toString();
    }

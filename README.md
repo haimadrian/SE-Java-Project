@@ -2,7 +2,8 @@
 Repository to work on the final project in Software Engineering course, HIT, year B, 2nd semester
 
 # Video
-<iframe width="560" height="315" src="https://www.youtube.com/embed/MyhIwLgkjFY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+Click on the image below in order to view it on YouTube  
+[![S.P.A Demo](https://img.youtube.com/vi/MyhIwLgkjFY/0.jpg)](https://www.youtube.com/watch?v=MyhIwLgkjFY "S.P.A Demo")
 
 # Wiki
 https://github.com/haimadrian/SE-Java-Project/wiki
